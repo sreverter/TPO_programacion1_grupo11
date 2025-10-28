@@ -1,0 +1,82 @@
+[
+    {
+        "id-show": 1,
+        "nombre-show": "Concierto de Rock",
+        "duracion-show": 120,
+        "espectadores": 500,
+        "espacios-disponibles": 150,
+        "fecha": "2024-07-15"
+    },
+    {
+        "id-show": 2,
+        "nombre-show": "Obra de Teatro: La Noche",
+        "duracion-show": 95,
+        "espectadores": 220,
+        "espacios-disponibles": 30,
+        "fecha": "2024-08-01"
+    },
+    {
+        "id-show": 3,
+        "nombre-show": "Festival Indie",
+        "duracion-show": 240,
+        "espectadores": 1200,
+        "espacios-disponibles": 400,
+        "fecha": "2024-09-10"
+    },
+    {
+        "id-show": 4,
+        "nombre-show": "Recital de Piano",
+        "duracion-show": 75,
+        "espectadores": 150,
+        "espacios-disponibles": 20,
+        "fecha": "2024-10-05"
+    },
+    {
+        "id-show": 5,
+        "nombre-show": "Espectáculo de Ballet",
+        "duracion-show": 110,
+        "espectadores": 300,
+        "espacios-disponibles": 60,
+        "fecha": "2024-11-20"
+    },
+    {
+        "id-show": 6,
+        "nombre-show": "Stand-up Comedy",
+        "duracion-show": 80,
+        "espectadores": 180,
+        "espacios-disponibles": 40,
+        "fecha": "2024-12-02"
+    },
+    {
+        "id-show": 7,
+        "nombre-show": "Ópera: La Traviata",
+        "duracion-show": 150,
+        "espectadores": 450,
+        "espacios-disponibles": 75,
+        "fecha": "2025-01-18"
+    },
+    {
+        "id-show": 8,
+        "nombre-show": "Musical Familiar",
+        "duracion-show": 100,
+        "espectadores": 350,
+        "espacios-disponibles": 80,
+        "fecha": "2025-02-14"
+    },
+    {
+        "id-show": 9,
+        "nombre-show": "Conferencia: Tecnología y Arte",
+        "duracion-show": 60,
+        "espectadores": 120,
+        "espacios-disponibles": 25,
+        "fecha": "2025-03-03"
+    },
+    {
+        "id-show": 10,
+        "nombre-show": "DJ Set Electrónico",
+        "duracion-show": 180,
+        "espectadores": 800,
+        "espacios-disponibles": 200,
+        "fecha": "2025-04-12"
+    }
+]
