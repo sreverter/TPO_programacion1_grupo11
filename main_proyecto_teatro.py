@@ -4,6 +4,8 @@ from menu.menu_usuarios import menu_usuarios
 from menu.menu_shows import menu_shows
 from menu.menu_estadisticas import menu_estadisticas
 from colores import color
+from funciones.funciones_globales import *
+from datos import *
 
 
 
@@ -19,7 +21,6 @@ start = True
 while start==True:
     #empieza el logeo
     while ingreso == True:
-
         #esto determina si se esta registrando o logueando
         destino_ingreso = menu_login()
 
