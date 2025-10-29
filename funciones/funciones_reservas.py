@@ -2,6 +2,7 @@ from iniciacion_listas import datos_globales_reserva, datos_globales,datos_globa
 from entidades.reserva import ver_m2, id_alt_r, ver_busqueda_reserva
 from entidades.usuarios import *
 from entidades.shows import ver_m
+from funciones.funciones_globales import *
 from datetime import datetime
 
 #region por hacer
@@ -27,7 +28,8 @@ def vista_reserva(admin):
     #se separa la vista de el admin y el no admin para diferenciar que es lo que pueden o no ver  
     if admin:
         #se muestra la matriz de las resrvas que hay
-        ver_m2(datos_globales_reserva)
+        datos = cargar_datos_txt('datos/datos_reservas.txt')
+        mostrar_tabla(datos, 1)
         
     #muestra las reservas que hizo ese usuario exclusivamente 
     elif admin == False:

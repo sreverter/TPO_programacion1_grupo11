@@ -58,3 +58,16 @@ def cargar_datos_json(ruta_archivo):
             return datos_cargados
     except (IOError, json.JSONDecodeError) as e:
         print(f"Error al cargar el archivo: {e}")
+
+def cargar_datos_txt(ruta_archivo):
+    datos_cargados = []
+    try:
+        with open(ruta_archivo, 'r') as archivo:
+            linea = archivo.readline().strip()
+            while linea:
+                id_reserva, id_usuario, sector, id_show, precio = linea.split(',')
+                datos_cargados.append([int(id_reserva), int(id_usuario), sector, int(id_show), int(precio)])
+                linea = archivo.readline().strip()
+        return datos_cargados
+    except IOError as e:
+        print(f"Error al cargar el archivo: {e}")
