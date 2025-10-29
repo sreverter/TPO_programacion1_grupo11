@@ -1,6 +1,7 @@
 from iniciacion_listas import datos_globales, datos_globales_reserva, solo_ids_show,precios_show
 from entidades.shows import ver_m, id_alt
 from datetime import datetime
+from funciones.funciones_globales import mostrar_tabla, cargar_datos_json
 import random
 
 #region tareas
@@ -8,8 +9,9 @@ import random
 #testeado en modo admin una vez casi todo si no es que todo tiene validaciones previas para evitar errores falta colorear
 
 def vista_show():
-        matriz_ordenada = sorted(datos_globales, key=lambda x: x[5])
-        ver_m(matriz_ordenada)
+        datos = cargar_datos_json('datos/datos_shows.json')
+        dic_ordenado = sorted(datos, key=lambda x: x["fecha"])
+        mostrar_tabla(dic_ordenado, 2)
 
 def busqueda_Show():
     while True:

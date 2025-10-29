@@ -49,3 +49,12 @@ def inicializar_datos_txt(ruta_archivo, datos):
             archivo.writelines(linea)
     except IOError as e:
         print(f"Error al escribir el archivo: {e}")
+
+
+def cargar_datos_json(ruta_archivo):
+    try:
+        with open(ruta_archivo, 'r') as archivo:
+            datos_cargados = json.load(archivo)
+            return datos_cargados
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error al cargar el archivo: {e}")
