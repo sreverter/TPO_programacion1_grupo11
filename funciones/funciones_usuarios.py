@@ -1,13 +1,14 @@
 from iniciacion_listas import datos_globales_usuarios, dni_en_uso, datos_globales_reserva,id_usuarios,datos_de_ingreso_dni
 from entidades.usuarios import *
 from funciones.funciones_reservas import obt_id_Actual
+from funciones.funciones_globales import mostrar_tabla, cargar_datos_json
 import re
 
 def vista_Usuarios(admin):
         if admin: 
             while True:
                 try:
-                    eleccion = int(input("\033[96m1-VER TODOS LOS USUARIOS\n2-BUSCAR USUARIO POR ID:\033[0m"))
+                    eleccion = int(input("\033[96m1-VER TODOS LOS USUARIOS\n2-BUSCAR USUARIO POR ID:\n\033[0m"))
                     if eleccion in (1,2):
                         break
                 except(ValueError,KeyboardInterrupt):
@@ -15,7 +16,8 @@ def vista_Usuarios(admin):
                     continue
 
             if eleccion == 1:
-                ver_m3(datos_globales_usuarios) 
+                datos_usuarios = cargar_datos_json('datos/datos_usuarios.json')
+                mostrar_tabla(datos_usuarios, 2) 
             elif eleccion == 2:
                 while True:
                     try:
