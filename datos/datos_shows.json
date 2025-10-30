@@ -33,7 +33,7 @@
     },
     {
         "id-show": 5,
-        "nombre-show": "Espectáculo de Ballet",
+        "nombre-show": "Espect\u00e1culo de Ballet",
         "duracion-show": 110,
         "espectadores": 300,
         "espacios-disponibles": 60,
@@ -49,7 +49,7 @@
     },
     {
         "id-show": 7,
-        "nombre-show": "Ópera: La Traviata",
+        "nombre-show": "\u00d3pera: La Traviata",
         "duracion-show": 150,
         "espectadores": 450,
         "espacios-disponibles": 75,
@@ -65,7 +65,7 @@
     },
     {
         "id-show": 9,
-        "nombre-show": "Conferencia: Tecnología y Arte",
+        "nombre-show": "Conferencia: Tecnolog\u00eda y Arte",
         "duracion-show": 60,
         "espectadores": 120,
         "espacios-disponibles": 25,
@@ -73,7 +73,7 @@
     },
     {
         "id-show": 10,
-        "nombre-show": "DJ Set Electrónico",
+        "nombre-show": "DJ Set Electr\u00f3nico",
         "duracion-show": 180,
         "espectadores": 800,
         "espacios-disponibles": 200,

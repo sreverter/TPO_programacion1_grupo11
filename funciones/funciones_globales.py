@@ -1,3 +1,6 @@
+import json
+from datos import datos_shows
+
 def mostrar_tabla(dato, opcion):
 
     #matriz
@@ -29,3 +32,42 @@ def mostrar_tabla(dato, opcion):
                 else:
                     print(f"\033[32m{fila[item]:<25}\033[0m", end="  ")
             print()
+
+
+def inicializar_datos_json(ruta_archivo, datos):
+    nuevos_datos = json.dumps(datos)
+    try:
+        with open(ruta_archivo, 'w') as archivo:
+            archivo.write(nuevos_datos)
+    except IOError as e:
+        print(f"Error al escribir el archivo: {e}")
+
+def inicializar_datos_txt(ruta_archivo, datos):
+    try:
+        linea = [f"{id_reserva},{id_usuario},{sector},{id_show},{precio}\n" for id_reserva, id_usuario, sector, id_show, precio in datos]
+        with open(ruta_archivo, 'w') as archivo:
+            archivo.writelines(linea)
+    except IOError as e:
+        print(f"Error al escribir el archivo: {e}")
+
+
+def cargar_datos_json(ruta_archivo):
+    try:
+        with open(ruta_archivo, 'r') as archivo:
+            datos_cargados = json.load(archivo)
+            return datos_cargados
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error al cargar el archivo: {e}")
+
+def cargar_datos_txt(ruta_archivo):
+    datos_cargados = []
+    try:
+        with open(ruta_archivo, 'r') as archivo:
+            linea = archivo.readline().strip()
+            while linea:
+                id_reserva, id_usuario, sector, id_show, precio = linea.split(',')
+                datos_cargados.append([int(id_reserva), int(id_usuario), sector, int(id_show), int(precio)])
+                linea = archivo.readline().strip()
+        return datos_cargados
+    except IOError as e:
+        print(f"Error al cargar el archivo: {e}")
