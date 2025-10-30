@@ -286,9 +286,9 @@ def borrado_usuarios():
             with open("datos/datos_reservas.txt","r", encoding="utf-8") as arch_reservas:
                 reservas=[]
                 for linea in arch_reservas:
-                    partes=linea.strip().split(";")
+                    partes=linea.strip().split(",")
                     reservas.append(partes)
-                
+
                 reservas_correctas=[]
                 for i in reservas:
                     id_usuario=int(i[1])
