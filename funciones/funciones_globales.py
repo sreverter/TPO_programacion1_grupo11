@@ -35,25 +35,25 @@ def mostrar_tabla(dato, opcion):
 
 
 def inicializar_datos_json(ruta_archivo, datos):
-    nuevos_datos = json.dumps(datos)
+    nuevos_datos = json.dumps(datos, indent=4, ensure_ascii=False)
     try:
-        with open(ruta_archivo, 'w') as archivo:
-            archivo.write(nuevos_datos)
+        with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
+            archivo.write(nuevos_datos + "\n" )
     except IOError as e:
         print(f"Error al escribir el archivo: {e}")
 
 def inicializar_datos_txt(ruta_archivo, datos):
     try:
         linea = [f"{id_reserva},{id_usuario},{sector},{id_show},{precio}\n" for id_reserva, id_usuario, sector, id_show, precio in datos]
-        with open(ruta_archivo, 'w') as archivo:
-            archivo.writelines(linea)
+        with open(ruta_archivo, 'w',encoding='utf-8') as archivo:
+            archivo.writelines(linea + "\n")
     except IOError as e:
         print(f"Error al escribir el archivo: {e}")
 
 
 def cargar_datos_json(ruta_archivo):
     try:
-        with open(ruta_archivo, 'r') as archivo:
+        with open(ruta_archivo, 'r', encoding="utf-8") as archivo:
             datos_cargados = json.load(archivo)
             return datos_cargados
     except (IOError, json.JSONDecodeError) as e:
@@ -62,7 +62,7 @@ def cargar_datos_json(ruta_archivo):
 def cargar_datos_txt(ruta_archivo):
     datos_cargados = []
     try:
-        with open(ruta_archivo, 'r') as archivo:
+        with open(ruta_archivo, 'r',encoding="utf-8") as archivo:
             linea = archivo.readline().strip()
             while linea:
                 id_reserva, id_usuario, sector, id_show, precio = linea.split(',')
