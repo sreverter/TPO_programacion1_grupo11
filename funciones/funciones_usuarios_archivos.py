@@ -1,4 +1,4 @@
-from iniciacion_listas import datos_globales_usuarios, dni_en_uso,datos_de_ingreso_dni
+from iniciacion_listas import dni_en_uso,datos_de_ingreso_dni
 from funciones.funciones_reservas import obt_id_Actual
 from funciones.funciones_globales import *
 import re
@@ -169,7 +169,7 @@ def edicion_usuario(admin):
         print("el usuario a sido editado con exito")
 
     elif admin==False:  # EDITAR USUARIO
-        for i in datos_globales_usuarios:
+        for i in usuarios:
             if i[2] == dni_en_uso[0]:
                 print("\033[96mSe ha accedido a su perfil\033[0m")
                 while True:
@@ -250,7 +250,7 @@ def borrado_usuarios():
             arch_reservas=cargar_datos_txt(datos_reserva_txt)
             reservas=[]
             for linea in arch_reservas:
-                partes=linea.strip().split(",")
+                partes=linea
                 reservas.append(partes)
             
             reservas_correctas=[]
@@ -258,6 +258,7 @@ def borrado_usuarios():
                 id_usuario=int(i[1])
                 if id_usuario != id_eliminar:
                     reservas_correctas.append(i)
+
             if len(reservas_correctas) == len(reservas):
                 print("No se eliminaron reservas asociadas.")
             else:
