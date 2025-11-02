@@ -5,7 +5,8 @@
         "duracion-show": 120,
         "espectadores": 500,
         "espacios-disponibles": 150,
-        "fecha": "2024-07-15"
+        "fecha": "2024-07-15",
+        "precio": 10500
     },
     {
         "id-show": 2,
@@ -13,7 +14,8 @@
         "duracion-show": 95,
         "espectadores": 220,
         "espacios-disponibles": 30,
-        "fecha": "2024-08-01"
+        "fecha": "2024-08-01",
+        "precio": 8900
     },
     {
         "id-show": 3,
@@ -21,7 +23,8 @@
         "duracion-show": 240,
         "espectadores": 1200,
         "espacios-disponibles": 400,
-        "fecha": "2024-09-10"
+        "fecha": "2024-09-10",
+        "precio": 13400
     },
     {
         "id-show": 4,
@@ -29,15 +32,17 @@
         "duracion-show": 75,
         "espectadores": 150,
         "espacios-disponibles": 20,
-        "fecha": "2024-10-05"
+        "fecha": "2024-10-05",
+        "precio": 9700
     },
     {
         "id-show": 5,
-        "nombre-show": "Espect\u00e1culo de Ballet",
+        "nombre-show": "Espectáculo de Ballet",
         "duracion-show": 110,
         "espectadores": 300,
         "espacios-disponibles": 60,
-        "fecha": "2024-11-20"
+        "fecha": "2024-11-20",
+        "precio": 12500
     },
     {
         "id-show": 6,
@@ -45,15 +50,17 @@
         "duracion-show": 80,
         "espectadores": 180,
         "espacios-disponibles": 40,
-        "fecha": "2024-12-02"
+        "fecha": "2024-12-02",
+        "precio": 8600
     },
     {
         "id-show": 7,
-        "nombre-show": "\u00d3pera: La Traviata",
+        "nombre-show": "Ópera: La Traviata",
         "duracion-show": 150,
         "espectadores": 450,
         "espacios-disponibles": 75,
-        "fecha": "2025-01-18"
+        "fecha": "2025-01-18",
+        "precio": 14500
     },
     {
         "id-show": 8,
@@ -61,22 +68,25 @@
         "duracion-show": 100,
         "espectadores": 350,
         "espacios-disponibles": 80,
-        "fecha": "2025-02-14"
+        "fecha": "2025-02-14",
+        "precio": 9900
     },
     {
         "id-show": 9,
-        "nombre-show": "Conferencia: Tecnolog\u00eda y Arte",
+        "nombre-show": "Conferencia: Tecnología y Arte",
         "duracion-show": 60,
         "espectadores": 120,
         "espacios-disponibles": 25,
-        "fecha": "2025-03-03"
+        "fecha": "2025-03-03",
+        "precio": 7600
     },
     {
         "id-show": 10,
-        "nombre-show": "DJ Set Electr\u00f3nico",
+        "nombre-show": "DJ Set Electrónico",
         "duracion-show": 180,
         "espectadores": 800,
         "espacios-disponibles": 200,
-        "fecha": "2025-04-12"
+        "fecha": "2025-04-12",
+        "precio": 11800
     }
 ]
