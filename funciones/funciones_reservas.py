@@ -19,31 +19,33 @@ def obt_id_Actual():
     #se crea una lista que es donde va a ir el usuario de ese dni
     user_act = []
     #se añade el id de ese usuario
-    for i in datos_globales_usuarios:
-        if i[2] == dni_act:
-            user_act.append(i[0])
+    datos_usuario = cargar_datos_json('datos/datos_usuarios.json')
+    for i in datos_usuario:
+        if i["dni"] == dni_act:
+            user_act.append(i["id"])
     return user_act[0]
 
 def vista_reserva(admin):
     #se separa la vista de el admin y el no admin para diferenciar que es lo que pueden o no ver  
+    datos = cargar_datos_txt('datos/datos_reservas.txt')
     if admin:
         #se muestra la matriz de las resrvas que hay
-        datos = cargar_datos_txt('datos/datos_reservas.txt')
         mostrar_tabla(datos, 1)
         
     #muestra las reservas que hizo ese usuario exclusivamente 
     elif admin == False:
         #se limpoia la lista para que si se agrega alguna se pueda actualizar
         matriz_act.clear()
+        # datos.clear()
         #se obtiene el id de usuario
         usuario_Act = obt_id_Actual()
         #se revisa que exista ese usuario en los datos de reservas y se añade a la lista
-        for i in datos_globales_reserva:
+        for i in datos:
             if int(i[1]) == usuario_Act:  
                 matriz_act.append(i)
         #si hay mas de una reserva te muestra la cantidad de reservas que hizo el usuario
         if len(matriz_act) > 0:
-            ver_m2(matriz_act)
+            mostrar_tabla(matriz_act, 1)
         #si no hay reservas te printea no hay reservas 
         else:
             print("no hay ninguna reserva")
