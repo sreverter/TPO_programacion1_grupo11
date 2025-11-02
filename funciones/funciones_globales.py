@@ -16,22 +16,27 @@ def mostrar_tabla(dato, opcion):
     
     #diccionario
     elif opcion == 2:
-        #Encabezado de la tabla
-        print(f"\033[32m{'-'*73}\033[0m")
-        for usuario in dato:
-            lista= list(usuario.keys())
-        print(f"\033[32m{lista[0]:<8}  {lista[1]:<15}\033  \033[35m{lista[2]:>15}  {lista[3]:>25}\033[0m  \033[34m{lista[4]:>15} {lista[5]:>15}\033[0m")
-        print(f"\033[32m{'-'*73}\033[0m")
+        # Detectar tipo por claves
+        if "dni" in dato[0]:
+            tipo = "usuario"
+        elif "id-show" in dato[0]:
+            tipo = "show"
 
-        for fila in dato:
-            for item in fila:
-                if fila[item] == True:
-                    print(f"\033[32m{'Activo':<25}\033[0m", end="  ")
-                elif fila[item] == False:
-                    print(f"\033[31m{'Inactivo':<25}\033[0m", end="  ")
-                else:
-                    print(f"\033[32m{fila[item]:<25}\033[0m", end="  ")
-            print()
+        if tipo == "usuario":
+            print(f"\033[32m{'-'*120}\033[0m")
+            print(f"\033[32m{'ID':<5} {'Nombre':<25} {'DNI':<12} {'Teléfono':<20} {'Correo':<35} {'Estado':<10}\033[0m")
+            print(f"\033[32m{'-'*120}\033[0m")
+            for fila in dato:
+                estado = "\033[32mActivo\033[0m" if fila['estado'] else "\033[31mInactivo\033[0m"
+                print(f"{fila['id']:<5} {fila['nombre']:<25} {fila['dni']:<12} {fila['telefono']:<20} {fila['correo']:<35} {estado:<10}")
+
+        elif tipo == "show":
+            print(f"\033[32m{'-'*110}\033[0m")
+            print(f"\033[32m{'ID Show':<10} {'Nombre Show':<35} {'Duración':<10} {'Espectadores':<15} {'Espacios Disp.':<15} {'Fecha':<15} {'precio':<15}\033[0m")
+            print(f"\033[32m{'-'*110}\033[0m")
+            for fila in dato:
+                print(f"{fila['id-show']:<10} {fila['nombre-show']:<35} {fila['duracion-show']:<10} "
+                      f"{fila['espectadores']:<15} {fila['espacios-disponibles']:<15} {fila['fecha']:<15} {fila['precio']}")
 
 
 def inicializar_datos_json(ruta_archivo, datos):
