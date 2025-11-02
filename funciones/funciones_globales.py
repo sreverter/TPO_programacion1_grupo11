@@ -36,7 +36,7 @@ def mostrar_tabla(dato, opcion):
             print(f"\033[32m{'-'*110}\033[0m")
             for fila in dato:
                 print(f"{fila['id-show']:<10} {fila['nombre-show']:<35} {fila['duracion-show']:<10} "
-                      f"{fila['espectadores']:<15} {fila['espacios-disponibles']:<15} {fila['fecha']:<15} {fila['precio']}")
+                    f"{fila['espectadores']:<15} {fila['espacios-disponibles']:<15} {fila['fecha']:<15} {fila['precio']}")
 
 
 def inicializar_datos_json(ruta_archivo, datos):
@@ -51,7 +51,7 @@ def inicializar_datos_txt(ruta_archivo, datos):
     try:
         linea = [f"{id_reserva},{id_usuario},{sector},{id_show},{precio}\n" for id_reserva, id_usuario, sector, id_show, precio in datos]
         with open(ruta_archivo, 'w',encoding='utf-8') as archivo:
-            archivo.writelines(linea)#esta linea
+            archivo.writelines(linea + "\n")#esta linea
     except IOError as e:
         print(f"Error al escribir el archivo: {e}")
 
