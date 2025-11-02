@@ -51,7 +51,7 @@ def inicializar_datos_txt(ruta_archivo, datos):
     try:
         linea = [f"{id_reserva},{id_usuario},{sector},{id_show},{precio}\n" for id_reserva, id_usuario, sector, id_show, precio in datos]
         with open(ruta_archivo, 'w',encoding='utf-8') as archivo:
-            archivo.writelines(linea)
+            archivo.writelines(linea + "\n")
     except IOError as e:
         print(f"Error al escribir el archivo: {e}")
 
