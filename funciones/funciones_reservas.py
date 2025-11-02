@@ -298,12 +298,14 @@ def borrado_reserva(admin):
             
             #BORRAR TODAS LAS RESERVAS
             elif opcion == 2:
+                datos_reservas_borrar = []
                 for i in datos_reservas:
                     if i[1] == id_usuario:
-                        datos_reservas.remove(i)
-                        print(datos_reservas)
-                        id_show.append(i[3])
-                        pasa=True
+                        datos_reservas_borrar.append(i)
+                for i in datos_reservas_borrar:
+                    datos_reservas.remove(i)
+                        #id_show.append(i[3])
+                        #pasa=True
                 print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
                 break
             # if pasa:
