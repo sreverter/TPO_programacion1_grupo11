@@ -92,6 +92,7 @@ def busqueda_Show():
             continue
 
     if elec == 1:
+        vista_show()
         while True:
             try:
                 elec = int(input("\033[35mIngrese id: \033[0m"))
@@ -113,6 +114,7 @@ def busqueda_Show():
             mostrar_tabla(lista_temp,2)
         
     elif elec == 2:
+        vista_show()
         while True:
             try:
                 año = int(input("\033[35mIngrese año: \033[0m"))
