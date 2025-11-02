@@ -1,3 +1,4 @@
+from entidades import usuarios
 from iniciacion_listas import datos_globales_reserva, datos_globales,datos_globales_usuarios, dni_en_uso,precios_show, matriz_act
 from entidades.reserva import ver_m2, id_alt_r, ver_busqueda_reserva
 from entidades.usuarios import *
@@ -51,6 +52,7 @@ def vista_reserva(admin):
             print("no hay ninguna reserva")
 
 def agregar_reservas(admin):
+        datos_shows = cargar_datos_json('datos/datos_shows.json')
         #se genera un id aleatorio
         id_reserva = id_alt_r() 
         #si no es un admin se busca el id del usuario
@@ -60,7 +62,7 @@ def agregar_reservas(admin):
         else:
             id_usuario = id_user()
         #se muestran todos los shows
-        ver_m(datos_globales) 
+        mostrar_tabla(datos_shows, 2) 
         
         busqueda = True
         while busqueda:
@@ -72,21 +74,19 @@ def agregar_reservas(admin):
                         print("el numero que ingreso no es valido")
                         continue
                     show = int(input("\033[35mIngrese el numero de id del show que desea asistir: \033[0m"))
-                    if show <= 999 or show > 9999:
-                        print("el id que ingreso no es valido")
-                        continue
+                    if show <= 1 or show > 10:
+                        # print("el id que ingreso no es valido")
+                        # continue
                     #se definen parametros booleanos para poder buscar si puede o no reservar ahi
 
-                    show_encontrado = False
-                    tiene_capacidad = False
-                    indice_show = -1
+                        show_encontrado = False
+                        tiene_capacidad = False
                     
                     #se revisa que tenga capacidad ademas de buscar si esta en la base de shows
-                    for i in range(len(datos_globales)):
-                        if datos_globales[i][0] == show:
+                    for i in datos_shows:
+                        if i["id-show"] == show:
                             show_encontrado = True
-                            indice_show = i  
-                            if datos_globales[i][4] > 0 and datos_globales[i][4]>= num_reserva:
+                            if i["espacios-disponibles"] > 0 and i["espacios-disponibles"] >= num_reserva:
                                 tiene_capacidad = True
                     
                     #se printea una cosa o la otra dependiendo de si no lo encuentra o no tiene capacidad
@@ -105,22 +105,20 @@ def agregar_reservas(admin):
                     continue
 
         #se suma y resta los espectadores y los espacios disponibles 
-        datos_globales[indice_show][4] -= num_reserva  
-        datos_globales[indice_show][3] += num_reserva
+        for i in datos_shows:
+            if i["id-show"] == show:
+                i["espacios-disponibles"] -= num_reserva
+                i["espectadores"] += num_reserva
+        #datos_globales[indice_show][4] -= num_reserva  
+        #datos_globales[indice_show][3] += num_reserva
 
-        for i in precios_show:
-            if i[0] == show:
-                precio_platea = i[1]*num_reserva
+        for i in datos_shows:
+            if i["id-show"] == show:
+                lol = i["precio"]*num_reserva
+                precio_platea = lol
+                precio_campo = lol*2
+                precio_vip = lol*3
 
-
-        for i in precios_show:
-            if i[0] == show:
-                    precio_campo = i[2]*num_reserva
-
-        for i in precios_show:
-            if i[0] == show:
-                    precio_vip = i[3]*num_reserva
- 
         while True:
             try:
                 ubicacion_u = int(input(
@@ -143,26 +141,27 @@ def agregar_reservas(admin):
 
         #determina el precio basado en el show y el precio de dicho show
         if ubicacion_u == 1:
-            ubicacion_e = "Platea   "
-            for i in precios_show:
-                if i[0] == show:
-                    precio_act = i[1]*num_reserva
+            precio_act = precio_platea
+            sector = "platea"
 
         elif ubicacion_u == 2:
-            ubicacion_e = "Campo    "
-            for i in precios_show:
-                if i[0] == show:
-                        precio_act = i[2]*num_reserva
+            precio_act = precio_campo
+            sector = "campo"
         
         elif ubicacion_u == 3:
-            for i in precios_show:
-                ubicacion_e = "Vip       "
-                if i[0] == show:
-                        precio_act = i[3]*num_reserva
+            precio_act = precio_vip
+            sector = "vip"
+
         print(f"\033[1;34mReserva generada con exito. El precio de su entrada termino en ${precio_act}\033[0m")
         
         #agrega los datos a la base de datos
-        datos_globales_reserva.append([id_reserva, id_usuario, ubicacion_e, show, precio_act])
+        #datos_globales_reserva.append([id_reserva, id_usuario, ubicacion_e, show, precio_act])
+        datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+        nueva_reserva = [id_reserva, id_usuario, sector, show, precio_act]
+        datos_reservas.append(nueva_reserva)
+        print(datos_reservas)
+        inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+
 
 def busqueda_Reserva():
 
@@ -230,6 +229,8 @@ def busqueda_Reserva():
             ver_busqueda_reserva(reserva_enct)
 
 def borrado_reserva(admin):
+    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+    datos_shows = cargar_datos_json('datos/datos_shows.json')
     if admin == False: 
         borrado=True
         while borrado==True:
@@ -240,7 +241,7 @@ def borrado_reserva(admin):
             id_usuario = obt_id_Actual()
 
             # buscar todas las reservas del usuario
-            for i in datos_globales_reserva:
+            for i in datos_reservas:
                 if i[1] == id_usuario:
                     reservas_d_usuario = True
                     reservas_usuario.append(i)  
@@ -265,7 +266,7 @@ def borrado_reserva(admin):
                     opcion = int(input("\n\033[35m¿Qué desea hacer?\033[0m\n"
                                         "1 - Borrar una sola reserva\n"
                                         "2 - Borrar todas las reservas\n"
-                                       "\033[36mSeleccione una opción: \033[0m"))
+                                        "\033[36mSeleccione una opción: \033[0m"))
                     if opcion in (1, 2):
                         break
                     else:
@@ -281,13 +282,14 @@ def borrado_reserva(admin):
                 try:
                     id_borrar = int(input("Ingrese el ID de la reserva que desea eliminar: "))
                     encontrada = False
-                    for i in datos_globales_reserva[:]:
+                    for i in datos_reservas:
                         if i[1] == id_usuario and i[0] == id_borrar:
-                            datos_globales_reserva.remove(i)
-                            id_show.append(i[3])
+                            datos_reservas.remove(i)
+                            # id_show.append(i[3])
                             encontrada = True
-                            pasa=True
+                            pasa = True
                             print(f"\033[31mReserva {id_borrar} eliminada correctamente\033[0m")
+                            print(datos_reservas, id_show)
                             break
                     if not encontrada:
                         print("\033[31mNo se encontro la reserva con ese ID\033[0m")
@@ -296,21 +298,24 @@ def borrado_reserva(admin):
             
             #BORRAR TODAS LAS RESERVAS
             elif opcion == 2:
-                for i in datos_globales_reserva[:]:
+                for i in datos_reservas:
                     if i[1] == id_usuario:
-                        datos_globales_reserva.remove(i)
+                        datos_reservas.remove(i)
+                        print(datos_reservas)
                         id_show.append(i[3])
                         pasa=True
                 print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
-            if pasa:
-                #Actualizar capacidad de shows
-                for show_id in id_show:
-                    for i in datos_globales:
-                        if i[0] == show_id:
-                            i[3] -= 1
-                            i[4] += 1
-                print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
                 break
+            # if pasa:
+            #     #Actualizar capacidad de shows
+            #     for show_id in id_show:
+            #         for i in datos_shows:
+            #             if i[0] == show_id:
+            #                 i[3] -= 1
+            #                 i[4] += 1
+                # print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
+                # break
+        inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
 
     #BORRAR RESERVA
     if admin==True: 
