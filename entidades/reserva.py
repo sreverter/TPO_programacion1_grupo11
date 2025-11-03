@@ -1,14 +1,23 @@
 import random
 from iniciacion_listas import datos_globales_reserva,ubicacion, ids_usuario, ids_reserva, datos_globales, shows_con_capacidad,precios_show
 from entidades.shows import solo_ids_show
+from funciones.funciones_globales import *
 
 # Función para generar IDs de reserva en forma aleatoria
 def id_alt_r():
-    n=random.randint(1000,19999)
-    while n in ids_reserva:
-        n = random.randint(1000, 19999)
-    ids_reserva.append(n)
-    return n
+    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+    
+    # Si el archivo está vacío, empezamos desde 1
+    if not datos_reservas:
+        return 1
+    
+    # Buscar el valor más alto en la primera columna (ID)
+    mayor_id = 0
+    for reserva in datos_reservas:
+        if reserva[0] > mayor_id:
+            mayor_id = reserva[0]
+    mayor_id+=1
+    return mayor_id
 
 # revisa los shows para ver la capacidad que tienen y asigna  a los usuarios aleatorios a uno de ellos en caso de que no haya ninguno
 # hace un print diciendo que no hay capacidad
