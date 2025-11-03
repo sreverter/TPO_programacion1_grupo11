@@ -1,91 +1,109 @@
-from iniciacion_listas import datos_globales_reserva, datos_globales_usuarios, ids_shows, datos_globales
+from funciones.funciones_globales import *  #se importa las funciones de carga json
+#se define las rutas de lo que vamos a usar
+datos_usuarios_js="datos/datos_usuarios.json"
+datos_reserva_txt="datos/datos_reservas.txt"
+datos_show_js = "datos/datos_shows.json"
+
+# se crea funcion donde se carga el json en una var
+
+def shows_mas_vendidos():
+    lista_shows = cargar_datos_json(datos_show_js)
+    print(type(lista_shows))
+    #mostrar_tabla(hola, 2)
+
+    mayor = lista_shows[0]
+
+    for show in lista_shows:
+        if show["espectadores"] > mayor["espectadores"]:
+            mayor = show
+
+    print(f"Show con más espectadores: {mayor['nombre-show']}")
+    print(f"Espectadores: {mayor['espectadores']}")
+    print(f"Fecha: {mayor['fecha']}")
 
 
-# 1. Shows más vendidos
-def estadistica_shows_mas_vendidos():
-    #se ordena datos globales por la contidad de espectadores 
-    sorted_shows = sorted(datos_globales, key=lambda x: x[3], reverse=True)
-    #se añade la funcion para que solo puedas ver un cantidad determinada menor a 5
-    cantidad = int(input("Seleccione cuántos quiere ver (máximo 5): "))
-    #validacion de que no sea mayor a 5
-    while cantidad > 5:
-        print("Cantidad inválida, el máximo es 5")
-        cantidad = int(input("Seleccione cuántos quiere ver (máximo 5): "))
+def shows_con_mayor_recaudacion():
+    listas_reservas = cargar_datos_txt(datos_reserva_txt)
+    print(type(listas_reservas))
+
+    recaudacion = {}
+    for fila in listas_reservas:
+            id_show, precio = fila[3], fila[4]
+            recaudacion[id_show] = recaudacion.get(id_show, 0) + precio
+        #ordena el diccionario por la recaudacion   
+    recaudacion = dict(sorted(recaudacion.items(), key=lambda item: item[1], reverse=True)) 
+
+    print("\n\033[92m=== RECAUDACIÓN POR SHOW ===\033[0m")
+    for show, total in recaudacion.items():
+        print("Show", show, "→", "$", total)
+
+def usuarios_mas_activos():
+    listas_usuarios = cargar_datos_json(datos_usuarios_js)
     
-    #se aplica un corte a la matriz para que solo se muestre hasta ese punto     
-    sorted_shows = sorted_shows[:cantidad]
-    #se printea de una forma mas organizada usando anchos 
-    print("\n\033[92m=== SHOWS MÁS VENDIDOS ===         \033[0m\n")
+    # Contar usuarios activos e inactivos
+    lista_act = sum(1 for i in listas_usuarios if i["estado"] is True)
+    lista_in = sum(1 for i in listas_usuarios if i["estado"] is False)
 
-    columnas_t = ["ID's", "Tipo de evento", "Duración", "Cant. Espectadores", "Esp. Disponibles", "Fecha"]
-    anchos = [12, 20, 10, 8, 14, 14]
+    activo = lista_act
+    inactivo = lista_in
 
-    print("-" * 74)
-    print("".join(columnas_t[i].ljust(anchos[i]) for i in range(len(columnas_t))))
-    print("-" * 74)
+    # Definir altura máxima del gráfico (en bloques)
+    altura_max = 10
+    maximo = lista_act if lista_act >= lista_in else lista_in
+    paso = (maximo + altura_max - 1) // altura_max if maximo > 0 else 1  # escala sin math.ceil
 
-    for fila in sorted_shows:
-        fila_str = [str(fila[i]).ljust(anchos[i]) for i in range(len(fila))]
-        print("".join(fila_str))
+    # Cantidad de bloques por barra
+    num_barras_act = (lista_act + paso - 1) // paso if lista_act > 0 else 0
+    num_barras_in = (lista_in + paso - 1) // paso if lista_in > 0 else 0
 
-
-# 2. Usuarios activos vs inactivos
-def estadistica_mas_user_activos():
-    #se suman los usuarios para ver la cantidad de activos o inactivos
-    lista_act = sum(1 for i in datos_globales_usuarios if i[5] is True)
-    lista_in = sum(1 for i in datos_globales_usuarios if i[5] is False)
-
-    #se crea otra variable que sea igual a las otras
-    activo=lista_act
-    inactivo=lista_in
-
-    #se verifica que el grafico que vamos a ser sea dentro de limites razonables
-    #en usuarios activos
-    if lista_act <= 100:
-        num_barras_act = lista_act // 10
-    else:
-        num_barras_act = lista_act // 10
-
-    #en usuarios inactivos
-    if lista_in <= 100:
-        num_barras_in = lista_in // 10
-    else:
-        num_barras_in = lista_in // 10
-    
-    # Asegurar que haya al menos 1 barra si hay usuarios
+    # Aseguramos que al menos haya 1 bloque si hay usuarios
     if lista_act > 0 and num_barras_act == 0:
         num_barras_act = 1
     if lista_in > 0 and num_barras_in == 0:
         num_barras_in = 1
-    #se llama la funcion de creacion de graficos dandoles todos los datos
-    crear_Grafico(num_barras_act, num_barras_in, activo, inactivo)
+
+    # Llamar a la función que crea el gráfico
+    crear_Grafico(num_barras_act, num_barras_in, activo, inactivo, paso)
 
 
-# 3. Shows más recaudados
-def shows_mas_recaudados():
-    #se crea un diccionario para las recaudaciones
-        
-        recaudacion = {}  
-        #agarra el show y el precio 
-        for fila in datos_globales_reserva:
-            id_show, precio = fila[3], fila[4]
-            recaudacion[id_show] = recaudacion.get(id_show, 0) + precio
-        #ordena el diccionario por la recaudacion   
-        recaudacion = dict(sorted(recaudacion.items(), key=lambda item: item[1], reverse=True)) 
+def crear_Grafico(num, num2, act, inac, paso):
+    # Crear las listas que representan las barras
+    hola = []
+    for c in range(num):
+        hola.append("   _______" if c == 0 else "  |       |")
 
-        print("\n\033[92m=== RECAUDACIÓN POR SHOW ===\033[0m")
-        for show, total in recaudacion.items():
-            print("Show", show, "→", "$", total)
-    
+    hola2 = []
+    for c2 in range(num2):
+        hola2.append("   _______" if c2 == 0 else "  |       |")
+
+    # Ajustar para que ambas tengan la misma altura
+    alto = num if num >= num2 else num2
+    while len(hola) < alto:
+        hola.insert(0, "")
+    while len(hola2) < alto:
+        hola2.insert(0, "")
+
+    # Encabezado
+    print(f'    {"ACTIVO"}     {"INACTIVO"}')
+    print(f"      {act}          {inac}")
+    print()
+
+    # Mostrar las barras desde arriba
+    for i in range(alto):
+        print(hola[i].ljust(12) + hola2[i])
+
+    # Mostrar base y escala
+    print("   _______     _______")
+    #print(f"\nCada bloque ≈ {paso} usuario(s)")
 
 
-# 4. Usuarios con más reservas
-def usuarios_con_mas_re():
-    #crea un diccionario
-    reservas = {}  
+def usuarios_con_mas_reservas():
+    lista_reservas = cargar_datos_txt(datos_reserva_txt)
 
-    #agarra el id de usuario por cada reserva que tengas
-    for fila in datos_globales_reserva:
+    reservas = {}
+
+
+    for fila in lista_reservas:
         usuario_id = fila[1]
         reservas[usuario_id] = reservas.get(usuario_id, 0) + 1
     reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
@@ -120,31 +138,3 @@ def usuarios_con_mas_re():
     print("\n\033[92m=== RESERVAS POR USUARIO ===\033[0m")
     for usuario, total in list(reservas.items())[principio:final]:
         print("Usuario", usuario, "→", total)
-
-
-
-# Gráfico simple 
-def crear_Grafico(num, num2, act, inac):
-    #se crea una lista
-    hola = []
-    #por la cantidad de activos que haya se añade un append para simular un grafico
-    for c in range(num):
-        hola.append("   _______" if c == 0 else "  |       |")
-    #por la cantidad de inactivos que haya se añade un append para simular un grafico
-    hola2 = []
-    for c2 in range(num2):
-        hola2.append("   _______" if c2 == 0 else "  |       |")
-    
-    #se define un alto con el maximo de largo de ambas listas
-    alto = max(len(hola), len(hola2))
-    #se hace que si uno es mas largo que el otro se insetan espacios en el mas chico para que no se rompa el grafico
-    while len(hola) < alto:
-        hola.insert(0, "")
-    while len(hola2) < alto:
-        hola2.insert(0, "")
-    
-    #se printean los datos
-    print(f'    {"ACTIVO"}     {"INACTIVO"}   ')
-    print(f"      {act}          {inac}")
-    for i in range(alto):
-        print(hola[i].ljust(12) + hola2[i])
