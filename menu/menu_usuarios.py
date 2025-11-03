@@ -7,7 +7,7 @@ def menu_usuarios(admin):
                     usuario_i=int(input(
                     "\n\033[92m=== MENÚ DE USUARIO ===          \033[0m\n"
                     "\033[35m  → [1] VER USUARIO                \033[0m\n"
-                    "\033[35m  → [2] EDITAR Usuario             \033[0m\n"
+                    "\033[35m  → [2] EDITAR USUARIO            \033[0m\n"
                     "\033[35m  → [3] VOLVER AL MENU DE OPCIONES \033[0m\n"
                     "\033[1;35m Seleccione una opción: \033[0m"
                     ))

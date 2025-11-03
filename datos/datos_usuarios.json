@@ -88,5 +88,14 @@
         "correo": "camila.diaz@service.org",
         "estado": true,
         "contraseña": "Vt7#bG4$yP"
+    },
+    {
+        "id": 11,
+        "nombre": "El Momo",
+        "dni": 11111111,
+        "telefono": 1164171156,
+        "correo": "sreverter@uade.edu.ar",
+        "estado": true,
+        "contraseña": "elmomo123"
     }
 ]
