@@ -1,14 +1,28 @@
 import random
 from iniciacion_listas import *
+from funciones.funciones_globales import *
 
 
 # Función para generar IDs de usuarios aleatoriamente 
 def id_user():
-    n=random.randint(1000,9999)
-    while n in id_usuarios:
-        n=random.randint(1000,9999)       
-    id_usuarios.append(n)
-    return n
+    # n=random.randint(1000,9999)
+    # while n in id_usuarios:
+    #     n=random.randint(1000,9999)       
+    # id_usuarios.append(n)
+    # return n
+    datos_usuarios = cargar_datos_json('datos/datos_usuarios.json')
+    
+    # Si el archivo está vacío, empezamos desde 1
+    if not datos_usuarios:
+        return 1
+    
+    # Buscar el valor más alto en la primera columna (ID)
+    mayor_id = 0
+    for usuario in datos_usuarios:
+        if usuario["id"] > mayor_id:
+            mayor_id = usuario["id"]
+    mayor_id += 1
+    return mayor_id
 
 # creacion de dnis aleatoriamente
 def dni_user():

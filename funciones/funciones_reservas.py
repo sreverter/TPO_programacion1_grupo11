@@ -1,9 +1,7 @@
-from iniciacion_listas import datos_globales_reserva, datos_globales,datos_globales_usuarios, dni_en_uso,precios_show, matriz_act
-from entidades.reserva import ver_m2, id_alt_r, ver_busqueda_reserva
+from iniciacion_listas import dni_en_uso
+from entidades.reserva import id_alt_r 
 from entidades.usuarios import *
-from entidades.shows import ver_m
 from funciones.funciones_globales import *
-from datetime import datetime
 
 #region por hacer
 #hacer un modulo de colores o un diccionario con ellos
@@ -19,36 +17,37 @@ def obt_id_Actual():
     #se crea una lista que es donde va a ir el usuario de ese dni
     user_act = []
     #se añade el id de ese usuario
-    for i in datos_globales_usuarios:
-        if i[2] == dni_act:
-            user_act.append(i[0])
+    datos_usuario = cargar_datos_json('datos/datos_usuarios.json')
+    for i in datos_usuario:
+        if i["dni"] == dni_act:
+            user_act.append(i["id"])
     return user_act[0]
 
 def vista_reserva(admin):
     #se separa la vista de el admin y el no admin para diferenciar que es lo que pueden o no ver  
+    vista=[]
+    datos = cargar_datos_txt('datos/datos_reservas.txt')
     if admin:
         #se muestra la matriz de las resrvas que hay
-        datos = cargar_datos_txt('datos/datos_reservas.txt')
         mostrar_tabla(datos, 1)
         
     #muestra las reservas que hizo ese usuario exclusivamente 
     elif admin == False:
-        #se limpoia la lista para que si se agrega alguna se pueda actualizar
-        matriz_act.clear()
         #se obtiene el id de usuario
         usuario_Act = obt_id_Actual()
         #se revisa que exista ese usuario en los datos de reservas y se añade a la lista
-        for i in datos_globales_reserva:
+        for i in datos:
             if int(i[1]) == usuario_Act:  
-                matriz_act.append(i)
+                vista.append(i)
         #si hay mas de una reserva te muestra la cantidad de reservas que hizo el usuario
-        if len(matriz_act) > 0:
-            ver_m2(matriz_act)
+        if len(vista) > 0:
+            mostrar_tabla(vista, 1)
         #si no hay reservas te printea no hay reservas 
         else:
             print("no hay ninguna reserva")
 
 def agregar_reservas(admin):
+        datos_shows = cargar_datos_json('datos/datos_shows.json')
         #se genera un id aleatorio
         id_reserva = id_alt_r() 
         #si no es un admin se busca el id del usuario
@@ -58,7 +57,7 @@ def agregar_reservas(admin):
         else:
             id_usuario = id_user()
         #se muestran todos los shows
-        ver_m(datos_globales) 
+        mostrar_tabla(datos_shows, 2) 
         
         busqueda = True
         while busqueda:
@@ -70,21 +69,14 @@ def agregar_reservas(admin):
                         print("el numero que ingreso no es valido")
                         continue
                     show = int(input("\033[35mIngrese el numero de id del show que desea asistir: \033[0m"))
-                    if show <= 999 or show > 9999:
-                        print("el id que ingreso no es valido")
-                        continue
-                    #se definen parametros booleanos para poder buscar si puede o no reservar ahi
-
                     show_encontrado = False
                     tiene_capacidad = False
-                    indice_show = -1
                     
                     #se revisa que tenga capacidad ademas de buscar si esta en la base de shows
-                    for i in range(len(datos_globales)):
-                        if datos_globales[i][0] == show:
+                    for i in datos_shows:
+                        if i["id-show"] == show:
                             show_encontrado = True
-                            indice_show = i  
-                            if datos_globales[i][4] > 0 and datos_globales[i][4]>= num_reserva:
+                            if i["espacios-disponibles"] > 0 and i["espacios-disponibles"] >= num_reserva:
                                 tiene_capacidad = True
                     
                     #se printea una cosa o la otra dependiendo de si no lo encuentra o no tiene capacidad
@@ -103,22 +95,18 @@ def agregar_reservas(admin):
                     continue
 
         #se suma y resta los espectadores y los espacios disponibles 
-        datos_globales[indice_show][4] -= num_reserva  
-        datos_globales[indice_show][3] += num_reserva
+        for i in datos_shows:
+            if i["id-show"] == show:
+                print("llegas aca proga?")
+                i["espacios-disponibles"] -= num_reserva
+                i["espectadores"] += num_reserva
 
-        for i in precios_show:
-            if i[0] == show:
-                precio_platea = i[1]*num_reserva
+        for i in datos_shows:
+            if i["id-show"] == show:
+                precio_platea = i["precio"]*num_reserva
+                precio_campo = precio_platea*2
+                precio_vip = precio_platea*3
 
-
-        for i in precios_show:
-            if i[0] == show:
-                    precio_campo = i[2]*num_reserva
-
-        for i in precios_show:
-            if i[0] == show:
-                    precio_vip = i[3]*num_reserva
- 
         while True:
             try:
                 ubicacion_u = int(input(
@@ -141,29 +129,29 @@ def agregar_reservas(admin):
 
         #determina el precio basado en el show y el precio de dicho show
         if ubicacion_u == 1:
-            ubicacion_e = "Platea   "
-            for i in precios_show:
-                if i[0] == show:
-                    precio_act = i[1]*num_reserva
+            precio_act = precio_platea
+            sector = "platea"
 
         elif ubicacion_u == 2:
-            ubicacion_e = "Campo    "
-            for i in precios_show:
-                if i[0] == show:
-                        precio_act = i[2]*num_reserva
+            precio_act = precio_campo
+            sector = "campo"
         
         elif ubicacion_u == 3:
-            for i in precios_show:
-                ubicacion_e = "Vip       "
-                if i[0] == show:
-                        precio_act = i[3]*num_reserva
+            precio_act = precio_vip
+            sector = "vip"
+
         print(f"\033[1;34mReserva generada con exito. El precio de su entrada termino en ${precio_act}\033[0m")
         
-        #agrega los datos a la base de datos
-        datos_globales_reserva.append([id_reserva, id_usuario, ubicacion_e, show, precio_act])
+        datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+        nueva_reserva = [id_reserva, id_usuario, sector, show, precio_act, num_reserva]
+        datos_reservas.append(nueva_reserva)
+        print(datos_reservas)
+        inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+        inicializar_datos_json('datos/datos_shows.json', datos_shows)
+
 
 def busqueda_Reserva():
-
+    datos=cargar_datos_txt('datos/datos_reservas.txt')
     #crea una lista 
     reserva_enct = []
     
@@ -174,7 +162,8 @@ def busqueda_Reserva():
     while True:
         try:
             eleccion = int(input("\033[35m → [1] BUSCAR RESERVA POR ID DE RESERVA\n → [2] BUSCAR RESERVA POR ID USUARIO:\033[0m"))
-            break
+            if eleccion in (1,2):
+                break
         except (ValueError,KeyboardInterrupt):
             print("se ha detectado un error porfavor vuelva a intentarlo")
             continue
@@ -188,23 +177,18 @@ def busqueda_Reserva():
             except(KeyboardInterrupt,ValueError):
                 print("el numero ingresado no es valido")
                 continue
-        #si lo encuentra lo añade a la lista 
-        for i in datos_globales_reserva:
+        for i in datos:
             if i[0] == eleccion:
                 encontrado = True
                 reserva_enct.append(i)
         
-        #si no lo encuentra printea eso
         if not encontrado:
             print("\033[31mID de reserva no encontrada.\033[0m")
         else:
-            #si lo encuentra muestra la reserva
-            ver_busqueda_reserva(reserva_enct)
-    
-    #agarra el caso 2
+            mostrar_tabla(reserva_enct,1)
+
     elif eleccion == 2:
 
-        #se le indica que ponga su id de usuario
         while True:
             try:
                 eleccion = int(input("\033[35mIngrese ID de usuario: \033[0m"))
@@ -214,7 +198,7 @@ def busqueda_Reserva():
                 continue
 
         #si lo encuentra lo añade a la lista
-        for i in datos_globales_reserva:
+        for i in datos:
             if i[1] == eleccion:
                 encontrado = True
                 reserva_enct.append(i)
@@ -223,47 +207,42 @@ def busqueda_Reserva():
         if not encontrado:
             print("\033[31mID de usuario no encontrado.\033[0m")
         else:
-
-            #si lo encuentra muestra la reservas que tiene ese usuario
-            ver_busqueda_reserva(reserva_enct)
+            mostrar_tabla(reserva_enct,1)
 
 def borrado_reserva(admin):
+    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+    datos_shows = cargar_datos_json('datos/datos_shows.json')
+    #reaparti por bloques porque ya me estaba mareando
+    # === BLOQUE USUARIO NORMAL ===
     if admin == False: 
-        borrado=True
-        while borrado==True:
+        borrado = True
+        while borrado:
             reservas_d_usuario = False            
-            reservas_usuario = []  # lista vacía para guardar reservas del usuario
+            reservas_usuario = []
         
-            # agarrar el id del usuario
             id_usuario = obt_id_Actual()
 
-            # buscar todas las reservas del usuario
-            for i in datos_globales_reserva:
+            for i in datos_reservas:
                 if i[1] == id_usuario:
                     reservas_d_usuario = True
                     reservas_usuario.append(i)  
 
-            # si no hay reservas printeamos esto para sepa
             if reservas_d_usuario == False:
                 print("\033[31mNo hay reservas registradas a su nombre.\033[0m")
                 break
-            # mostrar reservas del usuario
+
             print("\n\033[34mTus reservas actuales:\033[0m")
             print(f"{'ID Reserva':<12} {'ID Show':<10} {'Ubicación':<12} {'Precio':<8}")
             print("-" * 45)
             for r in reservas_usuario:
                 print(f"{r[0]:<12} {r[3]:<10} {r[2]:<12} {r[4]:<8}")
             
-
-
-
             while True:
                 try:
-
                     opcion = int(input("\n\033[35m¿Qué desea hacer?\033[0m\n"
                                         "1 - Borrar una sola reserva\n"
                                         "2 - Borrar todas las reservas\n"
-                                       "\033[36mSeleccione una opción: \033[0m"))
+                                        "\033[36mSeleccione una opción: \033[0m"))
                     if opcion in (1, 2):
                         break
                     else:
@@ -272,254 +251,276 @@ def borrado_reserva(admin):
                     print("Ingrese un valor válido.")
 
             id_show = []
-            pasa=False
 
-            #BORRAR UNA SOLA RESERVA 
+            # === BORRAR UNA SOLA RESERVA ===
             if opcion == 1:
                 try:
                     id_borrar = int(input("Ingrese el ID de la reserva que desea eliminar: "))
                     encontrada = False
-                    for i in datos_globales_reserva[:]:
+                    for i in datos_reservas:
                         if i[1] == id_usuario and i[0] == id_borrar:
-                            datos_globales_reserva.remove(i)
-                            id_show.append(i[3])
+                            id_show.append([i[3], i[5]])
+                            datos_reservas.remove(i)
                             encontrada = True
-                            pasa=True
                             print(f"\033[31mReserva {id_borrar} eliminada correctamente\033[0m")
                             break
                     if not encontrada:
-                        print("\033[31mNo se encontro la reserva con ese ID\033[0m")
+                        print("\033[31mNo se encontró la reserva con ese ID\033[0m")
                 except (ValueError, KeyboardInterrupt):
                     print("\033[31mID inválido\033[0m")
             
-            #BORRAR TODAS LAS RESERVAS
+            # === BORRAR TODAS LAS RESERVAS ===
             elif opcion == 2:
-                for i in datos_globales_reserva[:]:
+                datos_reservas_borrar = []
+                for i in datos_reservas:
                     if i[1] == id_usuario:
-                        datos_globales_reserva.remove(i)
-                        id_show.append(i[3])
-                        pasa=True
+                        id_show.append([i[3], i[5]])
+                        datos_reservas_borrar.append(i)
+
+                for i in datos_reservas_borrar:
+                    datos_reservas.remove(i)
                 print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
-            if pasa:
-                #Actualizar capacidad de shows
-                for show_id in id_show:
-                    for i in datos_globales:
-                        if i[0] == show_id:
-                            i[3] -= 1
-                            i[4] += 1
-                print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
-                break
+                borrado = False
+    
+            # === ACTUALIZAR CAPACIDAD ===
+            for show_id, cantidad in id_show:
+                for show in datos_shows:
+                    if show["id-show"] == show_id:
+                        show["espacios-disponibles"] += cantidad
+                        show["espectadores"] -= cantidad
 
-    #BORRAR RESERVA
-    if admin==True: 
+            print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
+                
+            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+            inicializar_datos_json('datos/datos_shows.json', datos_shows)
+
+    # === BLOQUE ADMIN ===
+    if admin == True: 
+        reservas_usuario = []
+        reservas_d_usuario = False
+        reservas_del_id = []
+        show_encontrado = False
         
-        #creamos un booleano para identificar cunado encuentre el show
-        show_encontrado=False
-        
-        #se le pide el id del show para eliminarlo
         while True:
             try:
-                eleccion = int(input("\033[35mSeleccione id de reserva a eliminar: \033[0m"))
-                
-                #busca el show y cuenado lo encuentra el booleano se pone como true y se printea la confirmacion del id
-                for i in datos_globales_reserva:
-                    if i[0]==eleccion:
-                        show_encontrado=True
-                        print("\033[96mID de reserva confirmado.\033[0m")
-                
-                #si no se encuentra la reserva se printea para 
-                # que sepa que esa reserva no existe o no es valida y se le pide que lo vuelva a ingresar        
-                if not show_encontrado:
-                    print("\033[91mEsa reserva no es valida.\033[0m")
-                    continue
-                else:
+                opcion = int(input("\n\033[35m¿Qué desea hacer?\033[0m\n"
+                                    "1 - Borrar una sola reserva del usuario\n"
+                                    "2 - Borrar todas las reservas del usuario\n"
+                                    "\033[36mSeleccione una opción: \033[0m"))
+                if opcion in (1, 2):
                     break
-            except(KeyboardInterrupt,ValueError):
-                print("lo ingresado se coinsidera un caracter invalido")
-                continue
+                else:
+                    print("Debe ser un número entre 1 y 2.")
+            except (ValueError, KeyboardInterrupt):
+                print("Ingrese un valor válido.")
 
-        #se crea otra lista vacia
-        id_show = []
-        
-        #busca por datos globales lo copia y lo remueve de 
-        #datos globales reserva y mete el dato de show en el id_show para despues facilitar la busqueda
-        for i in datos_globales_reserva[:]:
-            if i[0] == eleccion:
-                datos_globales_reserva.remove(i)
-                id_show.append(i[3])
-        
-        #busca en id del show el show y si lo encuentra saca un espectador y agrega un espacio
-        for i in datos_globales:
-            if i[0] == id_show[0]:
-                i[3] -= 1
-                i[4] += 1
-        
-        
-        print("\033[1;34mReserva eliminada con exito!\033[0m")
-        
-def edicion_reserva():        
-        #se le muestra las reservas que hay para identificar el id mas rapidamente
-        ver_m2(datos_globales_reserva)
-
-        show_encontrado=False
-
-        while show_encontrado == False:
-            #se le pide que ingrese un id
-            while  True:
-                try:
-                    id_a_editar = int(input("\nSeleccione el ID de reserva a editar: "))
-                    #busca la reserva y si la encuentra se convierte reserva encontrada en esa reserva enteramente 
-                    for reserva in datos_globales_reserva:
-                        if reserva[0] == id_a_editar:  
-                            reserva_encontrada = reserva
-                            show_encontrado=True
-
-                    #si no lo encuentra se printe esto
-                    if show_encontrado:
-                        break
-                    else:
-                        print("\033[91mNo se encontró la reserva con ese ID.\033[0m")
-                        continue
-                except(ValueError, KeyboardInterrupt):
-                    print("se ingreso algo que no es valido")
-                    continue
-        
-        #se printea esto para que sepas que id estas modificando
-        print(f"\nEditando reserva ID: {reserva_encontrada[0]}")
-        
-        #se le pide que elija una opcion de edicion
-        while True:
-            try:
-                eleccion = int(input(
-                    "\n\033[92m=== MENÚ DE EDICIÓN DE RESERVA ===\033[0m\n"
-                    "\033[35m  → [1] EDITAR UBICACIÓN\033[0m\n"
-                    "\033[35m  → [2] EDITAR SHOW\033[0m\n"
-                    "\033[1;35mSeleccione una opción: \033[0m"
-                ))
-                break
-            except (ValueError,KeyboardInterrupt):
-                print("se ingreso un caracter no  valido")
-                continue
-        #EDITAR UBICACIÓN
-        if eleccion == 1:
-            #si elije la opcion uno se le pide que ingrese a que ubicacion quiere pasar   
+        if opcion == 1:
             while True:
                 try:
-                    ubicacion = int(input(
-                    "\n\033[92m=== SELECCIONE NUEVA UBICACIÓN ===\033[0m\n"
-                    "\033[35m  → [1] PLATEA\033[0m\n"
-                    "\033[35m  → [2] CAMPO\033[0m\n"
-                    "\033[35m  → [3] VIP\033[0m\n"
-                    "\033[1;35mSeleccione opción: \033[0m"
-                    ))
-                    while ubicacion not in (1,2,3):
-                        print("el numero colocado no es el que se pidio")
+                    eleccion = int(input("\033[35mSeleccione id de reserva a eliminar: \033[0m"))
+                    show_encontrado = False
+                    for i in datos_reservas:
+                        if i[0] == eleccion:
+                            show_encontrado = True
+                            print("\033[96mID de reserva confirmado.\033[0m")
+                            break
+                    if not show_encontrado:
+                        print("\033[91mEsa reserva no es válida.\033[0m")
                         continue
                     else:
                         break
-                except (KeyboardInterrupt,ValueError):
-                    print("se ingreso un numero que no esta habilitado")
+                except (KeyboardInterrupt, ValueError):
+                    print("Lo ingresado se considera un carácter inválido")
                     continue
-                
-            #si no entra dentro de los numeros pedidos se le pide que ingrese nuevamente 
-            #la ubicacion y se le indica que no es valida esa ubicacion
 
+            id_show = []
+            datos_reservas_borrar = []
+            
+            
+            for i in datos_reservas:
+                if i[0] == eleccion:
+                    datos_reservas_borrar.append(i)
+                    id_show.append((i[3], i[5]))  
+                    break  
+
+            for i in datos_reservas_borrar:
+                datos_reservas.remove(i)
+            
+            
+            for show_id, cantidad in id_show:
+                for show in datos_shows:
+                    if show["id-show"] == show_id:
+                        show["espacios-disponibles"] += cantidad
+                        show["espectadores"] -= cantidad
+
+            print("\033[1;34mReserva eliminada con éxito!\033[0m")
 
             
-            #depende de la ubicaion se le asigna un precio correspondiente con ese show y esa ubicacion
-            if ubicacion == 1:
-                reserva_encontrada[2] = "Platea   "
-                for precio_info in precios_show:
-                    if precio_info[0] == reserva_encontrada[3]:  
-                        reserva_encontrada[4] = precio_info[1]  
-                
-            elif ubicacion == 2:
-                reserva_encontrada[2] = "Campo    "
-                for precio_info in precios_show:
-                    if precio_info[0] == reserva_encontrada[3]:
-                        reserva_encontrada[4] = precio_info[2]  
+            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+            inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
-            elif ubicacion == 3:
-                reserva_encontrada[2] = "Vip       "
-                for precio_info in precios_show:
-                    if precio_info[0] == reserva_encontrada[3]:
-                        reserva_encontrada[4] = precio_info[3]  
-
-
-
-            print("\033[92mUbicación y precio actualizados correctamente.\033[0m")
-    
-        #EDITAR SHOW
-        elif eleccion == 2:  
-            
-            #muestra todos los shows para que elijas nuevamente a que show queres ingresar para el cambio
-            ver_m(datos_globales)
-
-            #se busca el id del show y se pone un while para buscarlo
-            show_valido=False
-            validacion=True
-            while validacion==True:
-            #se le pide el id del show
-                while True:
-                    try:
-                        nuevo_show = int(input("\nIngrese el ID del nuevo show: "))
-                        break
-                    except (KeyboardInterrupt,ValueError):
-                        print("se ingreso algun caracter no numerico")
+        if opcion == 2:                   
+            while True:
+                try:
+                    eleccion = int(input("\033[35mSeleccione id de usuario para eliminar sus reservas: \033[0m"))
+                    show_encontrado = False
+                    for i in datos_reservas:
+                        if i[1] == eleccion:
+                            show_encontrado = True
+                    print("\033[96mID de usuario confirmado.\033[0m")
+                    
+                    if not show_encontrado:
+                        print("\033[91mEse usuario no tiene reservas.\033[0m")
                         continue
+                    else:
+                        break
+                except (KeyboardInterrupt, ValueError):
+                    print("Lo ingresado se considera un carácter inválido")
+                    continue
+
+            reservas_del_id = []
+            for i in datos_reservas:
+                if i[1] == eleccion:
+                    reservas_usuario.append(i)  
+                    reservas_del_id.append(i)
+
+            print("\n\033[34mLas reservas del usuario:\033[0m")
+            print(f"{'ID Reserva':<12} {'ID Show':<10} {'Ubicación':<12} {'Precio':<8} {'Cant reservas':<8}")
+            print("-" * 55)
+            for r in reservas_del_id:
+                print(f"{r[0]:<12} {r[3]:<10} {r[2]:<12} {r[4]:<8} {r[5]}")
+
+            datos_reservas_borrar = []
+            id_show = []
+            for i in datos_reservas:
+                if i[1] == eleccion:
+                    datos_reservas_borrar.append(i)
+                    id_show.append([i[3], i[5]])
+            for i in datos_reservas_borrar:
+                datos_reservas.remove(i)
+
+            print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
+    
+            for show_id, cantidad in id_show:
+                for show in datos_shows:
+                    if show["id-show"] == show_id:
+                        show["espacios-disponibles"] += cantidad
+                        show["espectadores"] -= cantidad
+
+            print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
             
-                #busca el show y si lo encuentra pone la variable como verdadera
-                for show in datos_globales:
-                    if show[0] == nuevo_show:
-                        show_valido = True
+            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+            inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
-                #si lo encuentra lo deja pasar y printea que si encontro el show
-                if show_valido:
-                    print("se a encontrado el show")
-                    validacion=False
+                
+def buscar_show(id_show):
+    datos_shows = cargar_datos_json("datos/datos_shows.json")
+    for s in datos_shows:
+        if int(s['id-show']) == int(id_show):
+            return s
+    return 0
 
-                elif show_valido==False:
-                    print("\033[91mEl ID de show no existe\033[0m")
+def calcular_precio(show, ubicacion, cantidad):
+    base = int(show['precio'])
+    if ubicacion == 'platea':
+        return base * cantidad
+    elif ubicacion == 'campo':
+        return base * 2 * cantidad
+    elif ubicacion == 'vip':
+        return base * 3 * cantidad
+    else:
+        return base * cantidad
 
+def edicion_reserva():        
+    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+    datos_shows = cargar_datos_json("datos/datos_shows.json")
+    mostrar_tabla(datos_reservas, 1)
+    show_encontrado = False
+    while not show_encontrado:
+        try:    
+            id_a_editar = int(input("\nSeleccione el ID de reserva a editar: "))
+            for r in datos_reservas:
+                if r[0] == id_a_editar:  
+                    reserva_encontrada = r
+                    show_encontrado = True
+                    break
+            if not show_encontrado:
+                print("\033[91mNo se encontró la reserva con ese ID.\033[0m")
+                continue
+        except (ValueError, KeyboardInterrupt):
+            print("se ingresó algo que no es válido")
+            continue
+        cantidad = int(reserva_encontrada[5])
+    print(f"\nEditando reserva ID: {reserva_encontrada[0]}")
+    while True:
+        try:
+            eleccion = int(input(
+                "\n\033[92m=== MENÚ DE EDICIÓN DE RESERVA ===\033[0m\n"
+                "\033[35m  → [1] EDITAR UBICACIÓN\033[0m\n"
+                "\033[35m  → [2] EDITAR SHOW\033[0m\n"
+                "\033[1;35mSeleccione una opción: \033[0m"
+            ))
+            if eleccion in (1, 2):
+                break
+            print("Opción inválida.")
+        except (ValueError, KeyboardInterrupt):
+            print("se ingresó un carácter no válido")
+    if eleccion == 1:
+        while True:
+            try:
+                ubicacion = int(input(
+                "\n\033[92m=== SELECCIONE NUEVA UBICACIÓN ===\033[0m\n"
+                "\033[35m  → [1] PLATEA\033[0m\n"
+                "\033[35m  → [2] CAMPO\033[0m\n"
+                "\033[35m  → [3] VIP\033[0m\n"
+                "\033[1;35mSeleccione opción: \033[0m"
+                ))
+                if ubicacion in (1, 2, 3):
+                    break
+                print("Debe ser un número entre 1 y 3")
+            except (ValueError, KeyboardInterrupt):
+                print("Ingrese un número válido")
+        ubicaciones = {1: "platea", 2: "campo", 3: "vip"}
+        nueva_ubicacion = ubicaciones[ubicacion]
+        id_show=int(reserva_encontrada[3])
 
-            for show in datos_globales:
-                #se busca si hay o no disponibilidad en el show
-                if show[0] == nuevo_show and show[4] <= 0:
+        show_actual = buscar_show(id_show)
+        nuevo_precio = calcular_precio(show_actual, nueva_ubicacion, cantidad)
+        
+        reserva_encontrada[2] = nueva_ubicacion
+        reserva_encontrada[4] = nuevo_precio
+        
+        print("\033[92mUbicación y precio actualizados correctamente.\033[0m")
+    elif eleccion == 2:  
+        mostrar_tabla(datos_shows)
+        while True:
+            try:
+                nuevo_show_id = int(input("\nIngrese el ID del nuevo show: "))
+                show_nuevo = buscar_show(nuevo_show_id)
+                if show_nuevo == 0:
+                    print("\033[91mEl ID ingresado no existe.\033[0m")
+                    continue
+                if show_nuevo['espacios-disponibles'] <= 0:
                     print("\033[91mNo hay capacidad disponible en ese show.\033[0m")
-                
-                #si lo hay se agrega una persona en los espectadores y uno menos en el espacio disponibles
-                #y se le saca a el show antiguo del espectador
-                elif show[0] == nuevo_show and show[4] > 0:
-                    for show_viejo in datos_globales:
-                        
-                        #si ve que el show viejo coincide con el show de la reserva 
-                        if show_viejo[0] == reserva_encontrada[3]:
-                            show_viejo[4] += 1  
-                            show_viejo[3] -= 1  
-                    
-                    show[4] -= 1  
-                    show[3] += 1  
-                
-                    #se cambia el dato de el viejo show por el nuevo
-                    reserva_encontrada[3] = nuevo_show  
-                    
-                    #se crea una variable que usa el strip para sacar los espacios y pasa los precios a ese otro show
-                    ubicacion_actual = reserva_encontrada[2].strip()
-                    print(ubicacion_actual)
-                    
-                    #cambia el precio basado en el show que se coloco y coordina con la ubicacion que tenia anteriormente
-                    precios_cambio=0
-                    while precios_cambio==0:
-                        for precios in  precios_show:
-                            if precios[0]==nuevo_show:
-                                if ubicacion_actual=="platea":
-                                    precios_cambio=precios[1]
-                                elif ubicacion_actual=="campo":
-                                    precios_cambio=precios[2]
-                                elif ubicacion_actual=="vip":
-                                    precios_cambio=precios[3]
-
-                    #se cambia el precio por el del show en teoria
-                    reserva_encontrada[4]=precios_cambio                  
-
-                    print("\033[92mShow actualizado correctamente.\033[0m")
+                    continue
+                break
+            except (ValueError, KeyboardInterrupt):
+                print("Ingrese un valor numérico válido.")
+        show_viejo = buscar_show(reserva_encontrada[3])
+        if show_viejo:
+            show_viejo['espacios-disponibles'] += cantidad
+            show_viejo['espectadores'] -= cantidad
+        
+        show_nuevo['espacios-disponibles'] -= cantidad
+        show_nuevo['espectadores'] += cantidad
+        
+        nueva_ubic = reserva_encontrada[2]
+        nuevo_precio = calcular_precio(show_nuevo, nueva_ubic, cantidad)
+        
+        reserva_encontrada[3] = nuevo_show_id
+        reserva_encontrada[4] = nuevo_precio
+        
+        print("\033[92mShow actualizado correctamente.\033[0m")
+    inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+    inicializar_datos_json('datos/datos_shows.json', datos_shows)
+    print("\033[96mCambios guardados exitosamente.\033[0m")

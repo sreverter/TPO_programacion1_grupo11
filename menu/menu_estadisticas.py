@@ -1,4 +1,4 @@
-from funciones.funciones_estadisticas import estadistica_shows_mas_vendidos,estadistica_mas_user_activos,shows_mas_recaudados,usuarios_con_mas_re
+from funciones.funciones_estadisticas import shows_mas_vendidos,shows_con_mayor_recaudacion,usuarios_mas_activos,usuarios_con_mas_reservas
 #region tareas
 #usar filter para rangos de edades
 
@@ -10,8 +10,8 @@ def menu_estadisticas():
             usuario_i = int(input(
                 "\033[92m=== MENÚ DE ESTADÍSTICAS ===                 \033[0m\n"
                 "\033[35m  → [1] SHOWS MÁS VENDIDOS                   \033[0m\n"
-                "\033[35m  → [2] USUARIOS ACTIVOS                     \033[0m\n"
-                "\033[35m  → [3] SHOWS MÁS RECAUDADOS                 \033[0m\n"
+                "\033[35m  → [2] SHOWS MÁS RECAUDADOS                 \033[0m\n"
+                "\033[35m  → [3] USUARIOS ACTIVOS                     \033[0m\n"
                 "\033[35m  → [4] USUARIOS CON MÁS RESERVAS            \033[0m\n"
                 "\033[35m  → [5] VOLVER                               \033[0m\n"
                 "\033[1;35m Seleccione una opción: \033[0m"
@@ -22,10 +22,10 @@ def menu_estadisticas():
             continue
 
         func_shows = [
-                lambda: estadistica_shows_mas_vendidos(),
-                lambda: estadistica_mas_user_activos(),
-                lambda: shows_mas_recaudados(),
-                lambda: usuarios_con_mas_re(),
+                lambda: shows_mas_vendidos(),
+                lambda: shows_con_mayor_recaudacion(),
+                lambda: usuarios_mas_activos(),
+                lambda: usuarios_con_mas_reservas(),
         ]
 
         maximo = len(func_shows)

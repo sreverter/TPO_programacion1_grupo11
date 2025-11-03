@@ -1,11 +1,14 @@
 from iniciacion_listas import *
 from entidades.usuarios import id_user
+from funciones.funciones_globales import *
 import re
 
 #busqueda por dni y contraseña para revisar que esten en los datos globales de contraseña
 def busqueda(dni, contraseña):
-    for i in range(len(datos_de_ingreso_dni)):
-        if datos_de_ingreso_dni[i] == dni and datos_globales_contraseñas[i] == contraseña:
+    datos_usuarios = "datos/datos_usuarios.json"
+    datos_usuarios=cargar_datos_json(datos_usuarios)
+    for i in range(len(datos_usuarios)):
+        if datos_usuarios[i]["dni"] == dni and datos_usuarios[i]["contraseña"] == contraseña:
             return True
     return False
 
@@ -36,16 +39,22 @@ def menu_login():
 #parte de ingreso con contraseña y dni
 
 def login():
+    #carga de datos de usuarios
+    datos_usuarios = "datos/datos_usuarios.json"
+    datos_usuarios=cargar_datos_json(datos_usuarios)
     #ingreso de dni
     while True:
         try:
             dni_ingres=int(input("\033[36m Escriba su dni para verificacion: \033[0m"))
             break
         except (ValueError,KeyboardInterrupt):
-            print("\033[91mporfavr caracteres numericos validos\033[0m")
+            print("\033[91mporfavor caracteres numericos validos\033[0m")
             continue
     #revision del ingreso
-    while dni_ingres not in datos_de_ingreso_dni and dni_ingres not in dni_admins:
+    datos_usuarios_dni = []
+    for usuario in datos_usuarios:
+        datos_usuarios_dni.append(usuario["dni"])
+    while dni_ingres not in datos_usuarios_dni and dni_ingres not in dni_admins:
         print("\033[91m Id no encontrado revise que este bien su dni.\033[0m")
         try:
             dni_ingres=int(input("\033[36m Escriba su dni para verificacion: \033[0m"))
@@ -61,20 +70,23 @@ def login():
         except(ValueError, KeyboardInterrupt):
             print("\033[91mingrese caracteres que sean validos\033[0m")
             continue
-    while contraseña not in datos_globales_contraseñas and contraseña not in contraseñas_admin:
+    datos_usuarios_password = []
+    for usuario in datos_usuarios:
+        datos_usuarios_password.append(usuario["contraseña"])
+    while contraseña not in datos_usuarios_password and contraseña not in contraseñas_admin:
         print("\033[91m contraseña no encontrado revise que este bien su contraseña.\033[0m")
         try:
             contraseña=input("\033[36m Escriba su contraseña de usuario: \033[0m")
-            if contraseña in datos_globales_contraseñas or contraseña in contraseñas_admin:
+            if contraseña in datos_usuarios_password or contraseña in contraseñas_admin:
                 break
         except(ValueError, KeyboardInterrupt):
             print("\033[91mingrese caracteres que sean validos\033[0m")
             continue
     print()
 
-    #revision de ambosal mismo tiempo
+    #revision de ambos al mismo tiempo
     while not (
-        (dni_ingres in datos_de_ingreso_dni and contraseña in datos_globales_contraseñas) or
+        (dni_ingres in datos_usuarios_dni and contraseña in datos_usuarios_password) or
         (dni_ingres in dni_admins and contraseña in contraseñas_admin)
     ):
         #menu de reintento en caso de que no sean correctos alguno de ellos o no coincidan
@@ -99,7 +111,7 @@ def login():
         if vuelta==0:
             return 
         
-        #modificia el dni al que escriba el usuario
+        #modifica el dni al que escriba el usuario
         elif vuelta==1:
             while True:
                 try:
@@ -124,10 +136,12 @@ def login():
         print("\033[92m Ingreso conseguido como ADMIN.\033[0m")
         return "ADMIN"
     #busca que coincidan el dni con la contraseña
-    elif busqueda(dni_ingres, contraseña):
+    else :
+        usuario_encontrado = busqueda(dni_ingres, contraseña)
         dni_en_uso.clear()
         #agarra el dni que escribio el usuario al iniciar sesion
         dni_en_uso.append(dni_ingres)
+        print(dni_en_uso)
         print("\033[32m Ingreso conseguido como USUARIO.\033[0m")
         return "Usuario"
 
@@ -135,6 +149,7 @@ def login():
 def registrar():
     #se asigna un id al usuario que se este registrando
     num_usuario = id_user()
+    datos_usuarios = cargar_datos_json('datos/datos_usuarios.json')
 
     #el usuario escribe el nombre
     nombre = str(input("\033[36m Escriba el nombre que desee usar: \033[0m"))
@@ -146,7 +161,7 @@ def registrar():
             if dni_cread <= 0:
                 print("no se permiten dnis menores o iguales a 0")
                 continue
-            elif dni_cread in datos_de_ingreso_dni or dni_cread in dni_admins:
+            elif dni_cread in datos_usuarios or dni_cread in dni_admins:
                 print("\033[91m Este DNI ya está registrado. Intente con otro.\033[0m")
                 continue
             break
@@ -186,7 +201,7 @@ def registrar():
     arroba = re.findall('@', email)
     punto  = re.findall(r'\.', email)   
 
-    if len(arroba) ==0 or len(punto) == 0:
+    if len(arroba) == 0 or len(punto) == 0:
         print("\033[91m Email inválido, debe contener '@' y '.' \033[0m")
         email = input("\033[36m Escriba su email: \033[0m")
     
@@ -204,9 +219,20 @@ def registrar():
     print("\033[92m",( "═" * 50),"\033[0m")
 
     #se añaden los datos puestos por el usuario en sus respectivos lugares
-    datos_de_ingreso_dni.append(dni_cread)
-    datos_globales_contraseñas.append(contraseña)
-    datos_globales_usuarios.append([num_usuario, nombre,dni_cread, telefono_cread, email, True])
+    nuevo_usuario = {
+        "id": num_usuario,
+        "nombre": nombre,
+        "dni": dni_cread,
+        "telefono": telefono_cread,
+        "correo": email,
+        "estado": True,
+        "contraseña": contraseña
+    }   
+    datos_usuarios.append(nuevo_usuario)
+    inicializar_datos_json('datos/datos_usuarios.json', datos_usuarios)
+    # datos_de_ingreso_dni.append(dni_cread)
+    # datos_globales_contraseñas.append(contraseña)
+    # datos_globales_usuarios.append([num_usuario, nombre,dni_cread, telefono_cread, email, True])
     
     #se le dice al usuario que se a registrado con exito
     print("\033[1;36m Usuario registrado con éxito. \033[0m")
