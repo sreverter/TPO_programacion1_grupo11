@@ -88,5 +88,14 @@
         "correo": "camila.diaz@service.org",
         "estado": true,
         "contraseña": "Vt7#bG4$yP"
+    },
+    {
+        "id": 11,
+        "nombre": "Jeronimo Benavidez",
+        "dni": 11111111,
+        "telefono": "1169499128",
+        "email": "eltanopepe@hotmail.com",
+        "estado": true,
+        "contraseña": "elmomo123"
     }
 ]

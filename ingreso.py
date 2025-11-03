@@ -1,6 +1,6 @@
 from iniciacion_listas import *
 from entidades.usuarios import id_user
-from funciones.funciones_globales import cargar_datos_json
+from funciones.funciones_globales import *
 import re
 
 #busqueda por dni y contraseña para revisar que esten en los datos globales de contraseña
@@ -149,6 +149,7 @@ def login():
 def registrar():
     #se asigna un id al usuario que se este registrando
     num_usuario = id_user()
+    datos_usuarios = cargar_datos_json('datos/datos_usuarios.json')
 
     #el usuario escribe el nombre
     nombre = str(input("\033[36m Escriba el nombre que desee usar: \033[0m"))
@@ -160,7 +161,7 @@ def registrar():
             if dni_cread <= 0:
                 print("no se permiten dnis menores o iguales a 0")
                 continue
-            elif dni_cread in datos_de_ingreso_dni or dni_cread in dni_admins:
+            elif dni_cread in datos_usuarios or dni_cread in dni_admins:
                 print("\033[91m Este DNI ya está registrado. Intente con otro.\033[0m")
                 continue
             break
@@ -200,7 +201,7 @@ def registrar():
     arroba = re.findall('@', email)
     punto  = re.findall(r'\.', email)   
 
-    if len(arroba) ==0 or len(punto) == 0:
+    if len(arroba) == 0 or len(punto) == 0:
         print("\033[91m Email inválido, debe contener '@' y '.' \033[0m")
         email = input("\033[36m Escriba su email: \033[0m")
     
@@ -218,9 +219,20 @@ def registrar():
     print("\033[92m",( "═" * 50),"\033[0m")
 
     #se añaden los datos puestos por el usuario en sus respectivos lugares
-    datos_de_ingreso_dni.append(dni_cread)
-    datos_globales_contraseñas.append(contraseña)
-    datos_globales_usuarios.append([num_usuario, nombre,dni_cread, telefono_cread, email, True])
+    nuevo_usuario = {
+        "id": num_usuario,
+        "nombre": nombre,
+        "dni": dni_cread,
+        "telefono": telefono_cread,
+        "email": email,
+        "estado": True,
+        "contraseña": contraseña
+    }   
+    datos_usuarios.append(nuevo_usuario)
+    inicializar_datos_json('datos/datos_usuarios.json', datos_usuarios)
+    # datos_de_ingreso_dni.append(dni_cread)
+    # datos_globales_contraseñas.append(contraseña)
+    # datos_globales_usuarios.append([num_usuario, nombre,dni_cread, telefono_cread, email, True])
     
     #se le dice al usuario que se a registrado con exito
     print("\033[1;36m Usuario registrado con éxito. \033[0m")
