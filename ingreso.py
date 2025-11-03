@@ -224,7 +224,7 @@ def registrar():
         "nombre": nombre,
         "dni": dni_cread,
         "telefono": telefono_cread,
-        "email": email,
+        "correo": email,
         "estado": True,
         "contraseña": contraseña
     }   

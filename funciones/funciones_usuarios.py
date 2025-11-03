@@ -168,9 +168,9 @@ def edicion_usuario(admin):
 
         print("el usuario a sido editado con exito")
 
-    elif admin==False:  # EDITAR USUARIO
+    elif admin==False:  # EDITAR USUARIO SIENDO USUARIO
         for i in usuarios:
-            if i[2] == dni_en_uso[0]:
+            if i["dni"] == dni_en_uso[0]:
                 print("\033[96mSe ha accedido a su perfil\033[0m")
                 while True:
                     try:
@@ -187,20 +187,19 @@ def edicion_usuario(admin):
                     except(ValueError,KeyboardInterrupt):
                             print("ponga caracteres validos")
                             continue
-            elif i[2]!=dni_en_uso[0]:
-                print("parece que ha habido un error en la base de datos y no hemos encontrado su perfil")
+            # elif i["dni"]!=dni_en_uso[0]:
+            #     print("parece que ha habido un error en la base de datos y no hemos encontrado su perfil")
 
-            usuarios_actualizados = []
-            for user in usuarios:
-                if user["dni"] == dni_en_uso[0]:
-                    if opcion==0:
-                        user['nombre']=cambio_nombre_usuario() 
-                    elif opcion==1:
-                        user['telefono']=cambio_telefono_usuario() 
-                    elif opcion==2:
-                        user['correo']=cambio_email_usuario()
-
-                usuarios_actualizados.append(user)
+        usuarios_actualizados = []
+        for user in usuarios:
+            if user["dni"] == dni_en_uso[0]:
+                if opcion==0:
+                    user['nombre']=cambio_nombre_usuario() 
+                elif opcion==1:
+                    user['telefono']=cambio_telefono_usuario() 
+                elif opcion==2:
+                    user['correo']=cambio_email_usuario()
+            usuarios_actualizados.append(user)
 
         inicializar_datos_json(datos_usuarios_js,usuarios_actualizados)
         print("el usuario a sido actualizado con exito")
