@@ -97,15 +97,15 @@ def agregar_reservas(admin):
         #se suma y resta los espectadores y los espacios disponibles 
         for i in datos_shows:
             if i["id-show"] == show:
+                print("llegas aca proga?")
                 i["espacios-disponibles"] -= num_reserva
                 i["espectadores"] += num_reserva
 
         for i in datos_shows:
             if i["id-show"] == show:
-                lol = i["precio"]*num_reserva
-                precio_platea = lol
-                precio_campo = lol*2
-                precio_vip = lol*3
+                precio_platea = i["precio"]*num_reserva
+                precio_campo = precio_platea*2
+                precio_vip = precio_platea*3
 
         while True:
             try:
@@ -147,6 +147,7 @@ def agregar_reservas(admin):
         datos_reservas.append(nueva_reserva)
         print(datos_reservas)
         inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+        inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
 
 def busqueda_Reserva():
