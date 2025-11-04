@@ -30,7 +30,7 @@ def editar_nombre_json(ruta, id_buscado, nombre_nuevo):
         if usuario.get("id") == id_buscado or usuario.get("id_usuario") == id_buscado:
             print(f"Antes: {usuario['nombre']}")
             usuario["nombre"] = nombre_nuevo
-            print(f"Después: {usuario['nombre']}")   # 👈 <--- agregá esta línea
+            print(f"Después: {usuario['nombre']}")   
             guardar_datos_json(ruta, usuarios)
             return True
     return False
