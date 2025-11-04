@@ -21,8 +21,28 @@ def shows_mas_vendidos():
     print(f"Espectadores: {mayor['espectadores']}")
     print(f"Fecha: {mayor['fecha']}")
 
-
 def shows_con_mayor_recaudacion():
+    listas_reservas = cargar_datos_txt(datos_reserva_txt)
+    print(type(listas_reservas))
+
+    # Usamos map para extraer solo (id_show, precio)
+    id_precios = map(lambda fila: (fila[3], float(fila[4])), listas_reservas)
+
+    # Creamos el diccionario de recaudación
+    recaudacion = {}
+    for id_show, precio in id_precios:
+        recaudacion[id_show] = recaudacion.get(id_show, 0) + precio
+
+    # Ordenamos por recaudación (de mayor a menor)
+    recaudacion = dict(sorted(recaudacion.items(), key=lambda item: item[1], reverse=True))
+
+    # Mostramos resultados
+    print("\n\033[92m=== RECAUDACIÓN POR SHOW ===\033[0m")
+    for show, total in recaudacion.items():
+        print(f"Show {show} → $ {total:.2f}")
+
+
+"""def shows_con_mayor_recaudacion():
     listas_reservas = cargar_datos_txt(datos_reserva_txt)
     print(type(listas_reservas))
 
@@ -35,7 +55,7 @@ def shows_con_mayor_recaudacion():
 
     print("\n\033[92m=== RECAUDACIÓN POR SHOW ===\033[0m")
     for show, total in recaudacion.items():
-        print("Show", show, "→", "$", total)
+        print("Show", show, "→", "$", total)"""
 
 def usuarios_mas_activos():
     listas_usuarios = cargar_datos_json(datos_usuarios_js)

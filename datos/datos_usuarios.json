@@ -95,7 +95,7 @@
         "dni": 11111111,
         "telefono": 1164171156,
         "correo": "sreverter@uade.edu.ar",
-        "estado": true,
+        "estado": false,
         "contraseña": "elmomo123"
     }
 ]

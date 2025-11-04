@@ -1,3 +1,4 @@
+from datos import datos_usuarios
 from iniciacion_listas import dni_en_uso,datos_de_ingreso_dni
 from funciones.funciones_reservas import obt_id_Actual
 from funciones.funciones_globales import *
@@ -58,9 +59,46 @@ def cambio_email_usuario():
             print("ponga caracteres validos")
             continue
 
-
-
 def vista_Usuarios(admin):
+        datos_usuarios=cargar_datos_json(datos_usuarios_js)
+        if admin: 
+            while True:
+                try:
+                    eleccion = int(input("\033[96m1-VER TODOS LOS USUARIOS\n2-BUSCAR USUARIO POR ID:\033[0m"))
+                    if eleccion in (1,2):
+                        break
+                    else:
+                        print("el numero no esta dentro de los parametros dados")
+                except(ValueError,KeyboardInterrupt):
+                    print("el caracter usado no es uno valido para esta region")
+                    continue
+            if eleccion == 1:
+                filtro_usuarios= int(input("Ingrese el estado de los usuarios a mostrar (1- Activo, 2- Inactivo, 3- Todos): "))
+                # Usamos filter() según la elección
+                if filtro_usuarios == 1:
+                    usuarios_filtrados = list(filter(lambda x: x["estado"] is True, datos_usuarios))
+                    print("\n\033[92m=== USUARIOS ACTIVOS ===\033[0m")
+                elif filtro_usuarios == 2:
+                    usuarios_filtrados = list(filter(lambda x: x["estado"] is False, datos_usuarios))
+                    print("\n\033[91m=== USUARIOS INACTIVOS ===\033[0m")
+                elif filtro_usuarios == 3:
+                    usuarios_filtrados = datos_usuarios
+                    print("\n\033[94m=== TODOS LOS USUARIOS ===\033[0m")
+
+                # Si hay resultados, mostramos la tabla o lista
+                if usuarios_filtrados:
+                    mostrar_tabla(usuarios_filtrados, 2)  # Usa tu función de tabla si ya la tenés
+                else:
+                    print("No hay usuarios con ese estado.")
+            elif admin == False:
+                id = obt_id_Actual()
+                for user in datos_usuarios:
+                    if user['id']==id:
+                        print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
+
+
+
+"""def vista_Usuarios(admin):
         datos_usuarios=cargar_datos_json(datos_usuarios_js)
         if admin: 
             while True:
@@ -92,14 +130,9 @@ def vista_Usuarios(admin):
                         print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
                         #imprime raro falta un imprmir lindo
                 if not encontrado:
-                    print("no se a entcontrado el id del usuario")
+                    print("no se a entcontrado el id del usuario")"""
 
-        elif admin == False:
-            id = obt_id_Actual()
-            for user in datos_usuarios:
-                if user['id']==id:
-                    print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
-
+        
 
 def edicion_usuario(admin):
     usuarios=cargar_datos_json(datos_usuarios_js)
