@@ -87,14 +87,14 @@ def vista_Usuarios(admin):
 
                 # Si hay resultados, mostramos la tabla o lista
                 if usuarios_filtrados:
-                    mostrar_tabla(usuarios_filtrados, 2)  # Usa tu función de tabla si ya la tenés
+                    mostrar_tabla(usuarios_filtrados, 2)  
                 else:
                     print("No hay usuarios con ese estado.")
-            elif admin == False:
-                id = obt_id_Actual()
-                for user in datos_usuarios:
-                    if user['id']==id:
-                        print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
+        elif admin == False:
+            id = obt_id_Actual()
+            for user in datos_usuarios:
+                if user['id']==id:
+                    print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
 
 
 
