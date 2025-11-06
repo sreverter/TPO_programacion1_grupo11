@@ -73,7 +73,7 @@ def vista_Usuarios(admin):
                     print("el caracter usado no es uno valido para esta region")
                     continue
             if eleccion == 1:
-                filtro_usuarios= int(input("Ingrese el estado de los usuarios a mostrar (1- Activo, 2- Inactivo, 3- Todos): "))
+                filtro_usuarios= int(input("\033[95mIngrese el estado de los usuarios a mostrar ( 1)Activo - 2)Inactivo - 3)Todos):\033[0m "))
                 # Usamos filter() según la elección
                 if filtro_usuarios == 1:
                     usuarios_filtrados = list(filter(lambda x: x["estado"] is True, datos_usuarios))
