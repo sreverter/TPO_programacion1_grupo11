@@ -116,8 +116,88 @@ def crear_Grafico(num, num2, act, inac, paso):
     print("   _______     _______")
     #print(f"\nCada bloque ≈ {paso} usuario(s)")
 
-
 def usuarios_con_mas_reservas():
+    lista_reservas = cargar_datos_txt(datos_reserva_txt)
+    reservas = {}
+
+    # Contar cuántas reservas tiene cada usuario
+    for fila in lista_reservas:
+        usuario_id = fila[1]
+        reservas[usuario_id] = reservas.get(usuario_id, 0) + 1
+
+    # Ordenar los usuarios según cantidad de reservas (de mayor a menor)
+    reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
+    maximo = len(reservas)
+
+    # --- Función recursiva para pedir el inicio ---
+    def pedir_principio():
+        try:
+            principio = int(input(f"Seleccioná desde qué usuario querés empezar a ver (1 - {maximo}): "))
+            if principio <= 0 or principio > maximo:
+                print("Número fuera de rango, intente nuevamente.")
+                return pedir_principio()  # llamada recursiva
+            return principio
+        except (ValueError, KeyboardInterrupt):
+            print("Entrada inválida, intente nuevamente.")
+            return pedir_principio()  # llamada recursiva
+
+    # --- Función recursiva para pedir el final ---
+    def pedir_final(principio):
+        try:
+            final = int(input(f"Seleccioná hasta qué usuario querés ver ({principio + 1} - {maximo}): "))
+            if final <= principio or final > maximo:
+                print("Número fuera de rango, debe ser mayor que el inicio y menor o igual que", maximo)
+                return pedir_final(principio)
+            return final
+        except (ValueError, KeyboardInterrupt):
+            print("Entrada inválida, intente nuevamente.")
+            return pedir_final(principio)
+
+    # Llamadas recursivas controladas
+    principio = pedir_principio()
+    final = pedir_final(principio)
+
+    # Mostrar resultados dentro del rango
+    print(f"\n Mostrando usuarios con más reservas del puesto {principio} al {final}:\n")
+    for i, (usuario, cant) in enumerate(reservas.items(), start=1):
+        if principio <= i <= final:
+            print(f"{i}. Usuario {usuario} - {cant} reservas")
+
+"""def usuarios_con_mas_reservas():
+    lista_reservas = cargar_datos_txt(datos_reserva_txt)
+    reservas = {}
+
+    # Contar cuántas reservas tiene cada usuario
+    for fila in lista_reservas:
+        usuario_id = fila[1]
+        reservas[usuario_id] = reservas.get(usuario_id, 0) + 1
+
+    # Ordenar los usuarios según cantidad de reservas (de mayor a menor)
+    reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
+    maximo = len(reservas)
+
+    # Función recursiva interna para pedir el número de inicio
+    def pedir_principio():
+        try:
+            principio = int(input(f"Seleccioná desde qué usuario querés empezar a ver (1 - {maximo}): "))
+            if principio <= 0 or principio > maximo:
+                print("Número fuera de rango, intente nuevamente.")
+                return pedir_principio()  # llamada recursiva
+            return principio
+        except (ValueError, KeyboardInterrupt):
+            print("Entrada inválida, intente nuevamente.")
+            return pedir_principio()  # llamada recursiva
+
+    # Llamada recursiva controlada
+    principio = pedir_principio()
+
+    # Mostrar resultado parcial (por ejemplo)
+    print(f"Mostrando desde el usuario número {principio}:")
+    for i, (usuario, cant) in enumerate(reservas.items(), start=1):
+        if i >= principio:
+            print(f"{i}. Usuario {usuario} - {cant} reservas")"""
+
+"""def usuarios_con_mas_reservas():
     lista_reservas = cargar_datos_txt(datos_reserva_txt)
 
     reservas = {}
@@ -157,4 +237,4 @@ def usuarios_con_mas_reservas():
 
     print("\n\033[92m=== RESERVAS POR USUARIO ===\033[0m")
     for usuario, total in list(reservas.items())[principio:final]:
-        print("Usuario", usuario, "→", total)
+        print("Usuario", usuario, "→", total)"""
