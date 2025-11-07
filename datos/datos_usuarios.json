@@ -95,7 +95,16 @@
         "dni": 11111111,
         "telefono": 1164171156,
         "correo": "sreverter@uade.edu.ar",
-        "estado": true,
+        "estado": false,
         "contraseña": "elmomo123"
+    },
+    {
+        "id": 12,
+        "nombre": "Jere",
+        "dni": 46624533,
+        "telefono": "1169499128",
+        "correo": "jjere@gmail.com",
+        "estado": true,
+        "contraseña": "12345"
     }
 ]

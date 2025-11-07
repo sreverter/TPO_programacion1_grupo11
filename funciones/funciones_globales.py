@@ -76,3 +76,9 @@ def cargar_datos_txt(ruta_archivo):
         return datos_cargados
     except IOError as e:
         print(f"Error al cargar el archivo: {e}")
+
+def checkear_dato_repetido(datos_checkear, dato_a_checkear, clave):
+    conjunto_datos = {dato[clave] for dato in datos_checkear}
+    if dato_a_checkear in conjunto_datos:
+        return True
+    return False

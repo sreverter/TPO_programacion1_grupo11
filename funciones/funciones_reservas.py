@@ -2,6 +2,7 @@ from iniciacion_listas import dni_en_uso
 from entidades.reserva import id_alt_r 
 from entidades.usuarios import *
 from funciones.funciones_globales import *
+from functools import reduce
 
 #region por hacer
 #hacer un modulo de colores o un diccionario con ellos
@@ -422,6 +423,24 @@ def buscar_show(id_show):
 
 def calcular_precio(show, ubicacion, cantidad):
     base = int(show['precio'])
+
+    # Determinar el multiplicador según la ubicación
+    multiplicador = {
+        'platea': 1,
+        'campo': 2,
+        'vip': 3
+    }.get(ubicacion, 1)
+
+    # Creamos una lista con el precio de cada entrada
+    entradas = [base * multiplicador] * cantidad
+
+    # Usamos reduce para sumar todos los precios
+    total = reduce(lambda acc, x: acc + x, entradas, 0)
+
+    return total
+
+"""def calcular_precio(show, ubicacion, cantidad):
+    base = int(show['precio'])
     if ubicacion == 'platea':
         return base * cantidad
     elif ubicacion == 'campo':
@@ -429,7 +448,7 @@ def calcular_precio(show, ubicacion, cantidad):
     elif ubicacion == 'vip':
         return base * 3 * cantidad
     else:
-        return base * cantidad
+        return base * cantidad"""
 
 def edicion_reserva():        
     datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
