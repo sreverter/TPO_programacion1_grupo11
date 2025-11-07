@@ -91,31 +91,6 @@ def vista_Usuarios(admin):
                     mostrar_tabla(usuarios_filtrados, 2)  
                 else:
                     print("No hay usuarios con ese estado.")
-        elif admin == False:
-            id = obt_id_Actual()
-            for user in datos_usuarios:
-                if user['id']==id:
-                    print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
-
-
-
-"""def vista_Usuarios(admin):
-        datos_usuarios=cargar_datos_json(datos_usuarios_js)
-        if admin: 
-            while True:
-                try:
-                    eleccion = int(input("\033[96m1-VER TODOS LOS USUARIOS\n2-BUSCAR USUARIO POR ID:\033[0m"))
-                    if eleccion in (1,2):
-                        break
-                    else:
-                        print("el numero no esta dentro de los parametros dados")
-                except(ValueError,KeyboardInterrupt):
-                    print("el caracter usado no es uno valido para esta region")
-                    continue
-
-            if eleccion == 1:
-                mostrar_tabla(datos_usuarios,2)
-                #imprime raro falta un imprmir lindo 
             elif eleccion == 2:
                 while True:
                     try:
@@ -128,12 +103,14 @@ def vista_Usuarios(admin):
                 for user in datos_usuarios:
                     if user["id"]==eleccion:
                         encontrado=True
-                        print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
-                        #imprime raro falta un imprmir lindo
+                        mostrar_tabla([user], 2)
                 if not encontrado:
-                    print("no se a entcontrado el id del usuario")"""
-
-        
+                    print("no se a entcontrado el id del usuario")
+        elif admin == False:
+            id = obt_id_Actual()
+            for user in datos_usuarios:
+                if user['id']==id:
+                    mostrar_tabla([user], 2)
 
 def edicion_usuario(admin):
     usuarios=cargar_datos_json(datos_usuarios_js)
