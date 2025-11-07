@@ -45,14 +45,15 @@ def vista_Usuarios(admin):
                 for user in datos_usuarios:
                     if user["id"]==eleccion:
                         encontrado=True
-                        mostrar_tabla([user], 2)
+                        mostrar_tabla(user, 2)
+                        #imprime raro falta un imprmir lindo
                 if not encontrado:
                     print("\033[91mNo se ha encontrado el ID del usuario\033[0m")
         elif admin == False:
             id = obt_id_Actual()
             for user in datos_usuarios:
                 if user['id']==id:
-                    mostrar_tabla([user], 2)
+                    mostrar_tabla(user, 2)
 
 def edicion_usuario(admin):
     usuarios=cargar_datos_json(datos_usuarios_js)

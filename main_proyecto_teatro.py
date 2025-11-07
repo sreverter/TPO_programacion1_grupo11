@@ -50,14 +50,14 @@ while start==True:
         if admin==True:
             try:
                 usuario =int(input(
-                    f"\n\033[92m=== MENÚ DE OPCIONES ===\033[0m\n"
-                    f"{color["violeta_brillante"]}  → [1] SHOWS              {color["reset"]}\n"
-                    f"{color["violeta_brillante"]}  → [2] RESERVAS           {color["reset"]}\n"
-                    f"{color["violeta_brillante"]}  → [3] USUARIOS           {color["reset"]}\n"
-                    f"{color["violeta_brillante"]}  → [4] ESTADISTICAS       {color["reset"]}\n"
-                    f"{color["violeta_brillante"]}  → [5] SALIR DE LA SESIÓN {color["reset"]}\n"
-                    f"{color["violeta_brillante"]}  → [6] SALIR DEL PROGRAMA {color["reset"]}\n"
-                    f"{color["verde_brillante"]} Seleccione una opción: {color["reset"]}"
+                    "\n\033[92m=== MENÚ DE OPCIONES ===\033[0m\n"
+                    "\033[35m  → [1] SHOWS             \033[0m\n"
+                    "\033[35m  → [2] RESERVAS          \033[0m\n"
+                    "\033[35m  → [3] USUARIOS          \033[0m\n"
+                    "\033[35m  → [4] ESTADISTICAS      \033[0m\n"
+                    "\033[35m  → [4] SALIR DE LA SESIÓN\033[0m\n"
+                    "\033[35m  → [5] SALIR DEL PROGRAMA\033[0m\n"
+                    "\033[1;35m Seleccione una opción: \033[0m"
                 ))
             except (ValueError,KeyboardInterrupt):
                 print()
