@@ -3,7 +3,7 @@
         "id": 1,
         "nombre": "Juan Perez",
         "dni": 12345678,
-        "telefono": "123-456-7890",
+        "telefono": 1150406567,
         "correo": "juanperez@outlook.com",
         "estado": false,
         "contraseña": "hola123",
@@ -77,7 +77,7 @@
         "correo": "valentina.torres@hotmail.com",
         "estado": true,
         "contraseña": "Jc5#wS9$iB",
-        "roles":"usuario"
+        "roles": "usuario"
     },
     {
         "id": 9,
@@ -129,5 +129,4 @@
         "contraseña": "santino123",
         "roles": "admin"
     }
-
 ]

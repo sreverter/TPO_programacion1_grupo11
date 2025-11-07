@@ -1,49 +1,26 @@
-from iniciacion_listas import dni_en_uso
-from entidades.reserva import id_alt_r 
+from entidades.reserva import *
 from entidades.usuarios import *
 from funciones.funciones_globales import *
-from functools import reduce
 
-#region por hacer
-#hacer un modulo de colores o un diccionario con ellos
-#ver la funcion de borrado y si queremos que se eliminen todas las reservas o solo las que decida ese usuario borrar
-#en el caso de la segunda hace falrta validaciones sobre si la reserva es de el y asi
 colordorado="\033[38;2;207;181;59m"
-
-
-#se agarra el id del usuario comparandolo con el dni que esta en uso
-def obt_id_Actual():
-    #se agarra el dni en uso y se pone en otra variable
-    dni_act = (dni_en_uso[0])
-    #se crea una lista que es donde va a ir el usuario de ese dni
-    user_act = []
-    #se añade el id de ese usuario
-    datos_usuario = cargar_datos_json('datos/datos_usuarios.json')
-    for i in datos_usuario:
-        if i["dni"] == dni_act:
-            user_act.append(i["id"])
-    return user_act[0]
 
 def vista_reserva(admin):
     #se separa la vista de el admin y el no admin para diferenciar que es lo que pueden o no ver  
     vista=[]
     datos = cargar_datos_txt('datos/datos_reservas.txt')
     if admin:
-        #se muestra la matriz de las resrvas que hay
         mostrar_tabla(datos, 1)
-        
-    #muestra las reservas que hizo ese usuario exclusivamente 
+
     elif admin == False:
-        #se obtiene el id de usuario
         usuario_Act = obt_id_Actual()
-        #se revisa que exista ese usuario en los datos de reservas y se añade a la lista
+
         for i in datos:
             if int(i[1]) == usuario_Act:  
                 vista.append(i)
-        #si hay mas de una reserva te muestra la cantidad de reservas que hizo el usuario
+
         if len(vista) > 0:
             mostrar_tabla(vista, 1)
-        #si no hay reservas te printea no hay reservas 
+
         else:
             print("no hay ninguna reserva")
 
@@ -98,7 +75,6 @@ def agregar_reservas(admin):
         #se suma y resta los espectadores y los espacios disponibles 
         for i in datos_shows:
             if i["id-show"] == show:
-                print("llegas aca proga?")
                 i["espacios-disponibles"] -= num_reserva
                 i["espectadores"] += num_reserva
 
@@ -127,7 +103,6 @@ def agregar_reservas(admin):
                 print("lo que puso no esta dentro de los parametros esperados porfavor vuelva a intentarlo")
                 continue
 
-
         #determina el precio basado en el show y el precio de dicho show
         if ubicacion_u == 1:
             precio_act = precio_platea
@@ -146,20 +121,15 @@ def agregar_reservas(admin):
         datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
         nueva_reserva = [id_reserva, id_usuario, sector, show, precio_act, num_reserva]
         datos_reservas.append(nueva_reserva)
-        print(datos_reservas)
         inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
         inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
 
 def busqueda_Reserva():
     datos=cargar_datos_txt('datos/datos_reservas.txt')
-    #crea una lista 
     reserva_enct = []
-    
-    #se crea un booleano para definir cuando se encuentra
     encontrado = False
 
-    #se le dice que es lo que puede hacer
     while True:
         try:
             eleccion = int(input("\033[35m → [1] BUSCAR RESERVA POR ID DE RESERVA\n → [2] BUSCAR RESERVA POR ID USUARIO:\033[0m"))
@@ -178,6 +148,7 @@ def busqueda_Reserva():
             except(KeyboardInterrupt,ValueError):
                 print("el numero ingresado no es valido")
                 continue
+
         for i in datos:
             if i[0] == eleccion:
                 encontrado = True
@@ -189,7 +160,6 @@ def busqueda_Reserva():
             mostrar_tabla(reserva_enct,1)
 
     elif eleccion == 2:
-
         while True:
             try:
                 eleccion = int(input("\033[35mIngrese ID de usuario: \033[0m"))
@@ -198,13 +168,11 @@ def busqueda_Reserva():
                 print("lo ingresado es invalido")
                 continue
 
-        #si lo encuentra lo añade a la lista
         for i in datos:
             if i[1] == eleccion:
                 encontrado = True
                 reserva_enct.append(i)
-        
-        #si no lo encuentra printea esto
+
         if not encontrado:
             print("\033[31mID de usuario no encontrado.\033[0m")
         else:
@@ -216,84 +184,56 @@ def borrado_reserva(admin):
     #reaparti por bloques porque ya me estaba mareando
     # === BLOQUE USUARIO NORMAL ===
     if admin == False: 
-        borrado = True
-        while borrado:
-            reservas_d_usuario = False            
-            reservas_usuario = []
-        
-            id_usuario = obt_id_Actual()
+        reservas_d_usuario = False            
+        reservas_usuario = []
+        id_usuario = obt_id_Actual()
 
+        for i in datos_reservas:
+            if i[1] == id_usuario:
+                reservas_d_usuario = True
+                reservas_usuario.append(i)
+
+        if not reservas_d_usuario:
+            print("\033[31mNo hay reservas registradas a su nombre.\033[0m")
+            return 
+                
+        mostrar_tabla(reservas_usuario, 1)
+        
+        opcion=borrado_reserva_menu()
+
+        id_show = []
+
+        # === BORRAR UNA SOLA RESERVA ===
+        if opcion == 1:
+            try:
+                id_borrar = int(input("Ingrese el ID de la reserva que desea eliminar: "))
+                encontrada = False
+                for i in datos_reservas:
+                    if i[1] == id_usuario and i[0] == id_borrar:
+                        id_show.append([i[3], i[5]])
+                        datos_reservas.remove(i)
+                        encontrada = True
+                        print(f"\033[31mReserva {id_borrar} eliminada correctamente\033[0m")
+                        break
+                if not encontrada:
+                    print("\033[31mNo se encontró la reserva con ese ID\033[0m")
+            except (ValueError, KeyboardInterrupt):
+                print("\033[31mID inválido\033[0m")
+        
+        # === BORRAR TODAS LAS RESERVAS ===
+        elif opcion == 2:
+            datos_reservas_borrar = []
             for i in datos_reservas:
                 if i[1] == id_usuario:
-                    reservas_d_usuario = True
-                    reservas_usuario.append(i)  
+                    id_show.append([i[3], i[5]])
+                    datos_reservas_borrar.append(i)
 
-            if reservas_d_usuario == False:
-                print("\033[31mNo hay reservas registradas a su nombre.\033[0m")
-                break
+            for i in datos_reservas_borrar:
+                datos_reservas.remove(i)
+            print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
+            borrado = False
 
-            print("\n\033[34mTus reservas actuales:\033[0m")
-            print(f"{'ID Reserva':<12} {'ID Show':<10} {'Ubicación':<12} {'Precio':<8}")
-            print("-" * 45)
-            for r in reservas_usuario:
-                print(f"{r[0]:<12} {r[3]:<10} {r[2]:<12} {r[4]:<8}")
-            
-            while True:
-                try:
-                    opcion = int(input("\n\033[35m¿Qué desea hacer?\033[0m\n"
-                                        "1 - Borrar una sola reserva\n"
-                                        "2 - Borrar todas las reservas\n"
-                                        "\033[36mSeleccione una opción: \033[0m"))
-                    if opcion in (1, 2):
-                        break
-                    else:
-                        print("Debe ser un número entre 1 y 2.")
-                except (ValueError, KeyboardInterrupt):
-                    print("Ingrese un valor válido.")
-
-            id_show = []
-
-            # === BORRAR UNA SOLA RESERVA ===
-            if opcion == 1:
-                try:
-                    id_borrar = int(input("Ingrese el ID de la reserva que desea eliminar: "))
-                    encontrada = False
-                    for i in datos_reservas:
-                        if i[1] == id_usuario and i[0] == id_borrar:
-                            id_show.append([i[3], i[5]])
-                            datos_reservas.remove(i)
-                            encontrada = True
-                            print(f"\033[31mReserva {id_borrar} eliminada correctamente\033[0m")
-                            break
-                    if not encontrada:
-                        print("\033[31mNo se encontró la reserva con ese ID\033[0m")
-                except (ValueError, KeyboardInterrupt):
-                    print("\033[31mID inválido\033[0m")
-            
-            # === BORRAR TODAS LAS RESERVAS ===
-            elif opcion == 2:
-                datos_reservas_borrar = []
-                for i in datos_reservas:
-                    if i[1] == id_usuario:
-                        id_show.append([i[3], i[5]])
-                        datos_reservas_borrar.append(i)
-
-                for i in datos_reservas_borrar:
-                    datos_reservas.remove(i)
-                print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
-                borrado = False
-    
-            # === ACTUALIZAR CAPACIDAD ===
-            for show_id, cantidad in id_show:
-                for show in datos_shows:
-                    if show["id-show"] == show_id:
-                        show["espacios-disponibles"] += cantidad
-                        show["espectadores"] -= cantidad
-
-            print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
-                
-            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
-            inicializar_datos_json('datos/datos_shows.json', datos_shows)
+        actualizar_datos_borrado(id_show, datos_reservas, datos_shows)
 
     # === BLOQUE ADMIN ===
     if admin == True: 
@@ -302,18 +242,7 @@ def borrado_reserva(admin):
         reservas_del_id = []
         show_encontrado = False
         
-        while True:
-            try:
-                opcion = int(input("\n\033[35m¿Qué desea hacer?\033[0m\n"
-                                    "1 - Borrar una sola reserva del usuario\n"
-                                    "2 - Borrar todas las reservas del usuario\n"
-                                    "\033[36mSeleccione una opción: \033[0m"))
-                if opcion in (1, 2):
-                    break
-                else:
-                    print("Debe ser un número entre 1 y 2.")
-            except (ValueError, KeyboardInterrupt):
-                print("Ingrese un valor válido.")
+        opcion=borrado_reserva_menu()
 
         if opcion == 1:
             while True:
@@ -337,7 +266,6 @@ def borrado_reserva(admin):
             id_show = []
             datos_reservas_borrar = []
             
-            
             for i in datos_reservas:
                 if i[0] == eleccion:
                     datos_reservas_borrar.append(i)
@@ -346,25 +274,15 @@ def borrado_reserva(admin):
 
             for i in datos_reservas_borrar:
                 datos_reservas.remove(i)
-            
-            
-            for show_id, cantidad in id_show:
-                for show in datos_shows:
-                    if show["id-show"] == show_id:
-                        show["espacios-disponibles"] += cantidad
-                        show["espectadores"] -= cantidad
 
-            print("\033[1;34mReserva eliminada con éxito!\033[0m")
-
+            print("\033[31mLa reserva ha sido eliminada\033[0m")
             
-            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
-            inicializar_datos_json('datos/datos_shows.json', datos_shows)
+            actualizar_datos_borrado(id_show, datos_reservas, datos_shows)
 
         if opcion == 2:                   
             while True:
                 try:
                     eleccion = int(input("\033[35mSeleccione id de usuario para eliminar sus reservas: \033[0m"))
-                    show_encontrado = False
                     for i in datos_reservas:
                         if i[1] == eleccion:
                             show_encontrado = True
@@ -386,10 +304,7 @@ def borrado_reserva(admin):
                     reservas_del_id.append(i)
 
             print("\n\033[34mLas reservas del usuario:\033[0m")
-            print(f"{'ID Reserva':<12} {'ID Show':<10} {'Ubicación':<12} {'Precio':<8} {'Cant reservas':<8}")
-            print("-" * 55)
-            for r in reservas_del_id:
-                print(f"{r[0]:<12} {r[3]:<10} {r[2]:<12} {r[4]:<8} {r[5]}")
+            mostrar_tabla(reservas_del_id, 1)
 
             datos_reservas_borrar = []
             id_show = []
@@ -397,58 +312,13 @@ def borrado_reserva(admin):
                 if i[1] == eleccion:
                     datos_reservas_borrar.append(i)
                     id_show.append([i[3], i[5]])
+            
             for i in datos_reservas_borrar:
                 datos_reservas.remove(i)
 
             print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
     
-            for show_id, cantidad in id_show:
-                for show in datos_shows:
-                    if show["id-show"] == show_id:
-                        show["espacios-disponibles"] += cantidad
-                        show["espectadores"] -= cantidad
-
-            print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
-            
-            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
-            inicializar_datos_json('datos/datos_shows.json', datos_shows)
-
-                
-def buscar_show(id_show):
-    datos_shows = cargar_datos_json("datos/datos_shows.json")
-    for s in datos_shows:
-        if int(s['id-show']) == int(id_show):
-            return s
-    return 0
-
-def calcular_precio(show, ubicacion, cantidad):
-    base = int(show['precio'])
-
-    # Determinar el multiplicador según la ubicación
-    multiplicador = {
-        'platea': 1,
-        'campo': 2,
-        'vip': 3
-    }.get(ubicacion, 1)
-
-    # Creamos una lista con el precio de cada entrada
-    entradas = [base * multiplicador] * cantidad
-
-    # Usamos reduce para sumar todos los precios
-    total = reduce(lambda acc, x: acc + x, entradas, 0)
-
-    return total
-
-"""def calcular_precio(show, ubicacion, cantidad):
-    base = int(show['precio'])
-    if ubicacion == 'platea':
-        return base * cantidad
-    elif ubicacion == 'campo':
-        return base * 2 * cantidad
-    elif ubicacion == 'vip':
-        return base * 3 * cantidad
-    else:
-        return base * cantidad"""
+            actualizar_datos_borrado(id_show, datos_reservas, datos_shows)
 
 def edicion_reserva():        
     datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
@@ -511,7 +381,7 @@ def edicion_reserva():
         
         print("\033[92mUbicación y precio actualizados correctamente.\033[0m")
     elif eleccion == 2:  
-        mostrar_tabla(datos_shows)
+        mostrar_tabla(datos_shows,2)
         while True:
             try:
                 nuevo_show_id = int(input("\nIngrese el ID del nuevo show: "))
@@ -525,13 +395,17 @@ def edicion_reserva():
                 break
             except (ValueError, KeyboardInterrupt):
                 print("Ingrese un valor numérico válido.")
-        show_viejo = buscar_show(reserva_encontrada[3])
-        if show_viejo:
-            show_viejo['espacios-disponibles'] += cantidad
-            show_viejo['espectadores'] -= cantidad
-        
-        show_nuevo['espacios-disponibles'] -= cantidad
-        show_nuevo['espectadores'] += cantidad
+        for show in datos_shows:
+            if show["id-show"] == reserva_encontrada[3]:
+                show["espacios-disponibles"] += cantidad
+                show["espectadores"] -= cantidad
+                break
+
+        for show in datos_shows:
+            if show["id-show"] == nuevo_show_id:
+                show["espacios-disponibles"] -= cantidad
+                show["espectadores"] += cantidad
+                break
         
         nueva_ubic = reserva_encontrada[2]
         nuevo_precio = calcular_precio(show_nuevo, nueva_ubic, cantidad)

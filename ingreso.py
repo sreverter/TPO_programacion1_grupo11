@@ -55,8 +55,7 @@ def login():
         else:
             print("\033[91m Id no encontrado revise que este bien su dni.\033[0m")
             try:
-                dni_ingres=int(input("\033[36m Escriba su dni para verificacion: si desea volver al\
-                                     menu de ingreso presione -1\033[0m"))
+                dni_ingres=int(input("\033[36m Escriba su dni para verificacion: si desea volver al menu de ingreso presione -1\033[0m"))
                 if dni_ingres==-1:
                     return
             except (ValueError,KeyboardInterrupt):
@@ -80,8 +79,7 @@ def login():
         else:
             print("\033[91m Contraseña incorrecta, intente de nuevo.\033[0m")
             try:
-                contraseña=input("\033[36m Escriba su contraseña de usuario: si desea volver al\
-                                     menu de ingreso presione -1 \033[0m")
+                contraseña=input("\033[36m Escriba su contraseña de usuario: si desea volver al menu de ingreso presione -1 \033[0m")
                 if contraseña=="-1":
                     return
             except(ValueError, KeyboardInterrupt):
