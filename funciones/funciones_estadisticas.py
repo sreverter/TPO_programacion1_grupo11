@@ -71,39 +71,42 @@ def crear_Grafico(num, num2, act, inac, paso):
     imprimir_barras_rec(columna_activos, columna_inactivos, alto)
     print("   _______     _______")
 
+def pedir_principio(maximo):
+    try:
+        principio = int(input(f"\033[36mSeleccioná desde qué usuario querés empezar a ver (1 - {maximo}):\033[0m "))
+        if principio <= 0 or principio > maximo:
+            print("\033[91mNúmero fuera de rango, intente nuevamente.\033[0m")
+            return pedir_principio()
+        return principio
+    except (ValueError, KeyboardInterrupt):
+        print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
+        return pedir_principio()
+
+def pedir_final(principio, maximo):
+    try:
+        final = int(input(f"\033[36mSeleccioná hasta qué usuario querés ver ({principio + 1} - {maximo}):\033[0m "))
+        if final <= principio or final > maximo:
+            print("\033[91mNúmero fuera de rango, debe ser mayor que el inicio y menor o igual que", maximo, "\033[0m")
+            return pedir_final(principio)
+        return final
+    except (ValueError, KeyboardInterrupt):
+        print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
+        return pedir_final(principio)
+
 def usuarios_con_mas_reservas():
     lista_reservas = cargar_datos_txt(datos_reserva_txt)
     reservas = {}
     for fila in lista_reservas:
         usuario_id = fila[1]
-        reservas[usuario_id] = reservas.get(usuario_id, 0) + 1
+        cantidad_entradas = int(fila[5])
+        reservas[usuario_id] = reservas.get(usuario_id, 0) + cantidad_entradas
+    
     reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
     maximo = len(reservas)
 
-    def pedir_principio():
-        try:
-            principio = int(input(f"\033[36mSeleccioná desde qué usuario querés empezar a ver (1 - {maximo}):\033[0m "))
-            if principio <= 0 or principio > maximo:
-                print("\033[91mNúmero fuera de rango, intente nuevamente.\033[0m")
-                return pedir_principio()
-            return principio
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
-            return pedir_principio()
 
-    def pedir_final(principio):
-        try:
-            final = int(input(f"\033[36mSeleccioná hasta qué usuario querés ver ({principio + 1} - {maximo}):\033[0m "))
-            if final <= principio or final > maximo:
-                print("\033[91mNúmero fuera de rango, debe ser mayor que el inicio y menor o igual que", maximo, "\033[0m")
-                return pedir_final(principio)
-            return final
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
-            return pedir_final(principio)
-
-    principio = pedir_principio()
-    final = pedir_final(principio)
+    principio = pedir_principio(maximo)
+    final = pedir_final(principio, maximo)
     print(f"\n\033[36mMostrando usuarios con más reservas del puesto {principio} al {final}:\033[0m\n")
     for i, (usuario, cant) in enumerate(reservas.items(), start=1):
         if principio <= i <= final:
