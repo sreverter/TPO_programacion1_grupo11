@@ -3,7 +3,6 @@ from menu.menu_reservas import menu_reservas
 from menu.menu_usuarios import menu_usuarios
 from menu.menu_shows import menu_shows
 from menu.menu_estadisticas import menu_estadisticas
-from colores import color
 from funciones.funciones_globales import *
 from datos import *
 
@@ -61,7 +60,7 @@ while start==True:
                 ))
             except (ValueError,KeyboardInterrupt):
                 print()
-                print("Ingrese un caracter numerico del 1 al 5")
+                print("\033[91mIngrese un caracter numerico del 1 al 5\033[0m")
                 continue
         #caso usuario
         if admin==False:
@@ -77,7 +76,7 @@ while start==True:
                 ))
             except (ValueError,KeyboardInterrupt):
                 print()
-                print("Ingrese un caracter numerico del 1 al 5")
+                print("\033[91mIngrese un caracter numerico del 1 al 5\033[0m")
                 continue
         # SUBMENÚS
         if admin:
@@ -102,7 +101,7 @@ while start==True:
                 func_start[indice]()
                 continue
         except Exception as e:
-            print(f"{color['rojo_brillante']}Error en el submenú: {e}{color['reset']}")
+            print(f"\033[91mError en el submenú: {e}\033[0m")
 
         #salida de sesion donde se vuelve el admin a false y empezas el logueo de nuevo
         if (usuario == 5 and admin) or (usuario == 4 and admin == False):
@@ -117,4 +116,4 @@ while start==True:
             break
         
         else:
-            print("Su número está fuera de los parametros dados.")
+            print("\033[91mSu número está fuera de los parametros dados.\033[0m")
