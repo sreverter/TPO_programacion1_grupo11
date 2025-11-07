@@ -10,17 +10,16 @@ def vista_Usuarios(admin):
         if admin: 
             while True:
                 try:
-                    eleccion = int(input("\033[96m1-VER TODOS LOS USUARIOS\n2-BUSCAR USUARIO POR ID:\033[0m"))
+                    eleccion = int(input("\033[36m1-VER TODOS LOS USUARIOS\n2-BUSCAR USUARIO POR ID:\033[0m"))
                     if eleccion in (1,2):
                         break
                     else:
-                        print("el numero no esta dentro de los parametros dados")
+                        print("\033[91mel número no está dentro de los parámetros dados\033[0m")
                 except(ValueError,KeyboardInterrupt):
-                    print("el caracter usado no es uno valido para esta region")
+                    print("\033[91mel carácter usado no es válido para esta región\033[0m")
                     continue
             if eleccion == 1:
-                filtro_usuarios= int(input("\033[95mIngrese el estado de los usuarios a mostrar ( 1)Activo - 2)Inactivo - 3)Todos):\033[0m "))
-                # Usamos filter() según la elección
+                filtro_usuarios= int(input("\033[36mIngrese el estado de los usuarios a mostrar (1)Activo - 2)Inactivo - 3)Todos):\033[0m "))
                 if filtro_usuarios == 1:
                     usuarios_filtrados = list(filter(lambda x: x["estado"] is True, datos_usuarios))
                     print("\n\033[92m=== USUARIOS ACTIVOS ===\033[0m")
@@ -30,20 +29,17 @@ def vista_Usuarios(admin):
                 elif filtro_usuarios == 3:
                     usuarios_filtrados = datos_usuarios
                     print("\n\033[94m=== TODOS LOS USUARIOS ===\033[0m")
-
-                # Si hay resultados, mostramos la tabla o lista
                 if usuarios_filtrados:
                     mostrar_tabla(usuarios_filtrados, 2)  
                 else:
                     print("\033[91mNo hay usuarios con ese estado.\033[0m")
-        
             elif eleccion == 2:
                 while True:
                     try:
-                        eleccion = int(input("Ingrese ID a buscar: "))
+                        eleccion = int(input("\033[36mIngrese ID a buscar:\033[0m "))
                         break
                     except(ValueError,KeyboardInterrupt):
-                        print("\033[91mel caracter usado no es uno valido para esta region\033[0m")
+                        print("\033[91mel carácter usado no es válido para esta región\033[0m")
                         continue
                 encontrado=False
                 for user in datos_usuarios:
@@ -52,7 +48,7 @@ def vista_Usuarios(admin):
                         mostrar_tabla([user], 2)
                         #imprime raro falta un imprmir lindo
                 if not encontrado:
-                    print("\033[91mno se a encontrado el id del usuario\033[0m")
+                    print("\033[91mNo se ha encontrado el ID del usuario\033[0m")
         elif admin == False:
             id = obt_id_Actual()
             for user in datos_usuarios:
@@ -65,43 +61,41 @@ def edicion_usuario(admin):
         encontrado=False
         while True:
             try:
-                eleccion = int(input("Seleccione el id de usuario a editar: "))
+                eleccion = int(input("\033[36mSeleccione el ID de usuario a editar:\033[0m "))
             except (ValueError, KeyboardInterrupt):
-                print("ponga caracteres válidos")
+                print("\033[91mIngrese caracteres válidos\033[0m")
                 continue
             try:
-                
                 for user in usuarios:
                     if user['id'] == eleccion:
                         encontrado=True
                 if encontrado:
                     break
                 elif encontrado==False:
-                    print("no se encontro el usuario que esta buscando")
+                    print("\033[91mNo se encontró el usuario que está buscando\033[0m")
                     continue
-                        
             except (OSError,FileNotFoundError):
-                print("no se pudo abrir o no se encontro el archivo")
+                print("\033[91mNo se pudo abrir o no se encontró el archivo\033[0m")
 
         while True:
             try:
                 opcion = int(input(
-                "\n\033[92m=== MENU DE EDICIÓN ===\033[0m\n"
+                "\n\033[36m=== MENÚ DE EDICIÓN ===\033[0m\n"
                 "\033[35m  → [0] Editar nombre\033[0m\n"
-                "\033[35m  → [1] Editar DNI \033[0m\n"
-                "\033[35m  → [2] Editar telefono\033[0m\n"
+                "\033[35m  → [1] Editar DNI\033[0m\n"
+                "\033[35m  → [2] Editar teléfono\033[0m\n"
                 "\033[35m  → [3] Editar correo\033[0m\n"
                 "\033[35m  → [4] Editar estado a Inactivo\033[0m\n"
-                "\033[35m  → [5] Editar estado a activo\033[0m\n"
-                "\033[1;35m Seleccione una opción: \033[0m"
+                "\033[35m  → [5] Editar estado a Activo\033[0m\n"
+                "\033[36mSeleccione una opción:\033[0m "
                 ))
                 if opcion in (0,1,2,3,4,5):
                     break
                 else:
-                    print("el numero que ha puesto no es ninguno de los mencionados")
+                    print("\033[91mel número ingresado no es válido\033[0m")
                     continue
             except(KeyboardInterrupt,ValueError):
-                print("ponga caracteres validos")
+                print("\033[91mIngrese caracteres válidos\033[0m")
                 continue
 
         usuarios_actualizados = []
@@ -119,34 +113,29 @@ def edicion_usuario(admin):
                     user['estado']=False
                 elif opcion==5:
                     user['estado']=True
-                
             usuarios_actualizados.append(user)
 
         inicializar_datos_json(datos_usuarios_js,usuarios_actualizados)
+        print("\033[92mEl usuario ha sido editado con éxito\033[0m")
 
-        print("el usuario a sido editado con exito")
-
-    elif admin==False:  # EDITAR USUARIO SIENDO USUARIO
+    elif admin==False:
         for i in usuarios:
             if i["dni"] == dni_en_uso[0]:
                 print("\033[96mSe ha accedido a su perfil\033[0m")
                 while True:
                     try:
                         opcion = int(input(
-                            "\n\033[92m=== MENÚ DE EDICIÓN ===\033[0m\n"
+                            "\n\033[36m=== MENÚ DE EDICIÓN ===\033[0m\n"
                             "\033[35m  → [0] Editar nombre\033[0m\n"
                             "\033[35m  → [1] Editar teléfono\033[0m\n"
                             "\033[35m  → [2] Editar correo\033[0m\n"
-                            "\033[1;35mSeleccione una opción: \033[0m"
+                            "\033[36mSeleccione una opción:\033[0m "
                         ))
-
                         if opcion in (0,1,2):
                             break
                     except(ValueError,KeyboardInterrupt):
-                            print("ponga caracteres validos")
+                            print("\033[91mIngrese caracteres válidos\033[0m")
                             continue
-            # elif i["dni"]!=dni_en_uso[0]:
-            #     print("parece que ha habido un error en la base de datos y no hemos encontrado su perfil")
 
         usuarios_actualizados = []
         for user in usuarios:
@@ -160,15 +149,15 @@ def edicion_usuario(admin):
             usuarios_actualizados.append(user)
 
         inicializar_datos_json(datos_usuarios_js,usuarios_actualizados)
-        print("el usuario a sido actualizado con exito")
+        print("\033[92mEl usuario ha sido actualizado con éxito\033[0m")
 
 def borrado_usuarios():
         while True:
             try:
-                id_eliminar = int(input("Seleccione id a eliminar: "))
+                id_eliminar = int(input("\033[36mSeleccione ID a eliminar:\033[0m "))
                 break
             except(ValueError,KeyboardInterrupt):
-                print("porfavor ponga caracteres valido")
+                print("\033[91mIngrese caracteres válidos\033[0m")
                 continue
 
         usuarios=cargar_datos_json(datos_usuarios_js)
@@ -176,25 +165,24 @@ def borrado_usuarios():
         for u in usuarios:
             id_usuarios.append(u["id"])
         if id_eliminar not in id_usuarios:
-            print("el usuario que esta intentando eliminar no esta en la base de datos")
+            print("\033[91mEl usuario que intenta eliminar no está en la base de datos\033[0m")
             return
             
-        print("\033[1;91m Recuerde que esta acción es irrevertible \033[0m")
-        print()
-        print("\033[1;91m Por favor vuelva a dar confirmación \033[0m")
+        print("\033[91mRecuerde que esta acción es irrevertible\033[0m")
+        print("\033[91mPor favor vuelva a dar confirmación\033[0m")
         
         while True:
             try:
                 opcion = int(input(
-                    "\033[35m  → [1] Eliminar cuenta\033[0m\n"
-                    "\033[35m  → [2] Volver al menú\033[0m\n"
+                    "\033[36m→ [1] Eliminar cuenta\033[0m\n"
+                    "\033[36m→ [2] Volver al menú\033[0m\n"
                 ))
                 if opcion in (1,2):
                     break
                 else:
-                    print("solo 1 y 2 son numeros validos")
+                    print("\033[91mSolo 1 y 2 son válidos\033[0m")
             except(KeyboardInterrupt,ValueError):
-                print("porfavor ponga caracteres valido")
+                print("\033[91mIngrese caracteres válidos\033[0m")
                 continue
 
         if opcion == 1:
@@ -202,7 +190,6 @@ def borrado_usuarios():
                 if user["id"]==id_eliminar:
                     user["estado"]=False
             inicializar_datos_json(datos_usuarios_js, usuarios)
-            
             
             arch_reservas=cargar_datos_txt(datos_reserva_txt)
             reservas=[]
@@ -217,10 +204,10 @@ def borrado_usuarios():
                     reservas_correctas.append(i)
 
             if len(reservas_correctas) == len(reservas):
-                print("No se eliminaron reservas asociadas.")
+                print("\033[91mNo se eliminaron reservas asociadas\033[0m")
             else:
                 inicializar_datos_txt(datos_reserva_txt, reservas_correctas)
 
         elif opcion == 2:
-                print("volviendo al menu")
+                print("\033[94mVolviendo al menú\033[0m")
                 return

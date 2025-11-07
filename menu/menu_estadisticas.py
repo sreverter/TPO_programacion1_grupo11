@@ -35,7 +35,7 @@ def menu_estadisticas():
 
 
         elif usuario_i==5:
-            print("esta saliendo al menu de inicio")
+            print("\033[35mesta saliendo al menu de inicio\033[0m")
             break
 
         #se delimita las opciones que podes con esto para que si elije mal alguna opcion pueda volver a ver las opciones y elija bien

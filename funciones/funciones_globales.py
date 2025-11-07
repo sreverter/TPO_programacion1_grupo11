@@ -7,9 +7,9 @@ def mostrar_tabla(dato, opcion):
     if opcion == 1:
 
         #Encabezado de la tabla
-        print(f"\033[32m{'-'*73}\033[0m")
+        print(f"\033[32m{'-'*80}\033[0m")
         print(f"\033[32m{'IDs':<8}  {'ID Usuario':<13}\033  \033[35m{'Ubicación':>10}  {'ID Show':>12}\033[0m  \033[34m{'Precio':>14}  \033[34m{'cantidad':>14}\033[0m")
-        print(f"\033[32m{'-'*73}\033[0m")
+        print(f"\033[32m{'-'*80}\033[0m")
 
         # for fila in dato:
         #     print(f"\033[32m{fila[0]:<8}  {fila[1]:<13}\033[35m  {fila[2]:>10}  {fila[3]:>10}\033[0m  \033[34m{fila[4]:>14} {fila[5]:>14}\033[0m")
@@ -40,9 +40,9 @@ def mostrar_tabla(dato, opcion):
                 print(f"{fila['id']:<5} {fila['nombre']:<25} {fila['dni']:<12} {fila['telefono']:<20} {fila['correo']:<35} {estado:<10}")
 
         elif tipo == "show":
-            print(f"\033[32m{'-'*110}\033[0m")
+            print(f"\033[32m{'-'*113}\033[0m")
             print(f"\033[32m{'ID Show':<10} {'Nombre Show':<35} {'Duración':<10} {'Espectadores':<15} {'Espacios Disp.':<15} {'Fecha':<15} {'precio':<15}\033[0m")
-            print(f"\033[32m{'-'*110}\033[0m")
+            print(f"\033[32m{'-'*113}\033[0m")
             for fila in dato:
                 print(f"{fila['id-show']:<10} {fila['nombre-show']:<35} {fila['duracion-show']:<10} "
                     f"{fila['espectadores']:<15} {fila['espacios-disponibles']:<15} {fila['fecha']:<15} {fila['precio']}")
