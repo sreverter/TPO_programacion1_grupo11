@@ -110,7 +110,7 @@ def crear_Grafico(num, num2, act, inac, paso):
     # Mostrar base y escala
     print("   _______     _______")
     #print(f"\nCada bloque ≈ {paso} usuario(s)")
-
+    
 def usuarios_con_mas_reservas():
     lista_reservas = cargar_datos_txt(datos_reserva_txt)
     reservas = {}
@@ -136,7 +136,7 @@ def usuarios_con_mas_reservas():
             print("Entrada inválida, intente nuevamente.")
             return pedir_principio()  # llamada recursiva
 
-    # --- Función recursiva para pedir el final ---
+    # Función recursiva para pedir el final
     def pedir_final(principio):
         try:
             final = int(input(f"Seleccioná hasta qué usuario querés ver ({principio + 1} - {maximo}): "))

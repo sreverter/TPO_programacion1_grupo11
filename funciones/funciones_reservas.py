@@ -318,7 +318,42 @@ def borrado_reserva(admin):
 
             print("\033[31mTodas sus reservas han sido eliminadas\033[0m")
     
-            actualizar_datos_borrado(id_show, datos_reservas, datos_shows)
+            for show_id, cantidad in id_show:
+                for show in datos_shows:
+                    if show["id-show"] == show_id:
+                        show["espacios-disponibles"] += cantidad
+                        show["espectadores"] -= cantidad
+
+            print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
+            
+            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+            inicializar_datos_json('datos/datos_shows.json', datos_shows)
+
+                
+def buscar_show(id_show):
+    datos_shows = cargar_datos_json("datos/datos_shows.json")
+    for s in datos_shows:
+        if int(s['id-show']) == int(id_show):
+            return s
+    return 0
+
+def calcular_precio(show, ubicacion, cantidad):
+    base = int(show['precio'])
+
+    # Determinar el multiplicador según la ubicación
+    multiplicador = {
+        'platea': 1,
+        'campo': 2,
+        'vip': 3
+    }.get(ubicacion, 1)
+
+    # Creamos una lista con el precio de cada entrada
+    entradas = [base * multiplicador] * cantidad
+
+    # Usamos reduce para sumar todos los precios
+    total = reduce(lambda acc, x: acc + x, entradas, 0)
+
+    return total
 
 def edicion_reserva():        
     datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
