@@ -7,9 +7,9 @@ def mostrar_tabla(dato, opcion):
     if opcion == 1:
 
         #Encabezado de la tabla
-        print(f"\033[32m{'-'*73}\033[0m")
+        print(f"\033[32m{'-'*80}\033[0m")
         print(f"\033[32m{'IDs':<8}  {'ID Usuario':<13}\033  \033[35m{'Ubicación':>10}  {'ID Show':>12}\033[0m  \033[34m{'Precio':>14}  \033[34m{'cantidad':>14}\033[0m")
-        print(f"\033[32m{'-'*73}\033[0m")
+        print(f"\033[32m{'-'*80}\033[0m")
 
         # for fila in dato:
         #     print(f"\033[32m{fila[0]:<8}  {fila[1]:<13}\033[35m  {fila[2]:>10}  {fila[3]:>10}\033[0m  \033[34m{fila[4]:>14} {fila[5]:>14}\033[0m")
