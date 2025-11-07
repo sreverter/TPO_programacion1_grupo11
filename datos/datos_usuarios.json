@@ -3,10 +3,11 @@
         "id": 1,
         "nombre": "Juan Perez",
         "dni": 12345678,
-        "telefono": "123-456-7890",
+        "telefono": 1150406567,
         "correo": "juanperez@outlook.com",
         "estado": false,
-        "contraseña": "hola123"
+        "contraseña": "hola123",
+        "roles": "usuario"
     },
     {
         "id": 2,
@@ -15,7 +16,8 @@
         "telefono": "234-567-8901",
         "correo": "marialopez@gmail.com",
         "estado": true,
-        "contraseña": "Nh5$vR8@qW"
+        "contraseña": "Nh5$vR8@qW",
+        "roles": "usuario"
     },
     {
         "id": 3,
@@ -24,7 +26,8 @@
         "telefono": "345-678-9012",
         "correo": "cgarcia@yahoo.com",
         "estado": false,
-        "contraseña": "Bm7#tY4$hZ"
+        "contraseña": "Bm7#tY4$hZ",
+        "roles": "usuario"
     },
     {
         "id": 4,
@@ -33,7 +36,8 @@
         "telefono": "456-789-0123",
         "correo": "ana.fernandez@mail.com",
         "estado": true,
-        "contraseña": "Wx3#jN9$cV"
+        "contraseña": "Wx3#jN9$cV",
+        "roles": "usuario"
     },
     {
         "id": 5,
@@ -42,7 +46,8 @@
         "telefono": "567-890-1234",
         "correo": "luis.martinez@empresa.com",
         "estado": true,
-        "contraseña": "Qp6#dM5$gT"
+        "contraseña": "Qp6#dM5$gT",
+        "roles": "usuario"
     },
     {
         "id": 6,
@@ -51,7 +56,8 @@
         "telefono": "678-901-2345",
         "correo": "sofia.gonzalez@correo.com",
         "estado": false,
-        "contraseña": "Ys4#fH7$eR"
+        "contraseña": "Ys4#fH7$eR",
+        "roles": "usuario"
     },
     {
         "id": 7,
@@ -60,7 +66,8 @@
         "telefono": "789-012-3456",
         "correo": "mateo.ramirez@dominio.com",
         "estado": true,
-        "contraseña": "Uz8#kL2$aX"
+        "contraseña": "Uz8#kL2$aX",
+        "roles": "usuario"
     },
     {
         "id": 8,
@@ -69,7 +76,8 @@
         "telefono": "890-123-4567",
         "correo": "valentina.torres@hotmail.com",
         "estado": true,
-        "contraseña": "Jc5#wS9$iB"
+        "contraseña": "Jc5#wS9$iB",
+        "roles": "usuario"
     },
     {
         "id": 9,
@@ -78,7 +86,8 @@
         "telefono": "901-234-5678",
         "correo": "nicolas.herrera@mail.net",
         "estado": false,
-        "contraseña": "Ed1#nQ6$oM"
+        "contraseña": "Ed1#nQ6$oM",
+        "roles": "usuario"
     },
     {
         "id": 10,
@@ -87,16 +96,18 @@
         "telefono": "012-345-6789",
         "correo": "camila.diaz@service.org",
         "estado": true,
-        "contraseña": "Vt7#bG4$yP"
+        "contraseña": "Vt7#bG4$yP",
+        "roles": "usuario"
     },
     {
         "id": 11,
         "nombre": "El Momo",
         "dni": 11111111,
         "telefono": 1164171156,
-        "correo": "sreverter@uade.edu.ar",
+        "correo": "sreverter@uade.edu",
         "estado": false,
-        "contraseña": "elmomo123"
+        "contraseña": "elmomo123",
+        "roles": "admin"
     },
     {
         "id": 12,
@@ -105,6 +116,27 @@
         "telefono": "1169499128",
         "correo": "jjere@gmail.com",
         "estado": true,
-        "contraseña": "12345"
+        "contraseña": "12345",
+        "roles": "admin"
+    },
+    {
+        "id": 13,
+        "nombre": "santino",
+        "dni": 47346945,
+        "telefono": "1157685650",
+        "correo": "santino@gmail.com",
+        "estado": true,
+        "contraseña": "santino123",
+        "roles": "admin"
+    },
+    {
+        "id": 14,
+        "nombre": "Santiago Reverter",
+        "dni": 42076675,
+        "telefono": "1164171156",
+        "correo": "sreverter@outlook.com",
+        "estado": true,
+        "contraseña": "hola123",
+        "roles": "admin"
     }
 ]

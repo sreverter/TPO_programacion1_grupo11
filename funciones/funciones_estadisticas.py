@@ -6,16 +6,22 @@ datos_show_js = "datos/datos_shows.json"
 
 # se crea funcion donde se carga el json en una var
 
+
 def shows_mas_vendidos():
     lista_shows = cargar_datos_json(datos_show_js)
-    print(type(lista_shows))
-    #mostrar_tabla(hola, 2)
 
-    mayor = lista_shows[0]
+    def buscar_mayor(posicion):
+        if posicion == len(lista_shows) - 1:
+            return lista_shows[posicion]
 
-    for show in lista_shows:
-        if show["espectadores"] > mayor["espectadores"]:
-            mayor = show
+        mayor_del_resto = buscar_mayor(posicion + 1)
+
+        if lista_shows[posicion]["espectadores"] > mayor_del_resto["espectadores"]:
+            return lista_shows[posicion]
+        else:
+            return mayor_del_resto
+
+    mayor = buscar_mayor(0)
 
     print(f"Show con más espectadores: {mayor['nombre-show']}")
     print(f"Espectadores: {mayor['espectadores']}")
@@ -41,21 +47,6 @@ def shows_con_mayor_recaudacion():
     for show, total in recaudacion.items():
         print(f"Show {show} → $ {total:.2f}")
 
-
-"""def shows_con_mayor_recaudacion():
-    listas_reservas = cargar_datos_txt(datos_reserva_txt)
-    print(type(listas_reservas))
-
-    recaudacion = {}
-    for fila in listas_reservas:
-            id_show, precio = fila[3], fila[4]
-            recaudacion[id_show] = recaudacion.get(id_show, 0) + precio
-        #ordena el diccionario por la recaudacion   
-    recaudacion = dict(sorted(recaudacion.items(), key=lambda item: item[1], reverse=True)) 
-
-    print("\n\033[92m=== RECAUDACIÓN POR SHOW ===\033[0m")
-    for show, total in recaudacion.items():
-        print("Show", show, "→", "$", total)"""
 
 def usuarios_mas_activos():
     listas_usuarios = cargar_datos_json(datos_usuarios_js)
@@ -88,29 +79,33 @@ def usuarios_mas_activos():
 
 def crear_Grafico(num, num2, act, inac, paso):
     # Crear las listas que representan las barras
-    hola = []
+    columna_activos = []
     for c in range(num):
-        hola.append("   _______" if c == 0 else "  |       |")
+        columna_activos.append("   _______" if c == 0 else "  |       |")
 
-    hola2 = []
+    columna_inactivos = []
     for c2 in range(num2):
-        hola2.append("   _______" if c2 == 0 else "  |       |")
+        columna_inactivos.append("   _______" if c2 == 0 else "  |       |")
 
     # Ajustar para que ambas tengan la misma altura
     alto = num if num >= num2 else num2
-    while len(hola) < alto:
-        hola.insert(0, "")
-    while len(hola2) < alto:
-        hola2.insert(0, "")
+    while len(columna_activos) < alto:
+        columna_activos.insert(0, "")
+    while len(columna_inactivos) < alto:
+        columna_inactivos.insert(0, "")
 
     # Encabezado
     print(f'    {"ACTIVO"}     {"INACTIVO"}')
     print(f"      {act}          {inac}")
     print()
 
-    # Mostrar las barras desde arriba
-    for i in range(alto):
-        print(hola[i].ljust(12) + hola2[i])
+    def imprimir_barras_rec(columna_activos, columna_inactivos, alto, i=0):
+        if i >= alto:
+            return
+        print(columna_activos[i].ljust(12) + columna_inactivos[i])
+        imprimir_barras_rec(columna_activos, columna_inactivos, alto, i + 1)
+
+    imprimir_barras_rec(columna_activos, columna_inactivos, alto)
 
     # Mostrar base y escala
     print("   _______     _______")
@@ -162,79 +157,3 @@ def usuarios_con_mas_reservas():
     for i, (usuario, cant) in enumerate(reservas.items(), start=1):
         if principio <= i <= final:
             print(f"{i}. Usuario {usuario} - {cant} reservas")
-
-"""def usuarios_con_mas_reservas():
-    lista_reservas = cargar_datos_txt(datos_reserva_txt)
-    reservas = {}
-
-    # Contar cuántas reservas tiene cada usuario
-    for fila in lista_reservas:
-        usuario_id = fila[1]
-        reservas[usuario_id] = reservas.get(usuario_id, 0) + 1
-
-    # Ordenar los usuarios según cantidad de reservas (de mayor a menor)
-    reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
-    maximo = len(reservas)
-
-    # Función recursiva interna para pedir el número de inicio
-    def pedir_principio():
-        try:
-            principio = int(input(f"Seleccioná desde qué usuario querés empezar a ver (1 - {maximo}): "))
-            if principio <= 0 or principio > maximo:
-                print("Número fuera de rango, intente nuevamente.")
-                return pedir_principio()  # llamada recursiva
-            return principio
-        except (ValueError, KeyboardInterrupt):
-            print("Entrada inválida, intente nuevamente.")
-            return pedir_principio()  # llamada recursiva
-
-    # Llamada recursiva controlada
-    principio = pedir_principio()
-
-    # Mostrar resultado parcial (por ejemplo)
-    print(f"Mostrando desde el usuario número {principio}:")
-    for i, (usuario, cant) in enumerate(reservas.items(), start=1):
-        if i >= principio:
-            print(f"{i}. Usuario {usuario} - {cant} reservas")"""
-
-"""def usuarios_con_mas_reservas():
-    lista_reservas = cargar_datos_txt(datos_reserva_txt)
-
-    reservas = {}
-
-
-    for fila in lista_reservas:
-        usuario_id = fila[1]
-        reservas[usuario_id] = reservas.get(usuario_id, 0) + 1
-    reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
-    maximo=len(reservas)
-        # Pedir posición inicial
-    while True:
-        try:
-            
-            principio = int(input(f"Seleccioná desde qué usuario querés empezar a ver (1 - {maximo}): "))
-            if principio <=0  or principio > maximo:
-                print("Número fuera de rango, intente nuevamente.")
-                continue
-            break
-        except (ValueError,KeyboardInterrupt):
-            print("Entrada inválida, intente nuevamente.")
-            continue
-
-    # Pedir cantidad a mostrar a partir de esa posición
-    while True:
-        try:
-            subir = int(input(f"¿Cuántos usuarios querés ver a partir del número {principio}? "))
-            if subir < 1 or (principio + subir -1) > maximo:
-                print("Número inválido, intente nuevamente.")
-                continue
-            break
-        except (ValueError,KeyboardInterrupt):
-            print("Entrada inválida, intente nuevamente.")
-            continue
-
-    final = principio + subir 
-
-    print("\n\033[92m=== RESERVAS POR USUARIO ===\033[0m")
-    for usuario, total in list(reservas.items())[principio:final]:
-        print("Usuario", usuario, "→", total)"""
