@@ -54,7 +54,7 @@ while start==True:
                     "\033[35m  → [2] RESERVAS          \033[0m\n"
                     "\033[35m  → [3] USUARIOS          \033[0m\n"
                     "\033[35m  → [4] ESTADISTICAS      \033[0m\n"
-                    "\033[35m  → [4] SALIR DE LA SESIÓN\033[0m\n"
+                    "\033[35m  → [5] SALIR DE LA SESIÓN\033[0m\n"
                     "\033[35m  → [5] SALIR DEL PROGRAMA\033[0m\n"
                     "\033[1;35m Seleccione una opción: \033[0m"
                 ))
