@@ -134,7 +134,6 @@ def registrar():
         try:
             telefono_cread = int(input("\033[36mIngrese su número de teléfono sin código de área: \033[0m"))
             if telefono_cread > 1100000000 and telefono_cread < 1199999999:
-                print("\033[92mNúmero válido.\033[0m")
                 break
             else:
                 print("\033[91mEl número debe estar entre 1100000000 y 1199999999.\033[0m")
