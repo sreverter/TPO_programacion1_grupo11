@@ -1,5 +1,5 @@
 from funciones.funciones_globales import *
-from iniciacion_listas import dni_en_uso
+from ingreso import dni_en_uso
 from functools import reduce
 
 # Función para generar IDs de reserva en forma aleatoria

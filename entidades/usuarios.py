@@ -1,5 +1,3 @@
-import random
-from iniciacion_listas import *
 from funciones.funciones_globales import *
 import re
 

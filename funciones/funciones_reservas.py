@@ -29,11 +29,8 @@ def agregar_reservas(admin):
         #se genera un id aleatorio
         id_reserva = id_alt_r() 
         #si no es un admin se busca el id del usuario
-        if admin == False:
-            id_usuario = obt_id_Actual()
-        #si es admin se genera un id aleatorio
-        else:
-            id_usuario = id_user()
+        
+        id_usuario = obt_id_Actual()
         #se muestran todos los shows
         mostrar_tabla(datos_shows, 2) 
         

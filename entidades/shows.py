@@ -30,8 +30,7 @@ def cambio_precio_evento():
         try:
             precio=int(input("defina un precio para el show"))
             if precio <=0:
-                eleccion=str(input("esta seleccionando una entrada gratuita\
-                            esta seguro de su decision (s/n) ")).lower()
+                eleccion=str(input("esta seleccionando una entrada gratuita esta seguro de su decision (s/n) ")).lower()
                 
                 if eleccion== "s":
                     return precio
@@ -39,8 +38,7 @@ def cambio_precio_evento():
                     continue
 
             elif precio >= 99999:
-                eleccion=str(input("esta seleccionando una entrada extremadamente\
-                            cara esta seguro de su decision (s/n) ")).lower()
+                eleccion=str(input("esta seleccionando una entrada extremadamente cara esta seguro de su decision (s/n) ")).lower()
                 
                 if eleccion== "s":
                     return precio

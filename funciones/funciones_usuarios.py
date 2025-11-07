@@ -1,4 +1,4 @@
-from iniciacion_listas import dni_en_uso
+from ingreso import dni_en_uso
 from funciones.funciones_reservas import obt_id_Actual
 from funciones.funciones_globales import *
 from entidades.usuarios import *

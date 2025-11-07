@@ -1,8 +1,8 @@
-from iniciacion_listas import *
 from entidades.usuarios import id_user
 from funciones.funciones_globales import *
 import re
 
+dni_en_uso = []
 #menu para el ingreso de forma coloreada
 def menu_login():
 # Marco verde brillante
@@ -88,9 +88,14 @@ def login():
     
     for i in info_usuario:
         if i["roles"]=="admin":
+            #lista con el dni que esta usando la persona actualmente en el programa
+            dni_en_uso.clear()
+            #agarra el dni que escribio el usuario al iniciar sesion
+            dni_en_uso.append(dni_ingres)
             print("\033[92m Ingreso conseguido como ADMIN.\033[0m")
             return "ADMIN"
         else:
+            #lista con el dni que esta usando la persona actualmente en el programa
             dni_en_uso.clear()
             #agarra el dni que escribio el usuario al iniciar sesion
             dni_en_uso.append(dni_ingres)
