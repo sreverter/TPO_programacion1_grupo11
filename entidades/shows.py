@@ -57,4 +57,4 @@ def nuevo_id_show(datos_shows):
         return obtener_ultimo_id(lista, i + 1)
     ultimo = obtener_ultimo_id(shows_ordenados)
     agregado = ultimo + 1
-    return
+    return agregado
