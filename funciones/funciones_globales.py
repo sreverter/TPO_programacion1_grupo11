@@ -1,5 +1,5 @@
 import json
-from datos import datos_shows
+
 
 def mostrar_tabla(dato, opcion):
 
