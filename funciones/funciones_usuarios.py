@@ -1,5 +1,4 @@
-from datos import datos_usuarios
-from iniciacion_listas import dni_en_uso,datos_de_ingreso_dni
+from iniciacion_listas import dni_en_uso
 from funciones.funciones_reservas import obt_id_Actual
 from funciones.funciones_globales import *
 import re
@@ -16,16 +15,18 @@ def cambio_nombre_usuario():
             continue
 
 def cambio_dni_usuario():
+    datos_usuarios=cargar_datos_json(datos_usuarios_js)
     while True:
         try:
             dni_nuevo = int(input("\033[36m Escriba el dni por el que desea cambiar: \033[0m"))
+            existe_dni = checkear_dato_repetido(datos_usuarios, dni_nuevo, "dni")
             if dni_nuevo <= 0:
                 print("no se permiten dnis menores o iguales a 0")
                 continue
-            if dni_nuevo not in datos_de_ingreso_dni:
-                return dni_nuevo
-            else:
-                print("\033[91m El DNI por el cual pide cambiar esta siendo usado, intente de nuevo.\033[0m")
+            if existe_dni:
+                print("\033[91m Este DNI ya está registrado. Intente con otro.\033[0m")
+                continue
+            break
         except ValueError:
             print("no se admite otra cosa que no sean numeros enteros")
 

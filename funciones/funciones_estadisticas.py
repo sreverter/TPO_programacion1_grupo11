@@ -6,16 +6,22 @@ datos_show_js = "datos/datos_shows.json"
 
 # se crea funcion donde se carga el json en una var
 
+
 def shows_mas_vendidos():
     lista_shows = cargar_datos_json(datos_show_js)
-    print(type(lista_shows))
-    #mostrar_tabla(hola, 2)
 
-    mayor = lista_shows[0]
+    def buscar_mayor(posicion):
+        if posicion == len(lista_shows) - 1:
+            return lista_shows[posicion]
 
-    for show in lista_shows:
-        if show["espectadores"] > mayor["espectadores"]:
-            mayor = show
+        mayor_del_resto = buscar_mayor(posicion + 1)
+
+        if lista_shows[posicion]["espectadores"] > mayor_del_resto["espectadores"]:
+            return lista_shows[posicion]
+        else:
+            return mayor_del_resto
+
+    mayor = buscar_mayor(0)
 
     print(f"Show con más espectadores: {mayor['nombre-show']}")
     print(f"Espectadores: {mayor['espectadores']}")
