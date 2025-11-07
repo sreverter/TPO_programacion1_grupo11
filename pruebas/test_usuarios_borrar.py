@@ -1,73 +1,36 @@
-from iniciacion_listas import datos_globales_usuarios, dni_en_uso, datos_globales_reserva,id_usuarios,datos_de_ingreso_dni
-from entidades.usuarios import ver_m3,id_usuarios,ver_busqueda_usuarios
-from funciones.funciones_reservas import obt_id_Actual
-from funciones.funciones_globales import mostrar_tabla
-import re
-import json
+from funciones.funciones_usuarios import borrado_usuarios
+from funciones.funciones_pruebas import cargar_datos_json, guardar_datos_json
 
-def borrado_usuarios():
-        while True:
-            try:
-                id_eliminar = int(input("Seleccione id a eliminar: "))
-                if id_eliminar not in id_usuarios:
-                    print("ID no encontrado")
-                    continue
-                else:
-                    break
-            except(ValueError,KeyboardInterrupt):
-                print("porfavor ponga caracteres valido")
-                continue
-            
-        print("\033[1;91m Recuerde que esta acción es irrevertible \033[0m")
-        print()
-        print("\033[1;91m Por favor vuelva a dar confirmación \033[0m")
-        
-        while True:
-            try:
-                opcion = int(input(
-                    "\033[35m  → [1] Eliminar cuenta\033[0m\n"
-                    "\033[35m  → [2] Volver al menú\033[0m\n"
-                ))
-                if opcion in (1,2):
-                    break
-                else:
-                    print("solo 1 y 2 son numeros validos")
-            except(KeyboardInterrupt,ValueError):
-                print("porfavor ponga caracteres valido")
-                continue
+datos_usuarios_js = "datos/datos_usuarios.json"
 
-        usuarios_eliminar=[]
-        if opcion == 1:
-            """
-                        with open("datos_usuarios.json","r", encoding="utf-8") as archivo:
-                            usuarios = json.load(archivo)
-                            for user in usuarios:
-                                if user["id"]==id_eliminar:
-                                    user["estado"]=False
-                            usuarios_eliminar.append(user)
-                        with open("datos/datos_usuarios.json", "w", encoding="utf-8") as archivo:
-                            json.dump(usuarios_eliminar, archivo, indent=4, ensure_ascii=False)
-                        
-                        
-            
-                        with open("datos/datos_reserva.txt","r", encoding="utf-8") as archivo:
-                            usuarios = json.load(archivo)
-                            for user in usuarios:
-                                if user["id"]==id_eliminar:
-                                    
-                            usuarios_eliminar.append(user)
-                        with open("datos/datos_reservas.txt", "w", encoding="utf-8") as archivo:
-                            json.dump(usuarios_eliminar, archivo, indent=4, ensure_ascii=False)
-            """
-#tecnicamente no es un json o un txt depende de lo que usemos esta 
-# funcion va a variar sobre todo en la lectura por ahora lo deje como para un json aunque 
-# seguramente sea un txt
-            for i in datos_globales_usuarios:
-                if i[0] == id_eliminar:
-                    i[5] = False   
-            for i in datos_globales_reserva[:]:
-                if i[1] == id_eliminar:
-                    datos_globales_reserva.remove(i)
-            print(f"Usuario con ID {id_eliminar} y las reservas que tiene asociadas fueron eliminados correctamente.")
-        elif opcion == 2:
-                print("volviendo al menu")
+def test_borrar_usuario():
+    usuarios = cargar_datos_json(datos_usuarios_js)
+    id_buscado = 2
+    # Aseguramos que el usuario esté activo (True)
+    for u in usuarios:
+        if u["id"] == id_buscado:
+            u["estado"] = True
+
+    guardar_datos_json(datos_usuarios_js, usuarios)
+
+    # tomar el usuario y COPIAR sus valores antes de mutar
+    usuario_original = next(u for u in usuarios if u["id"] == id_buscado)
+    nombre_original = usuario_original["nombre"]
+    estado_original = usuario_original["estado"]
+    assert estado_original is True  # o lo que corresponda en tu setup
+
+    # Act: desactivar
+    for u in usuarios:
+        if u["id"] == id_buscado:
+            u["estado"] = False
+
+    guardar_datos_json(datos_usuarios_js, usuarios)
+
+    # Assert: recargar y verificar
+    usuarios_actualizados = cargar_datos_json(datos_usuarios_js)
+    usuario_actualizado = next(u for u in usuarios_actualizados if u["id"] == id_buscado)
+
+    print(f"Antes: {nombre_original}, estado: {estado_original}")
+    print(f"Después: {usuario_actualizado['nombre']}, estado: {usuario_actualizado['estado']}")
+
+    assert usuario_actualizado["estado"] is False
