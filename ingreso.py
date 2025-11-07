@@ -158,10 +158,11 @@ def registrar():
     while True:
         try:
             dni_cread = int(input("\033[36m Escriba el número de su DNI: \033[0m"))
+            existe_dni = checkear_dato_repetido(datos_usuarios, dni_cread, "dni")
             if dni_cread <= 0:
                 print("no se permiten dnis menores o iguales a 0")
                 continue
-            elif dni_cread in datos_usuarios or dni_cread in dni_admins:
+            if existe_dni:
                 print("\033[91m Este DNI ya está registrado. Intente con otro.\033[0m")
                 continue
             break
@@ -196,7 +197,12 @@ def registrar():
     
     #el usuario escribe su email 
     email = input("\033[36m Escriba su email: \033[0m")
-    
+    existe_email = checkear_dato_repetido(datos_usuarios, email, "correo")
+    while existe_email:
+        print("\033[91m Este correo ya está registrado. Intente con otro.\033[0m")
+        email = input("\033[36m Escriba su email: \033[0m")
+        existe_email = checkear_dato_repetido(datos_usuarios, email, "correo")
+
     #validaciones basicas de email
     arroba = re.findall('@', email)
     punto  = re.findall(r'\.', email)   
