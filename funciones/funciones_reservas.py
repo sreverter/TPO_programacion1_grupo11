@@ -439,17 +439,6 @@ def calcular_precio(show, ubicacion, cantidad):
 
     return total
 
-"""def calcular_precio(show, ubicacion, cantidad):
-    base = int(show['precio'])
-    if ubicacion == 'platea':
-        return base * cantidad
-    elif ubicacion == 'campo':
-        return base * 2 * cantidad
-    elif ubicacion == 'vip':
-        return base * 3 * cantidad
-    else:
-        return base * cantidad"""
-
 def edicion_reserva():        
     datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
     datos_shows = cargar_datos_json("datos/datos_shows.json")

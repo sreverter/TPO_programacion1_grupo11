@@ -89,14 +89,29 @@ def vista_Usuarios(admin):
                 if usuarios_filtrados:
                     mostrar_tabla(usuarios_filtrados, 2)  
                 else:
-                    print("No hay usuarios con ese estado.")
+                    print("\033[91mNo hay usuarios con ese estado.\033[0m")
+        
+            elif eleccion == 2:
+                while True:
+                    try:
+                        eleccion = int(input("Ingrese ID a buscar: "))
+                        break
+                    except(ValueError,KeyboardInterrupt):
+                        print("\033[91mel caracter usado no es uno valido para esta region\033[0m")
+                        continue
+                encontrado=False
+                for user in datos_usuarios:
+                    if user["id"]==eleccion:
+                        encontrado=True
+                        print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
+                        #imprime raro falta un imprmir lindo
+                if not encontrado:
+                    print("\033[91mno se a encontrado el id del usuario\033[0m")
         elif admin == False:
             id = obt_id_Actual()
             for user in datos_usuarios:
-                if user['id']==id:
+                  if user['id']==id:
                     print(user['id'],user['nombre'],user['dni'],user['telefono'],user['correo'],user['estado'])
-
-
 
 """def vista_Usuarios(admin):
         datos_usuarios=cargar_datos_json(datos_usuarios_js)
