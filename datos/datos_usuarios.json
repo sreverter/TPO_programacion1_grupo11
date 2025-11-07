@@ -104,7 +104,7 @@
         "nombre": "El Momo",
         "dni": 11111111,
         "telefono": 1164171156,
-        "correo": "sreverter@uade.edu.ar",
+        "correo": "sreverter@uade.edu",
         "estado": false,
         "contraseña": "elmomo123",
         "roles": "admin"
@@ -127,6 +127,16 @@
         "correo": "santino@gmail.com",
         "estado": true,
         "contraseña": "santino123",
+        "roles": "admin"
+    },
+    {
+        "id": 14,
+        "nombre": "Santiago Reverter",
+        "dni": 42076675,
+        "telefono": "1164171156",
+        "correo": "sreverter@outlook.com",
+        "estado": true,
+        "contraseña": "hola123",
         "roles": "admin"
     }
 ]

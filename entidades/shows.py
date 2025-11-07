@@ -58,7 +58,14 @@ def nuevo_id_show (datos_shows):
     if datos_shows==[]:
         return 1
     shows_ordenados = sorted(datos_shows, key=lambda x: x['id-show'])
-    for shows in shows_ordenados:
-        ultimo=shows['id-show']
+    # for shows in shows_ordenados:
+    #     ultimo=shows['id-show']
+    def obtener_ultimo_id(lista, i=0):
+        # si estamos en el último elemento devolvemos su id
+        if i == len(lista) - 1:
+            return lista[i]['id-show']
+        return obtener_ultimo_id(lista, i + 1)
+
+    ultimo = obtener_ultimo_id(shows_ordenados)
     agregado=ultimo+1
     return agregado

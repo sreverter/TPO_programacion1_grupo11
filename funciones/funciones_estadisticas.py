@@ -79,29 +79,33 @@ def usuarios_mas_activos():
 
 def crear_Grafico(num, num2, act, inac, paso):
     # Crear las listas que representan las barras
-    hola = []
+    columna_activos = []
     for c in range(num):
-        hola.append("   _______" if c == 0 else "  |       |")
+        columna_activos.append("   _______" if c == 0 else "  |       |")
 
-    hola2 = []
+    columna_inactivos = []
     for c2 in range(num2):
-        hola2.append("   _______" if c2 == 0 else "  |       |")
+        columna_inactivos.append("   _______" if c2 == 0 else "  |       |")
 
     # Ajustar para que ambas tengan la misma altura
     alto = num if num >= num2 else num2
-    while len(hola) < alto:
-        hola.insert(0, "")
-    while len(hola2) < alto:
-        hola2.insert(0, "")
+    while len(columna_activos) < alto:
+        columna_activos.insert(0, "")
+    while len(columna_inactivos) < alto:
+        columna_inactivos.insert(0, "")
 
     # Encabezado
     print(f'    {"ACTIVO"}     {"INACTIVO"}')
     print(f"      {act}          {inac}")
     print()
 
-    # Mostrar las barras desde arriba
-    for i in range(alto):
-        print(hola[i].ljust(12) + hola2[i])
+    def imprimir_barras_rec(columna_activos, columna_inactivos, alto, i=0):
+        if i >= alto:
+            return
+        print(columna_activos[i].ljust(12) + columna_inactivos[i])
+        imprimir_barras_rec(columna_activos, columna_inactivos, alto, i + 1)
+
+    imprimir_barras_rec(columna_activos, columna_inactivos, alto)
 
     # Mostrar base y escala
     print("   _______     _______")

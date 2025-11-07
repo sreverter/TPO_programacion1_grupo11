@@ -31,8 +31,8 @@ def menu_login():
 #parte de ingreso con contraseña y dni
 def login():
     #carga de datos de usuarios
-    datos_usuarios = "datos/datos_usuarios.json"
-    datos_usuarios=cargar_datos_json(datos_usuarios)
+    # datos_usuarios = "datos/datos_usuarios.json"
+    datos_usuarios = cargar_datos_json("datos/datos_usuarios.json")
     #variables de uso interno
     info_usuario = []
     dni_encontrado=False
@@ -53,9 +53,9 @@ def login():
         if dni_encontrado:
             break
         else:
-            print("\033[91m Id no encontrado revise que este bien su dni.\033[0m")
+            print("\033[91m DNI no encontrado revise que este bien su escrito.\033[0m")
             try:
-                dni_ingres=int(input("\033[36m Escriba su dni para verificacion: si desea volver al menu de ingreso presione -1\033[0m"))
+                dni_ingres=int(input("\033[36m Escriba su dni para verificacion: si desea volver al menu de ingreso ingrese -1\033[0m"))
                 if dni_ingres==-1:
                     return
             except (ValueError,KeyboardInterrupt):
