@@ -40,9 +40,9 @@ def mostrar_tabla(dato, opcion):
                 print(f"{fila['id']:<5} {fila['nombre']:<25} {fila['dni']:<12} {fila['telefono']:<20} {fila['correo']:<35} {estado:<10}")
 
         elif tipo == "show":
-            print(f"\033[32m{'-'*110}\033[0m")
+            print(f"\033[32m{'-'*113}\033[0m")
             print(f"\033[32m{'ID Show':<10} {'Nombre Show':<35} {'Duración':<10} {'Espectadores':<15} {'Espacios Disp.':<15} {'Fecha':<15} {'precio':<15}\033[0m")
-            print(f"\033[32m{'-'*110}\033[0m")
+            print(f"\033[32m{'-'*113}\033[0m")
             for fila in dato:
                 print(f"{fila['id-show']:<10} {fila['nombre-show']:<35} {fila['duracion-show']:<10} "
                     f"{fila['espectadores']:<15} {fila['espacios-disponibles']:<15} {fila['fecha']:<15} {fila['precio']}")
