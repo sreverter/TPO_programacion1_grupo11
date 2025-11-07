@@ -1,10 +1,10 @@
 color = {
-    # 🔹 Reset / formato base
+    #  Reset / formato base
     "reset": "\033[0m",
     "negrita": "\033[1m",
     "subrayado": "\033[4m",
 
-    # 🔹 Colores estándar
+    #  Colores estándar
     "negro": "\033[30m",
     "rojo": "\033[31m",
     "verde": "\033[32m",
@@ -14,7 +14,7 @@ color = {
     "cian": "\033[36m",
     "blanco": "\033[37m",
 
-    # 🔹 Colores brillantes (high intensity)
+    #  Colores brillantes (high intensity)
     "negro_brillante": "\033[90m",
     "rojo_brillante": "\033[91m",
     "verde_brillante": "\033[92m",
@@ -24,7 +24,7 @@ color = {
     "cian_brillante": "\033[96m",
     "blanco_brillante": "\033[97m",
 
-    # 🔹 Fondos
+    #  Fondos
     "fondo_negro": "\033[40m",
     "fondo_rojo": "\033[41m",
     "fondo_verde": "\033[42m",
@@ -34,7 +34,7 @@ color = {
     "fondo_cian": "\033[46m",
     "fondo_blanco": "\033[47m",
 
-    # 🔹 Fondos brillantes
+    #  Fondos brillantes
     "fondo_negro_brillante": "\033[100m",
     "fondo_rojo_brillante": "\033[101m",
     "fondo_verde_brillante": "\033[102m",
