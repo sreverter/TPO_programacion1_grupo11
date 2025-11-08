@@ -76,7 +76,7 @@ def pedir_principio(maximo):
         principio = int(input(f"\033[36mSeleccioná desde qué usuario querés empezar a ver (1 - {maximo}):\033[0m "))
         if principio <= 0 or principio > maximo:
             print("\033[91mNúmero fuera de rango, intente nuevamente.\033[0m")
-            return pedir_principio()
+            return pedir_principio(maximo)
         return principio
     except (ValueError, KeyboardInterrupt):
         print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
@@ -87,7 +87,7 @@ def pedir_final(principio, maximo):
         final = int(input(f"\033[36mSeleccioná hasta qué usuario querés ver ({principio + 1} - {maximo}):\033[0m "))
         if final <= principio or final > maximo:
             print("\033[91mNúmero fuera de rango, debe ser mayor que el inicio y menor o igual que", maximo, "\033[0m")
-            return pedir_final(principio)
+            return pedir_final(principio, maximo)
         return final
     except (ValueError, KeyboardInterrupt):
         print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
