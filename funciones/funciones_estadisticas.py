@@ -80,7 +80,7 @@ def pedir_principio(maximo):
         return principio
     except (ValueError, KeyboardInterrupt):
         print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
-        return pedir_principio()
+        return pedir_principio(maximo)
 
 def pedir_final(principio, maximo):
     try:
@@ -91,7 +91,7 @@ def pedir_final(principio, maximo):
         return final
     except (ValueError, KeyboardInterrupt):
         print("\033[91mEntrada inválida, intente nuevamente.\033[0m")
-        return pedir_final(principio)
+        return pedir_final(principio, maximo)
 
 def usuarios_con_mas_reservas():
     lista_reservas = cargar_datos_txt(datos_reserva_txt)
