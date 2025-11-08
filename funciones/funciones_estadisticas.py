@@ -74,7 +74,7 @@ def crear_Grafico(num, num2, act, inac, paso):
 def pedir_principio(maximo):
     try:
         principio = int(input(f"\033[36mSeleccioná desde qué usuario querés empezar a ver (1 - {maximo}):\033[0m "))
-        if principio <= 0 or principio > maximo:
+        if principio <= 0 or principio >= maximo:
             print("\033[91mNúmero fuera de rango, intente nuevamente.\033[0m")
             return pedir_principio(maximo)
         return principio
