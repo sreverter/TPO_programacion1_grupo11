@@ -29,7 +29,7 @@ def cambio_precio_evento():
     while True:
         try:
             precio = int(input("\033[36mDefina un precio para el show:\033[0m "))
-            if precio <= 0:
+            if precio == 0:
                 eleccion = str(input("\033[36mEstá seleccionando una entrada gratuita. ¿Está seguro de su decisión? (s/n):\033[0m ")).lower()
                 if eleccion == "s":
                     return precio
