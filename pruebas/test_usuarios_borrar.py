@@ -1,40 +1,38 @@
-from funciones.funciones_usuarios import borrado_usuarios
-from funciones.funciones_pruebas import cargar_datos_json, guardar_datos_json
+import json
+from funciones.funciones_usuarios import cargar_datos_json, borrado_usuarios
 
-datos_usuarios_js = "datos/datos_usuarios.json"
+def test_borrar_usuario(monkeypatch, tmp_path):
 
-def test_borrar_usuario():
-    try:
-        usuarios = cargar_datos_json(datos_usuarios_js)
-        id_buscado = 2
-        # Aseguramos que el usuario esté activo (True)
-        for u in usuarios:
-            if u["id"] == id_buscado:
-                u["estado"] = True
+    usuarios_test = [
+        {"id": 1, "nombre": "Alan", "estado": True},
+        {"id": 2, "nombre": "Juan", "estado": True}
+    ]
 
-        guardar_datos_json(datos_usuarios_js, usuarios)
+    reservas_test = [
+        ["1", "1", "vip", "1000", "150000", "2"],   
+        ["2", "2", "campo", "1001", "120000", "3"]  
+    ]
 
-        # tomar el usuario y COPIAR sus valores antes de mutar
-        usuario_original = next(u for u in usuarios if u["id"] == id_buscado)
-        nombre_original = usuario_original["nombre"]
-        estado_original = usuario_original["estado"]
-        assert estado_original is True  # o lo que corresponda en tu setup
+    fake_users = tmp_path / "usuarios.json"
+    fake_reservas = tmp_path / "reservas.txt"
 
-        # Act: desactivar
-        for u in usuarios:
-            if u["id"] == id_buscado:
-                u["estado"] = False
+    fake_users.write_text(json.dumps(usuarios_test, indent=4))
 
-        guardar_datos_json(datos_usuarios_js, usuarios)
+    fake_reservas.write_text(
+        "\n".join([",".join(r) for r in reservas_test]))
 
-        # Assert: recargar y verificar
-        usuarios_actualizados = cargar_datos_json(datos_usuarios_js)
-        usuario_actualizado = next(u for u in usuarios_actualizados if u["id"] == id_buscado)
+    monkeypatch.setattr("funciones.funciones_usuarios.datos_usuarios_js", str(fake_users))
+    monkeypatch.setattr("funciones.funciones_usuarios.datos_reserva_txt", str(fake_reservas))
 
-        print(f"Antes: {nombre_original}, estado: {estado_original}")
-        print(f"Después: {usuario_actualizado['nombre']}, estado: {usuario_actualizado['estado']}")
+    inputs = iter(["2", "1"])  #id, confirmacion
+    monkeypatch.setattr("builtins.input", lambda _: next(inputs))
 
-        assert usuario_actualizado["estado"] is False
-    except (AssertionError, IndexError) as e:
-        print(f"Error en test_borrar_usuario: {e}")
-        raise
+    borrado_usuarios()
+
+    usuarios_final = cargar_datos_json(str(fake_users))
+    reservas_final = fake_reservas.read_text().splitlines()
+
+    user2 = next(u for u in usuarios_final if u["id"] == 2)
+    assert user2["estado"] is False
+
+    assert all(",2," not in linea for linea in reservas_final)
