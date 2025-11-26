@@ -1,5 +1,6 @@
 from entidades.usuarios import id_user
 from funciones.funciones_globales import *
+from excepciones import *
 import re
 
 dni_en_uso = []
@@ -18,15 +19,7 @@ def menu_login():
     print("\033[92m╚════════════════════════════╝\033[0m")
 
     while True:
-        try:
-            ingreso = int(input(f"\033[1;35m Seleccione una opción: \033[0m"))
-            #validacion de opciones
-            if ingreso in (0, 1):
-                return ingreso
-            else:
-                print(f"\033[91m Opción inválida, intente de nuevo.\033[0m")
-        except(ValueError,KeyboardInterrupt):
-            print("\033[91mporfavor ingrese caracteres numericos validos\033[0m")
+        entrada=
 
 #parte de ingreso con contraseña y dni
 def login():
@@ -124,7 +117,7 @@ def registrar():
                 print("\033[91m Este DNI ya está registrado. Intente con otro.\033[0m")
                 continue
             break
-        except ValueError:
+        except (OverflowError,KeyboardInterrupt,ValueError):
             print("no se admite otra cosa que no sean enteros")
             continue
 

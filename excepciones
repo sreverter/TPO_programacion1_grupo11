@@ -1,0 +1,124 @@
+mensajes_error = {
+    # ----- Errores numéricos -----
+    ValueError: "El valor ingresado no es válido (debe ser numérico).",
+    OverflowError: "El número ingresado es demasiado grande.",
+    ZeroDivisionError: "No se puede dividir por cero.",
+
+    # ----- Errores de strings -----
+    TypeError: "El tipo de dato ingresado no es válido.",
+    UnicodeError: "Error al interpretar texto (caracteres no válidos).",
+
+    # ----- Errores de archivo -----
+    FileNotFoundError: "No se encontró el archivo especificado.",
+    PermissionError: "No tenés permisos para acceder a este archivo.",
+    IsADirectoryError: "Se esperaba un archivo, pero se recibió un directorio.",
+    IOError: "Error general de entrada/salida al manejar archivos.",
+
+    # ----- Errores de interrupción -----
+    KeyboardInterrupt: "Operación cancelada por el usuario (Ctrl+C).",
+    EOFError: "Entrada finalizada inesperadamente (Ctrl+D).",
+
+    # ----- Errores extras-----
+    "empty": "La entrada no puede estar vacía.",
+    "negative": "No se permiten números negativos.",
+    "invalid_choice": "La opción seleccionada no es válida.",
+    "invalid_char": "Se ingresaron caracteres no permitidos.",
+    "not_float": "Debe ingresar un número decimal válido.",
+    "not_int": "Debe ingresar un número entero válido.",
+    "range_error": "El valor está fuera del rango permitido.",
+    "email_invalid": "El email ingresado no tiene un formato válido.",
+    "dni_invalid": "El DNI ingresado no tiene la longitud correcta.",
+    "telefono_invalid": "El teléfono ingresado no es válido.",
+    "exists": "Ese dato ya está registrado en el sistema.",
+}
+#str entero
+def a_entero(valor):
+    return int(valor)
+#str float
+def a_float(valor):
+    return float(valor)
+#str 
+def a_texto(valor):
+    return valor
+
+def regla_no_vacio(texto):
+    if texto.strip() == "":
+        raise ValueError("La entrada no puede estar vacía.")
+
+def regla_entero(texto):
+    if not texto.isdigit():
+        raise ValueError("Debe ingresar un número entero.")
+
+CARACTERES_INVALIDOS = "!@#$%^&*()_=+[]{}|;:'\",<>/?"
+
+def regla_caracteres_invalidos(texto):
+    for c in texto:
+        if c in CARACTERES_INVALIDOS:
+            raise ValueError("La entrada contiene caracteres no permitidos.")
+
+def regla_dni(texto):
+    if not texto.isdigit():
+        raise ValueError("El DNI debe contener solo números.")
+
+    if not (7 <= len(texto) <= 9):
+        raise ValueError("El DNI debe tener entre 7 y 9 dígitos.")
+
+def regla_telefono(texto):
+    if not texto.isdigit():
+        raise ValueError("El teléfono debe contener solo números.")
+
+    valor = int(texto)
+    if valor < 1100000000 or valor > 1199999999:
+        raise ValueError("El teléfono debe comenzar con 11 y tener 10 dígitos.")
+
+def regla_email(texto):
+    if "@" not in texto or "." not in texto:
+        raise ValueError("El email debe contener '@' y '.'.")
+
+def regla_solo_letras(texto):
+    if not texto.replace(" ", "").isalpha():
+        raise ValueError("El nombre solo puede contener letras y espacios.")
+
+def regla_rango(texto, minimo, maximo):
+    if not texto.isdigit():
+        raise ValueError("Debe ingresar números enteros.")
+    valor = int(texto)
+    if valor < minimo or valor > maximo:
+        raise ValueError(f"Debe estar entre {minimo} y {maximo}.")
+
+
+
+
+def pedir_valor(mensaje, reglas=None, transformador=a_texto):
+    """
+    Pide un valor por input, aplica una lista de 'reglas' de validación
+    y luego aplica un 'transformador' (por ej. a_entero, a_float, a_texto).
+
+    - mensaje: texto que se muestra al usuario.
+    - reglas: lista de funciones que reciben el string y lanzan ValueError si algo está mal.
+    - transformador: función que transforma el string validado al tipo final.
+    """
+    if reglas is None:
+        reglas = []
+
+    while True:
+        try:
+            entrada = input(mensaje)
+
+            # Ejecutar todas las reglas de validación
+            for regla in reglas:
+                regla(entrada)
+
+            # Si todo pasó OK, aplicamos la transformación final y devolvemos
+            return transformador(entrada)
+
+        except Exception as e:
+            if isinstance(e, ValueError) and str(e):
+                mensaje_error = str(e)
+            else:
+                mensaje_error = mensajes_error.get(type(e),"Ocurrió un error inesperado.")
+
+            print(f"\033[91m{mensaje_error}\033[0m")
+
+            if isinstance(e, (KeyboardInterrupt, EOFError)):
+                return None
