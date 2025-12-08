@@ -32,3 +32,12 @@ def buscar_usuario_por_id(datos, id_buscado):
         if usuario['id'] == id_buscado:
             return usuario
     return None
+
+def validar_edad(edad):
+    if edad < 0:
+        raise ValueError("La edad no puede ser negativa")
+    return True
+
+def dividir_numeros(a, b):
+    return a / b
+
