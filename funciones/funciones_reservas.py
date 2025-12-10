@@ -11,7 +11,7 @@ def vista_reserva(admin):
         mostrar_archivo_texto('datos/datos_reservas.txt')
     elif admin == False:
         usuario_Act = obt_id_Actual()
-        vista = devolver_usuario_txt('datos/datos_reservas.txt', usuario_Act)
+        vista = busqueda_en_txt('datos/datos_reservas.txt', usuario_Act, 1)
         if len(vista) > 0:
             mostrar_tabla(vista, 1)
         else:
@@ -22,7 +22,6 @@ def alta_reserva(nueva_reserva):
         with open('datos/datos_reservas.txt', 'a', encoding='utf-8') as archivo:
             linea = f"{nueva_reserva[0]},{nueva_reserva[1]},{nueva_reserva[2]},{nueva_reserva[3]},{nueva_reserva[4]},{nueva_reserva[5]}\n"
             archivo.write(linea)
-            print("\033[34mReserva guardada con éxito.\033[0m")
     except OSError as e:
         print(f"Error al guardar la reserva: {e}")
 
@@ -123,10 +122,10 @@ def busqueda_Reserva():
             except (ValueError, KeyboardInterrupt):
                 print("\033[91mID inválido.\033[0m")
                 continue
-        for i in datos:
-            if i[0] == eleccion:
-                encontrado = True
-                reserva_enct.append(i)
+        busqueda = busqueda_en_txt('datos/datos_reservas.txt', eleccion, 2)
+        if busqueda:
+            encontrado = True
+            reserva_enct = busqueda
         if not encontrado:
             print("\033[91mID de reserva no encontrado.\033[0m")
         else:
@@ -139,14 +138,16 @@ def busqueda_Reserva():
             except (ValueError, KeyboardInterrupt):
                 print("\033[91mEntrada inválida.\033[0m")
                 continue
-        for i in datos:
-            if i[1] == eleccion:
-                encontrado = True
-                reserva_enct.append(i)
+        busqueda = busqueda_en_txt('datos/datos_reservas.txt', eleccion, 1)
+        if busqueda:
+            encontrado = True
+            reserva_enct = busqueda
         if not encontrado:
             print("\033[91mID de usuario no encontrado.\033[0m")
         else:
             mostrar_tabla(reserva_enct, 1)
+
+
 def borrado_reserva(admin):
     datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
     datos_shows = cargar_datos_json('datos/datos_shows.json')

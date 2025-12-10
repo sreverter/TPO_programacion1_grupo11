@@ -114,22 +114,28 @@ def mostrar_archivo_texto(ruta_archivo):
     except IOError as e:
         print(f"Error al leer el archivo: {e}")
 
-def devolver_usuario_txt(ruta_archivo, id_usuario_buscar):
+def busqueda_en_txt(ruta_archivo, buscar, dato):
     try:
         with open(ruta_archivo, 'rt', encoding="utf-8") as archivo:
             linea = archivo.readline()
-            usuario_encontrado = []
+            encontrado = []
             while linea != '':
                 datos = linea.strip().split(",")
                 id_reserva = int(datos[0])
                 id_usuario = int(datos[1])
                 sector = datos[2]
-                id_show = datos[3]
-                precio = datos[4]
-                cantidad = datos[5] 
-                if id_usuario == id_usuario_buscar:
-                    usuario_encontrado.append([id_reserva, id_usuario, sector, id_show, precio, cantidad])
-                    return usuario_encontrado
+                id_show = int(datos[3])
+                precio = int(datos[4])
+                cantidad = int(datos[5]) 
+                match dato:
+                    case 1:
+                        if id_usuario == buscar:
+                            encontrado.append([id_reserva, id_usuario, sector, id_show, precio, cantidad])
+                            return encontrado
+                    case 2:
+                        if id_reserva == buscar:
+                            encontrado.append([id_reserva, id_usuario, sector, id_show, precio, cantidad])
+                            return encontrado
                 linea = archivo.readline()
     except IOError as e:
         print(f"Error al leer el archivo: {e}")
