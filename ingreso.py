@@ -25,8 +25,12 @@ def menu_login():
                 return ingreso
             else:
                 print(f"\033[91m Opción inválida, intente de nuevo.\033[0m")
-        except(ValueError,KeyboardInterrupt):
-            print("\033[91mporfavor ingrese caracteres numericos validos\033[0m")
+        except ValueError:
+            print("Error de tipeo")
+            continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
 
 #parte de ingreso con contraseña y dni
 def login():
@@ -42,9 +46,12 @@ def login():
         try:
             dni_ingres=int(input("\033[36m Escriba su dni para verificacion: \033[0m"))
             break
-        except (ValueError,KeyboardInterrupt):
-            print("\033[91mporfavor caracteres numericos validos\033[0m")
+        except ValueError:
+            print("Error de tipeo")
             continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
     while True:
         for i in datos_usuarios:
             if i["dni"]==dni_ingres:
@@ -58,18 +65,25 @@ def login():
                 dni_ingres=int(input("\033[36m Escriba su dni para verificacion: si desea volver al menu de ingreso ingrese -1: \033[0m"))
                 if dni_ingres==-1:
                     return
-            except (ValueError,KeyboardInterrupt):
-                print("\033[91mPor favor caracteres numericos validos\033[0m")
+            except ValueError:
+                print("Error de tipeo")
                 continue
+            except (KeyboardInterrupt, EOFError):
+                print("Operación cancelada.")
+                return
     print()
     #ingreso de contraseña
     while True:
         try:
             contraseña=input("\033[36m Escriba su contraseña de usuario: \033[0m")
             break
-        except(ValueError, KeyboardInterrupt):
-            print("\033[91mingrese caracteres que sean validos\033[0m")
+        except ValueError:
+            print("Error de tipeo")
             continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
+
     while True:
         for i in info_usuario:
             if i["contraseña"]==contraseña:
@@ -82,9 +96,12 @@ def login():
                 contraseña=input("\033[36m Escriba su contraseña de usuario: si desea volver al menu de ingreso presione -1: \033[0m")
                 if contraseña=="-1":
                     return
-            except(ValueError, KeyboardInterrupt):
-                print("\033[91mingrese caracteres que sean validos\033[0m")
+            except ValueError:
+                print("Error de tipeo")
                 continue
+            except (KeyboardInterrupt, EOFError):
+                print("Operación cancelada.")
+                return
     
     for i in info_usuario:
         if i["roles"]=="admin":
@@ -110,8 +127,16 @@ def registrar():
     datos_usuarios = cargar_datos_json('datos/datos_usuarios.json')
 
     #el usuario escribe el nombre
-    nombre = str(input("\033[36m Escriba el nombre que desee usar: \033[0m"))
-
+    while True:   
+        try:
+            nombre = str(input("\033[36m Escriba el nombre que desee usar: \033[0m"))
+            break
+        except ValueError:
+            print("Error de tipeo")
+            continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
     #validaciones basicas de dni debido a no poder acceder a una fuente confiable de dnis para comparar 
     while True:
         try:
@@ -125,8 +150,12 @@ def registrar():
                 continue
             break
         except ValueError:
-            print("no se admite otra cosa que no sean enteros")
+            print("Error de tipeo")
             continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
+
 
     
     #revision de que sea dentro de los parametros asignados con el numero de area
@@ -138,7 +167,11 @@ def registrar():
             else:
                 print("\033[91mEl número debe estar entre 1100000000 y 1199999999.\033[0m")
         except ValueError:
-            print("\033[91mError: solo se admiten números.\033[0m")
+            print("Error de tipeo")
+            continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
 
     #convierte el telefono en un string
     telefono_cread=str(telefono_cread)
@@ -153,29 +186,60 @@ def registrar():
     telefono_organizado=re.sub(patron,numero_oculto,telefono_cread)
     
     while True:
-        email = input("\033[36m Escriba su email: \033[0m")
+        try:
+            email = input("\033[36m Escriba su email: \033[0m")
+            
+            # 1. Validar si existe
+            existe_email = checkear_dato_repetido(datos_usuarios, email, "correo")
+            if existe_email:
+                print("\033[91m Este correo ya está registrado. Intente con otro.\033[0m")
+                continue # Vuelve a pedir el input
 
-        existe_email = checkear_dato_repetido(datos_usuarios, email, "correo")
-        if existe_email:
-            print("\033[91m Este correo ya está registrado. Intente con otro.\033[0m")
+            # 2. Validar formato
+            arroba = re.findall('@', email)
+            punto  = re.findall(r'\.', email)
+
+            if len(arroba) == 0 or len(punto) == 0:
+                print("\033[91m Email inválido, debe contener '@' y '.' \033[0m")
+                continue # Vuelve a pedir el input
+            
+            # Si pasa todo, salimos
+            break
+
+        # Excepciones del input
+        except ValueError:
+            print("Error de tipeo")
             continue
-
-        arroba = re.findall('@', email)
-        punto  = re.findall(r'\.', email)
-
-        if len(arroba) == 0 or len(punto) == 0:
-            print("\033[91m Email inválido, debe contener '@' y '.' \033[0m")
-            continue 
-        break
+        except (KeyboardInterrupt, EOFError):
+            print("\nOperación cancelada.")
+            return
         
     #el usuario define su contraseña    
-    contraseña = input("\033[36m Escriba la contraseña que desea: \033[0m")
+    while True:   
+        try:
+            contraseña = input("\033[36m Escriba la contraseña que desea: \033[0m")
+            break
+        except ValueError:  
+            print("Error de tipeo")
+            continue
+        except (KeyboardInterrupt, EOFError):
+            print("Operación cancelada.")
+            return
+
 
     
-    roles=int(input("\033[36m Ingrese 1 si desea ser admin o 2 si desea ser usuario: \033[0m"))
-    while roles not in (1,2):
-        print("\033[91m Opción inválida, intente de nuevo.\033[0m")
-        roles=int(input("\033[36m Ingrese 1 si desea ser admin o 2 si desea ser usuario: \033[0m"))
+    while True:
+            try:
+                roles = int(input("\033[36m Ingrese 1 si desea ser admin o 2 si desea ser usuario: \033[0m"))
+                if roles in (1, 2):
+                    break
+                else:
+                    print("\033[91m Por favor ingrese 1 o 2.\033[0m")
+            except ValueError:
+                print("\033[91m Debe ingresar un número (1 o 2).\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                print("\n\033[93m\nEjecución interrumpida por el usuario. Saliendo...\033[0m")
+                return
     if roles==1:
         rol_asignado="admin"
     else:

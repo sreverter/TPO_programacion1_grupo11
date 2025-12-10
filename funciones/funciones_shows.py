@@ -7,42 +7,46 @@ datos_reserva_txt = "datos/datos_reservas.txt"
 
 def vista_show():
     datos = cargar_datos_json(datos_shows_js)
+    if not datos:
+            print("\033[91mNo hay shows registrados.\033[0m")
+            return
     dic_ordenado = sorted(datos, key=lambda x: x['fecha'])
     mostrar_tabla(dic_ordenado, 2)
 
 def busqueda_Show():
-    encontrado = False
     datos_shows = cargar_datos_json(datos_shows_js)
-    lista_temp = []
+    if not datos_shows:
+        print("No hay shows.")
+        return
     while True:
         try:
             elec = int(input("\033[36m\n1 - Buscar por ID\n2 - Buscar por fecha:\033[0m "))
             if elec not in (1, 2):
                 print("\033[91mOpción no válida.\033[0m")
-                continue
-            else:
-                break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mOpción inválida.\033[0m")
-            continue
-
+            break
+        except ValueError:
+            print("\033[91mError de tipeo.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
+    
+    lista_temp = []
     if elec == 1:
         vista_show()
         while True:
             try:
-                elec = int(input("\033[36mIngrese ID:\033[0m "))
+                id_show = int(input("\033[36mIngrese ID:\033[0m "))
                 break
-            except (ValueError, KeyboardInterrupt):
+            except ValueError:
                 print("\033[91mDebe ingresar un número válido.\033[0m")
-                continue
+            except (KeyboardInterrupt, EOFError):
+                return
 
-        for i in datos_shows:
-            if i['id-show'] == elec:
-                lista_temp.append(i)
-                encontrado = True
-                break
+        for show in datos_shows:
+            if show['id-show'] == id_show:
+                lista_temp.append(show)
+                break 
 
-        if not encontrado:
+        if not lista_temp:
             print("\033[91mNo se ha podido encontrar el ID del show.\033[0m")
         else:
             mostrar_tabla(lista_temp, 2)
@@ -54,87 +58,97 @@ def busqueda_Show():
                 año = int(input("\033[36mIngrese año:\033[0m "))
                 mes = int(input("\033[36mIngrese mes:\033[0m "))
                 dia = int(input("\033[36mIngrese día:\033[0m "))
-                fecha_buscada = datetime(año, mes, dia).date()
+                fecha_obj = datetime(año, mes, dia).date()
+                fecha_buscada = fecha_obj.strftime("%Y-%m-%d")
                 break
             except ValueError:
-                print("\033[91mFecha incorrecta, intente de nuevo.\033[0m")
-                continue
-
-        fecha_buscada = fecha_buscada.strftime("%Y-%m-%d")
+                print("\033[91mFecha incorrecta o números inválidos.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
+            
         for i in datos_shows:
             if i['fecha'] == fecha_buscada:
                 lista_temp.append(i)
-                encontrado = True
 
-        if not encontrado:
+        if not lista_temp:
             print("\033[91mNo se han encontrado shows en esa fecha.\033[0m")
         else:
             lista_temp = sorted(lista_temp, key=lambda x: x['fecha'])
             mostrar_tabla(lista_temp, 2)
-
 def borrado_Show():
     datos_shows = cargar_datos_json(datos_shows_js)
-    datos_reserva = cargar_datos_txt(datos_reserva_txt)
-
     if not datos_shows:
         print("\033[91mNo hay shows registrados para eliminar.\033[0m")
         return
-
     vista_show()
 
     while True:
         try:
             eleccion = int(input("\n\033[36mIngrese el ID del show que desea eliminar:\033[0m "))
-            break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mDebe ingresar un número válido.\033[0m")
+            
+            show_encontrado = None
+            for show in datos_shows:
+                if show["id-show"] == eleccion:
+                    show_encontrado = show
+                    break
+            
+            if show_encontrado:
+                break
+            else:
+                print("\033[91mNo se encontró el show especificado.\033[0m")
+                return 
+        except ValueError:
+            print("\033[91mError de tipeo.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
 
-    show_encontrado = False
-    for show in datos_shows:
-        if show["id-show"] == eleccion:
-            show_encontrado = True
-            break
+        try:
+            confirmar = input(f"\033[36m¿Está seguro de eliminar el show con ID {eleccion}? (s/n):\033[0m ").lower()
+            if confirmar == "n": return
+            if confirmar == "s": break
+        except (KeyboardInterrupt, EOFError):
+            return
 
-    if not show_encontrado:
-        print("\033[91mNo se encontró el show especificado.\033[0m")
-        return
+    datos_shows.remove(show_encontrado)
+    inicializar_datos_json(datos_shows_js, datos_shows)
 
-    confirmar = input(f"\033[36m¿Está seguro de eliminar el show con ID {eleccion}? (s/n):\033[0m ").lower()
-    if confirmar != "s":
-        print("\033[33mOperación cancelada.\033[0m")
-        return
+    datos_reserva = cargar_datos_txt(datos_reserva_txt)
+    reservas_nuevas = []
+    count_reservas = 0
+    
+    for r in datos_reserva:
+        try:
+            id_show_reserva = int(r[3])
+            if id_show_reserva != eleccion:
+                reservas_nuevas.append(r)
+            else:
+                count_reservas += 1
+        except (ValueError, IndexError):
+            continue
 
-    nuevos_shows = []
-    for show in datos_shows:
-        if show["id-show"] != eleccion:
-            nuevos_shows.append(show)
-
-    nuevas_reservas=[]
-    for i in datos_reserva:
-        id_usuario=int(i[3])
-        if id_usuario != eleccion:
-            nuevas_reservas.append(i)
-    if len(nuevas_reservas) == len(datos_reserva):
-        print("\033[33mNo se eliminaron reservas asociadas.\033[0m")
-
-    inicializar_datos_json(datos_shows_js, nuevos_shows)
-    inicializar_datos_txt(datos_reserva_txt, nuevas_reservas)
-
-    print(f"\033[34mShow con ID {eleccion} y sus reservas asociadas fueron eliminados correctamente.\033[0m")
+    if count_reservas > 0:
+        inicializar_datos_txt(datos_reserva_txt, reservas_nuevas)
+        print(f"\033[34mSe eliminó el show y {count_reservas} reservas asociadas.\033[0m")
+    else:
+        print("\033[34mShow eliminado. No tenía reservas asociadas.\033[0m")
 
 def edicion_show():
     datos_shows = cargar_datos_json(datos_shows_js)
-    id_encontrado = False
+    if not datos_shows:
+        print("No hay shows.")
+        return
+    show_a_editar = None
     while True:
         try:
             eleccion = int(input("\033[36mSeleccione el ID del show:\033[0m "))
             for i in datos_shows:
                 if i['id-show'] == eleccion:
-                    id_encontrado = True
-            if not id_encontrado:
-                print("\033[91mID no encontrado.\033[0m")
-            else:
+                    show_a_editar = i
+                    break
+            if show_a_editar:
                 break
+            else:
+                print("\033[91mID no encontrado.\033[0m")
         except (ValueError, KeyboardInterrupt):
             print("\033[91mIngrese un número válido.\033[0m")
 
@@ -152,71 +166,108 @@ def edicion_show():
                 break
             else:
                 print("\033[91mNúmero fuera del rango permitido.\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mIngrese un carácter válido.\033[0m")
-
+        except ValueError:
+            print("\033[91mError de tipeo.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
+    cambio=True
     for shows in datos_shows:
         if shows["id-show"] == eleccion:
             if opcion == 0:
-                shows['nombre-show'] = cambio_tipo_evento()
+                nuevo_nombre = cambio_tipo_evento()
+                if nuevo_nombre is not None:
+                    shows['nombre-show'] = nuevo_nombre
+                    cambio = True
             elif opcion == 1:
-                shows['duracion-show'] = cambio_duracion_evento(shows)
-            elif opcion == 2:
-                shows['precio'] = cambio_precio_evento()
-            elif opcion == 3:
-                shows['nombre-show'] = cambio_tipo_evento()
-                shows['duracion-show'] = cambio_duracion_evento(shows)
-                shows['precio'] = cambio_precio_evento()
-            break
+                fecha_actual = shows['fecha']
+                shows_mismo_dia = []
+                for s in datos_shows:
+                    if s['fecha'] == fecha_actual:
+                        shows_mismo_dia.append(s)
 
-    inicializar_datos_json(datos_shows_js, datos_shows)
-    print("\033[34mShow editado correctamente.\033[0m")
+                duracion_antigua = int(shows['duracion-show'])
+                nueva_duracion = cambio_duracion_evento(shows_mismo_dia, duracion_antigua)
+
+                if nueva_duracion is not None:
+                    shows['duracion-show'] = nueva_duracion
+                    cambio = True
+
+            elif opcion == 2:
+                nuevo_precio = cambio_precio_evento()
+                if nuevo_precio is not None:
+                    shows['precio'] = nuevo_precio
+                    cambio = True
+
+            elif opcion == 3:
+                nuevo_nombre = cambio_tipo_evento()
+                if nuevo_nombre is not None:
+                    shows['nombre-show'] = nuevo_nombre
+                    cambio = True
+                
+                fecha_actual = shows['fecha']
+                shows_mismo_dia = []
+                for s in datos_shows:
+                    if s['fecha'] == fecha_actual:
+                        shows_mismo_dia.append(s)
+                
+                duracion_antigua = int(shows['duracion-show'])
+                nueva_duracion = cambio_duracion_evento(shows_mismo_dia, duracion_antigua)
+                
+                if nueva_duracion is not None:
+                    shows['duracion-show'] = nueva_duracion
+                    cambio = True
+
+                nuevo_precio = cambio_precio_evento()
+                if nuevo_precio is not None:
+                    shows['precio'] = nuevo_precio
+                    cambio = True
+            break
+    if cambio:
+        inicializar_datos_json(datos_shows_js, datos_shows)
+        print("\033[34mShow editado correctamente.\033[0m")
+    else:
+        print("\033[33mNo se guardaron cambios.\033[0m")
 
 def agregar_shows():
     datos_shows = cargar_datos_json(datos_shows_js)
-    id_show = nuevo_id_show(datos_shows)
-    tipo_evento = cambio_tipo_evento()
-
-    while True:
-        try:
-            duracion = int(input("\033[36mIngrese la cantidad de minutos:\033[0m "))
-            if duracion > 0 and duracion < 720:
-                break
-            else:
-                print("\033[91mDebe ser un número positivo menor a 720.\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mDebe ingresar un número válido.\033[0m")
-            continue
-
-    espectadores = 0
-    espacios_disponibles = 999
-
+    
     while True:
         try:
             año = int(input("\033[36mIngrese año:\033[0m "))
             mes = int(input("\033[36mIngrese mes:\033[0m "))
             dia = int(input("\033[36mIngrese día:\033[0m "))
-            fecha_buscada = datetime(año, mes, dia).date()
+            fecha_obj = datetime(año, mes, dia).date()
+            fecha_buscada = fecha_obj.strftime("%Y-%m-%d")
             break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mFecha incorrecta, intente nuevamente.\033[0m")
+        except ValueError:
+            print("\033[91mFecha inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
 
-    lista_temp = []
+    shows_del_dia = []
     for show in datos_shows:
-        fechas=show['fecha']
-        if fechas ==str(fecha_buscada):
-            lista_temp.append(show)
+        if show['fecha'] == fecha_buscada:
+            shows_del_dia.append(show)
+            
+    print(f"\033[96mValidando disponibilidad para el {fecha_buscada}...\033[0m")
     
-    suma_duraciones=0
-    for show in lista_temp:
-        duracion_show = show.get("duracion-show", 0)
-        suma_duraciones += duracion_show
-    
-    suma_duraciones = sum(show.get("duracion-show", 0) for show in lista_temp)
-    precio = cambio_precio_evento()
+    duracion = cambio_duracion_evento(shows_del_dia, 0) 
 
-    if (suma_duraciones + duracion) < 720:
-        nuevo_show = {
+    if duracion is None:
+        print("Acción cancelada por el usuario.")
+        return
+
+    tipo_evento = cambio_tipo_evento()
+    if tipo_evento is None: return
+
+    precio = cambio_precio_evento()
+    if precio is None: return
+    
+    id_show = nuevo_id_show(datos_shows)
+    espectadores = 0
+    espacios_disponibles = 50 
+
+    nuevo_show = {
             "id-show": id_show,
             "nombre-show": tipo_evento,
             "duracion-show": duracion,
@@ -224,9 +275,8 @@ def agregar_shows():
             "espacios-disponibles": espacios_disponibles,
             "fecha": str(fecha_buscada),
             "precio": precio
-        }
-        print("\033[34mShow creado con éxito.\033[0m")
-        datos_shows.append(nuevo_show)
-        inicializar_datos_json(datos_shows_js, datos_shows)
-    else:
-        print("\033[91mNo hay espacio disponible ese día para agregar el show.\033[0m")
+    }
+    
+    datos_shows.append(nuevo_show)
+    inicializar_datos_json(datos_shows_js, datos_shows)
+    print("\033[34mShow creado con éxito.\033[0m")

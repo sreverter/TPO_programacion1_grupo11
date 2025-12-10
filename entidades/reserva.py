@@ -8,37 +8,49 @@ def id_alt_r():
         return 1
     mayor_id = 0
     for reserva in datos_reservas:
-        if reserva[0] > mayor_id:
-            mayor_id = reserva[0]
+        try:
+            id_actual = int(reserva[0]) 
+            if id_actual > mayor_id:
+                mayor_id = id_actual
+        except (ValueError, IndexError):
+            continue 
     mayor_id += 1
     return mayor_id
-
 def obt_id_Actual():
-    dni_act = (dni_en_uso[0])
+    if not dni_en_uso:
+        return None 
+    dni_act = dni_en_uso[0]
     user_act = []
     datos_usuario = cargar_datos_json('datos/datos_usuarios.json')
     for i in datos_usuario:
         if i["dni"] == dni_act:
-            user_act.append(i["id"])
-    return user_act[0]
+            return i["id"]
+    return None
 
 def buscar_show(id_show):
     datos_shows = cargar_datos_json("datos/datos_shows.json")
-    for s in datos_shows:
-        if int(s['id-show']) == int(id_show):
-            return s
-    return 0
+    if not datos_shows: return None
 
+    for s in datos_shows:
+        try:
+            if int(s['id-show']) == int(id_show):
+                return s
+        except ValueError:
+            continue
+    return None
 def calcular_precio(show, ubicacion, cantidad):
-    base = int(show['precio'])
-    multiplicador = {
-        'platea': 1,
-        'campo': 2,
-        'vip': 3
-    }.get(ubicacion, 1)
-    entradas = [base * multiplicador] * cantidad
-    total = reduce(lambda acc, x: acc + x, entradas, 0)
-    return total
+    try:
+        base = int(show['precio'])
+        multiplicador = {
+            'platea': 1,
+            'campo': 2,
+            'vip': 3
+        }.get(ubicacion, 1)
+        entradas = [base * multiplicador] * cantidad
+        total = reduce(lambda acc, x: acc + x, entradas, 0)
+        return total
+    except ValueError:
+        return 0
 
 def actualizar_datos_borrado(id_show_list, datos_reservas, datos_shows):
     for show_id, cantidad in id_show_list:
@@ -46,6 +58,7 @@ def actualizar_datos_borrado(id_show_list, datos_reservas, datos_shows):
             if show["id-show"] == show_id:
                 show["espacios-disponibles"] += cantidad
                 show["espectadores"] -= cantidad
+                break
     print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
     inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
@@ -63,3 +76,5 @@ def borrado_reserva_menu():
                 print("\033[91mDebe ser un número entre 1 y 2\033[0m")
         except (ValueError, KeyboardInterrupt):
             print("\033[91mIngrese un valor válido\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return None 

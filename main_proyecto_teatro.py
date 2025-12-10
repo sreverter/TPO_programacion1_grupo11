@@ -58,10 +58,20 @@ while start==True:
                     "\033[35m  → [6] SALIR DEL PROGRAMA\033[0m\n"
                     "\033[1;35m Seleccione una opción: \033[0m"
                 ))
-            except (ValueError,KeyboardInterrupt):
-                print()
-                print("\033[91mIngrese un caracter numerico del 1 al 5\033[0m")
+            except ValueError:
+                print("\n\033[91mError: Debes ingresar un número entero válido.\033[0m")
                 continue
+
+            except KeyboardInterrupt:
+                print("\n\033[93m\nEjecución interrumpida por el usuario. Saliendo...\033[0m")
+                start = False 
+                break         
+
+            except EOFError:
+                print("\n\033[93m\nEntrada cerrada inesperadamente. Saliendo...\033[0m")
+                start = False
+                break
+
         #caso usuario
         if admin==False:
             try:
@@ -74,10 +84,20 @@ while start==True:
                     "\033[35m  → [5] SALIR DEL PROGRAMA\033[0m\n"
                     "\033[1;35m Seleccione una opción: \033[0m"
                 ))
-            except (ValueError,KeyboardInterrupt):
-                print()
-                print("\033[91mIngrese un caracter numerico del 1 al 5\033[0m")
+            except ValueError:
+                print("\n\033[91mError: Debes ingresar un número entero válido.\033[0m")
                 continue
+
+            except KeyboardInterrupt:
+                print("\n\033[93m\nEjecución interrumpida por el usuario. Saliendo...\033[0m")
+                start = False 
+                break         
+
+            except EOFError:
+                print("\n\033[93m\nEntrada cerrada inesperadamente. Saliendo...\033[0m")
+                start = False
+                break
+
         # SUBMENÚS
         if admin:
             func_start = [
@@ -94,14 +114,14 @@ while start==True:
             ]
 
         #forma de entrar a los indices
-        try:
-            maximo = len(func_start)
-            if 1 <= usuario <= maximo:
+        maximo = len(func_start)
+        if 1 <= usuario <= maximo:
+            try:
                 indice = usuario - 1
                 func_start[indice]()
                 continue
-        except Exception as e:
-            print(f"\033[91mError en el submenú: {e}\033[0m")
+            except Exception as e:
+                print(f"\033[91mError en el submenú: {e}\033[0m")
 
         #salida de sesion donde se vuelve el admin a false y empezas el logueo de nuevo
         if (usuario == 5 and admin) or (usuario == 4 and admin == False):
