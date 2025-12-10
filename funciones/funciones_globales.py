@@ -118,7 +118,7 @@ def busqueda_en_txt(ruta_archivo, buscar, dato):
     try:
         with open(ruta_archivo, 'rt', encoding="utf-8") as archivo:
             linea = archivo.readline()
-            encontrado = []
+            reservas_encontrados = []
             while linea != '':
                 datos = linea.strip().split(",")
                 id_reserva = int(datos[0])
@@ -127,15 +127,17 @@ def busqueda_en_txt(ruta_archivo, buscar, dato):
                 id_show = int(datos[3])
                 precio = int(datos[4])
                 cantidad = int(datos[5]) 
-                match dato:
-                    case 1:
-                        if id_usuario == buscar:
-                            encontrado.append([id_reserva, id_usuario, sector, id_show, precio, cantidad])
-                            return encontrado
-                    case 2:
-                        if id_reserva == buscar:
-                            encontrado.append([id_reserva, id_usuario, sector, id_show, precio, cantidad])
-                            return encontrado
-                linea = archivo.readline()
+                if dato == 1:
+                    if id_usuario == buscar:
+                        encontrado = [id_reserva, id_usuario, sector, id_show, precio, cantidad]
+                        reservas_encontrados.append(encontrado)
+                    linea = archivo.readline()
+                elif dato == 2:
+                    if id_reserva == buscar:
+                        encontrado = [id_reserva, id_usuario, sector, id_show, precio, cantidad]
+                        reservas_encontrados.append(encontrado)
+                    linea = archivo.readline()
+            return reservas_encontrados
+
     except IOError as e:
         print(f"Error al leer el archivo: {e}")

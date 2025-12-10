@@ -158,10 +158,10 @@ def borrado_reserva(admin):
         reservas_usuario = []
         id_usuario = obt_id_Actual()
 
-        for i in datos_reservas:
-            if i[1] == id_usuario:
-                reservas_d_usuario = True
-                reservas_usuario.append(i)
+        busqueda = busqueda_en_txt('datos/datos_reservas.txt', id_usuario, 1)
+        if busqueda:
+            reservas_d_usuario = True
+            reservas_usuario = busqueda
 
         if not reservas_d_usuario:
             print("\033[91mNo hay reservas registradas a su nombre.\033[0m")
