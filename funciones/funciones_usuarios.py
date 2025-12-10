@@ -144,6 +144,10 @@ def edicion_usuario(admin):
                     "\033[36mSeleccione una opción:\033[0m "
                 ))
                 if opcion in (0,1,2):
+                    if opcion==1:
+                        opcion=2
+                    elif opcion==2:
+                        opcion=3
                     break
             except ValueError:
                 print("\033[91mError de tipeo.\033[0m")

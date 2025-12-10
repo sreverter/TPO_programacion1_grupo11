@@ -265,7 +265,7 @@ def agregar_shows():
     
     id_show = nuevo_id_show(datos_shows)
     espectadores = 0
-    espacios_disponibles = 50 
+    espacios_disponibles = 999
 
     nuevo_show = {
             "id-show": id_show,

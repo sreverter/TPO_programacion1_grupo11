@@ -212,11 +212,12 @@ def borrado_reserva(admin):
                     print(f"\033[31mReserva {id_borrar} eliminada.\033[0m")
                 else:
                     print("\033[91mNo se encontró la reserva con ese ID.\033[0m")
+                    return
             except ValueError:
                 print("\033[91mID inválido.\033[0m")
             except (KeyboardInterrupt, EOFError):
                 return
-        
+    
         # === BORRAR TODAS LAS RESERVAS ===
         elif opcion == 2:
             datos_reservas_borrar = []
