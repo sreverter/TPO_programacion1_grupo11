@@ -214,3 +214,59 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
         else:
             os.remove(temp)  # eliminamos el temporal si no se usó
             print(f"No se encontró la reserva con ID {borrar}.")
+
+def modificacion_en_txt(ruta_archivo, id_reserva_modif, nuevo_show_id=None, nuevo_sector=None, nuevo_precio=None):
+    temp = 'datos/datos_reservas_temp.txt'
+    encontrado = False
+
+    try:
+        arch = open(ruta_archivo, "rt", encoding="UTF-8")
+        aux = open(temp, "wt", encoding="UTF-8")
+
+        for linea in arch:
+            datos = linea.strip().split(",")
+            id_reserva = int(datos[0])
+            id_usuario = int(datos[1])
+            sector = datos[2]
+            id_show = int(datos[3])
+            # precio = int(datos[4])
+            cantidad = int(datos[5])
+
+            if nuevo_show_id is None:
+                if id_reserva == id_reserva_modif:
+                    encontrado = True
+                    nueva_linea = f"{id_reserva},{id_usuario},{nuevo_sector},{id_show},{nuevo_precio},{cantidad}\n"
+                    print(nueva_linea)
+                    aux.write(nueva_linea)
+                    print(f"Reserva {id_reserva} modificada.")
+                else:
+                    aux.write(linea)
+            else:
+                if id_reserva == id_reserva_modif:
+                    encontrado = True
+                    nueva_linea = f"{id_reserva},{id_usuario},{sector},{nuevo_show_id},{nuevo_precio},{cantidad}\n"
+                    print(nueva_linea)
+                    aux.write(nueva_linea)
+                    print(f"Reserva {id_reserva} modificada.")
+                else:
+                    aux.write(linea)
+    except FileNotFoundError:
+        print("El archivo no existe.")
+    except OSError as error:
+        print("Error en el acceso al archivo:", error)
+    finally:
+        try:
+            arch.close()
+            aux.close()
+        except:
+            print("Error en el cierre del archivo:")
+
+    if encontrado:
+        try:
+            os.remove(ruta_archivo)
+            os.rename(temp, ruta_archivo)
+        except OSError as error:
+            print("Error al reemplazar el archivo:", error)
+    else:
+        os.remove(temp)
+        print(f"No se encontró la reserva {id_reserva_modif}.")

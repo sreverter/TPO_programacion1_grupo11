@@ -149,7 +149,7 @@ def busqueda_Reserva():
 
 
 def borrado_reserva(admin):
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+    # datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
     datos_shows = cargar_datos_json('datos/datos_shows.json')
     #reaparti por bloques porque ya me estaba mareando
     # === BLOQUE USUARIO NORMAL ===
@@ -301,16 +301,20 @@ def borrado_reserva(admin):
 def edicion_reserva():
     datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
     datos_shows = cargar_datos_json("datos/datos_shows.json")
-    mostrar_tabla(datos_reservas, 1)
+    # mostrar_tabla(datos_reservas, 1)
+    mostrar_archivo_texto('datos/datos_reservas.txt')
     show_encontrado = False
     while not show_encontrado:
         try:
             id_a_editar = int(input("\033[36mSeleccione el ID de reserva a editar:\033[0m "))
-            for r in datos_reservas:
-                if r[0] == id_a_editar:
-                    reserva_encontrada = r
-                    show_encontrado = True
-                    break
+            # for r in datos_reservas:
+            #     if r[0] == id_a_editar:
+            #         reserva_encontrada = r
+            #         show_encontrado = True
+            #         break
+            reserva_encontrada = busqueda_en_txt('datos/datos_reservas.txt', id_a_editar, 2)
+            if reserva_encontrada:
+                show_encontrado = True
             if not show_encontrado:
                 print("\033[91mNo se encontró la reserva con ese ID.\033[0m")
                 continue
@@ -318,8 +322,8 @@ def edicion_reserva():
             print("\033[91mEntrada inválida.\033[0m")
             continue
 
-    cantidad = int(reserva_encontrada[5])
-    print(f"\033[34mEditando reserva ID: {reserva_encontrada[0]}\033[0m")
+    cantidad = int(reserva_encontrada[0][5])
+    print(f"\033[34mEditando reserva ID: {reserva_encontrada[0][0]}\033[0m")
 
     while True:
         try:
@@ -358,11 +362,10 @@ def edicion_reserva():
         elif ubicacion == 3:
             nueva_ubicacion = "vip"
 
-        id_show = int(reserva_encontrada[3])
+        id_show = int(reserva_encontrada[0][3])
         show_actual = buscar_show(id_show)
         nuevo_precio = calcular_precio(show_actual, nueva_ubicacion, cantidad)
-        reserva_encontrada[2] = nueva_ubicacion
-        reserva_encontrada[4] = nuevo_precio
+        modificacion_en_txt('datos/datos_reservas.txt', id_a_editar, nuevo_show_id=None, nuevo_sector=nueva_ubicacion, nuevo_precio=nuevo_precio)
         print("\033[34mUbicación y precio actualizados correctamente.\033[0m")
 
     elif eleccion == 2:
@@ -382,7 +385,7 @@ def edicion_reserva():
                 print("\033[91mEntrada inválida.\033[0m")
 
         for show in datos_shows:
-            if show["id-show"] == reserva_encontrada[3]:
+            if show["id-show"] == reserva_encontrada[0][3]:
                 show["espacios-disponibles"] += cantidad
                 show["espectadores"] -= cantidad
                 break
@@ -393,12 +396,13 @@ def edicion_reserva():
                 show["espectadores"] += cantidad
                 break
 
-        nueva_ubic = reserva_encontrada[2]
+        nueva_ubic = reserva_encontrada[0][2]
         nuevo_precio = calcular_precio(show_nuevo, nueva_ubic, cantidad)
-        reserva_encontrada[3] = nuevo_show_id
-        reserva_encontrada[4] = nuevo_precio
+        reserva_encontrada[0][3] = nuevo_show_id
+        reserva_encontrada[0][4] = nuevo_precio
+        modificacion_en_txt('datos/datos_reservas.txt', id_a_editar, nuevo_show_id, nuevo_sector=None, nuevo_precio=nuevo_precio)
         print("\033[34mShow actualizado correctamente.\033[0m")
 
-    inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+    # inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
     print("\033[96mCambios guardados exitosamente.\033[0m")
