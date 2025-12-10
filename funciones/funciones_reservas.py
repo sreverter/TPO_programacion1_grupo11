@@ -6,18 +6,25 @@ colordorado = "\033[38;2;207;181;59m"
 
 def vista_reserva(admin):
     vista = []
-    datos = cargar_datos_txt('datos/datos_reservas.txt')
+    # datos = cargar_datos_txt('datos/datos_reservas.txt')
     if admin:
-        mostrar_tabla(datos, 1)
+        mostrar_archivo_texto('datos/datos_reservas.txt')
     elif admin == False:
         usuario_Act = obt_id_Actual()
-        for i in datos:
-            if int(i[1]) == usuario_Act:
-                vista.append(i)
+        vista = devolver_usuario_txt('datos/datos_reservas.txt', usuario_Act)
         if len(vista) > 0:
             mostrar_tabla(vista, 1)
         else:
             print("\033[91mNo hay ninguna reserva registrada.\033[0m")
+
+def alta_reserva(nueva_reserva):
+    try:
+        with open('datos/datos_reservas.txt', 'a', encoding='utf-8') as archivo:
+            linea = f"{nueva_reserva[0]},{nueva_reserva[1]},{nueva_reserva[2]},{nueva_reserva[3]},{nueva_reserva[4]},{nueva_reserva[5]}\n"
+            archivo.write(linea)
+            print("\033[34mReserva guardada con éxito.\033[0m")
+    except OSError as e:
+        print(f"Error al guardar la reserva: {e}")
 
 def agregar_reservas(admin):
     datos_shows = cargar_datos_json('datos/datos_shows.json')
@@ -89,10 +96,9 @@ def agregar_reservas(admin):
         precio_act = precio_vip
         sector = "vip"
     print(f"\033[34mReserva generada con éxito. Precio total: ${precio_act}\033[0m")
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+
     nueva_reserva = [id_reserva, id_usuario, sector, show, precio_act, num_reserva]
-    datos_reservas.append(nueva_reserva)
-    inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+    alta_reserva(nueva_reserva)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
 def busqueda_Reserva():

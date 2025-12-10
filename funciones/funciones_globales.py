@@ -94,3 +94,42 @@ def checkear_dato_repetido(datos_checkear, dato_a_checkear, clave):
     if dato_a_checkear in conjunto_datos:
         return True
     return False
+
+def mostrar_archivo_texto(ruta_archivo):
+    try:
+        with open(ruta_archivo, 'rt', encoding="utf-8") as archivo:
+            print('Reservas')
+            print(f'{"ID Reserva":<12}{"ID Usuario":<12}{"Sector":<10}{"ID Show":<10}{"Precio":<10}{"Cantidad":<10}')
+            linea = archivo.readline()
+            while linea != '':
+                datos = linea.strip().split(",")
+                id_reserva = datos[0]
+                id_usuario = datos[1]
+                sector = datos[2]
+                id_show = datos[3]
+                precio = datos[4]
+                cantidad = datos[5]
+                print(f'{id_reserva:<12}{id_usuario:<12}{sector:<10}{id_show:<10}{precio:<10}{cantidad:<10}')
+                linea = archivo.readline()
+    except IOError as e:
+        print(f"Error al leer el archivo: {e}")
+
+def devolver_usuario_txt(ruta_archivo, id_usuario_buscar):
+    try:
+        with open(ruta_archivo, 'rt', encoding="utf-8") as archivo:
+            linea = archivo.readline()
+            usuario_encontrado = []
+            while linea != '':
+                datos = linea.strip().split(",")
+                id_reserva = int(datos[0])
+                id_usuario = int(datos[1])
+                sector = datos[2]
+                id_show = datos[3]
+                precio = datos[4]
+                cantidad = datos[5] 
+                if id_usuario == id_usuario_buscar:
+                    usuario_encontrado.append([id_reserva, id_usuario, sector, id_show, precio, cantidad])
+                    return usuario_encontrado
+                linea = archivo.readline()
+    except IOError as e:
+        print(f"Error al leer el archivo: {e}")
