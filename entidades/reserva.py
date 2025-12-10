@@ -40,14 +40,13 @@ def calcular_precio(show, ubicacion, cantidad):
     total = reduce(lambda acc, x: acc + x, entradas, 0)
     return total
 
-def actualizar_datos_borrado(id_show_list, datos_reservas, datos_shows):
+def actualizar_datos_borrado(id_show_list, datos_shows):
     for show_id, cantidad in id_show_list:
         for show in datos_shows:
             if show["id-show"] == show_id:
                 show["espacios-disponibles"] += cantidad
                 show["espectadores"] -= cantidad
     print("\033[34mLos datos de capacidad fueron actualizados\033[0m")
-    inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
 def borrado_reserva_menu():
