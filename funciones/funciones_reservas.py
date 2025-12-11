@@ -299,7 +299,7 @@ def borrado_reserva(admin):
                 # inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
 def edicion_reserva():
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+    # datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
     datos_shows = cargar_datos_json("datos/datos_shows.json")
     # mostrar_tabla(datos_reservas, 1)
     mostrar_archivo_texto('datos/datos_reservas.txt')
