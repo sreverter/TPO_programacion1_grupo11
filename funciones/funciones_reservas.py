@@ -261,19 +261,17 @@ def borrado_reserva(admin):
     if reservas_a_borrar:
         cambios_realizados = False
         
-        for reserva in reservas_a_borrar:
-            try:
-                id_show_reserva = int(reserva[3])
-                cantidad_entradas = int(reserva[5])
-                
-                for show in datos_shows:
-                    if show["id-show"] == id_show_reserva:
-                        show["espacios-disponibles"] += cantidad_entradas
-                        show["espectadores"] -= cantidad_entradas
-                        cambios_realizados = True
-                        break
-            except (IndexError, ValueError):
-                print(f"\033[93mAlerta: Error al intentar restaurar cupos de una reserva mal formada.\033[0m")
+        shows_y_cantidades = list(map(lambda r: (int(r[3]), int(r[5])), reservas_a_borrar))
+
+        cambios_realizados = False
+
+        for id_show_reserva, cantidad_entradas in shows_y_cantidades:
+            for show in datos_shows:
+                if show["id-show"] == id_show_reserva:
+                    show["espacios-disponibles"] += cantidad_entradas
+                    show["espectadores"] -= cantidad_entradas
+                    cambios_realizados = True
+                    break
 
         if cambios_realizados:
             inicializar_datos_json('datos/datos_shows.json', datos_shows) 
