@@ -217,7 +217,7 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
             try:
                 os.remove(ruta_archivo)
                 os.rename(temp, ruta_archivo) # renombra el temporal
-                print(f"Reserva con ID {borrar} eliminado correctamente.")
+                # print(f"Reserva con ID {borrar} eliminado correctamente.")
             except OSError as error:
                 print("Error al reemplazar el archivo:", error)
         else:
@@ -232,6 +232,40 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
                 datos = linea.strip().split(",")
                 id_usuario = int(datos[1])
                 if id_usuario != int(borrar):
+                    aux.write(linea)
+                else:
+                    encontrado = True
+
+        except FileNotFoundError:
+            print("El archivo no existe.")
+        except OSError as error:
+            print("Error en el acceso al archivo:", error)
+        finally:
+            try:
+                arch.close()
+                aux.close()
+            except:
+                print("Error en el cierre del archivo:")
+
+        if encontrado == True:
+            try:
+                os.remove(ruta_archivo)
+                os.rename(temp, ruta_archivo) # renombra el temporal
+                # print(f"Reservas con ID de usuario {borrar} eliminadas correctamente.")
+            except OSError as error:
+                print("Error al reemplazar el archivo:", error)
+        else:
+            os.remove(temp)  # eliminamos el temporal si no se usó
+            print(f"No se encontró la reserva con ID {borrar}.")
+
+    elif opcion == 3:
+        try:
+            arch = open(ruta_archivo, "rt", encoding="UTF-8")
+            aux = open(temp, "wt", encoding="UTF-8")
+            for linea in arch:
+                datos = linea.strip().split(",")
+                id_show = int(datos[3])
+                if id_show != int(borrar):
                     aux.write(linea)
                 else:
                     encontrado = True
