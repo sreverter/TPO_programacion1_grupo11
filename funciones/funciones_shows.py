@@ -182,17 +182,21 @@ def edicion_show():
             print("\033[91mEntrada inválida.\033[0m")
         except (KeyboardInterrupt, EOFError):
             return
+    cambio=False
     for shows in datos_shows:
         if shows["id-show"] == eleccion:
             if opcion == 0:
                 shows['nombre-show'] = cambio_tipo_evento()
+                cambio=True
             elif opcion == 1:
                 shows = cambio_duracion_evento(shows)
                 if shows == None:
                     continue
-                shows['duracion-show']=shows 
+                shows['duracion-show']=shows
+                cambio=True 
             elif opcion == 2:
                 shows['precio'] = cambio_precio_evento()
+                cambio=True
             elif opcion == 3:
                 shows['nombre-show'] = cambio_tipo_evento()
                 shows = cambio_duracion_evento(shows)
@@ -200,10 +204,11 @@ def edicion_show():
                     continue
                 shows['duracion-show']=shows 
                 shows['precio'] = cambio_precio_evento()
+                cambio=True
             break
-
-    inicializar_datos_json(datos_shows_js, datos_shows)
-    print("\033[34mShow editado correctamente.\033[0m")
+    if cambio:
+        inicializar_datos_json(datos_shows_js, datos_shows)
+        print("\033[34mShow editado correctamente.\033[0m")
 
 def agregar_shows():
     datos_shows = cargar_datos_json(datos_shows_js)
