@@ -3,6 +3,15 @@ datos_usuarios_js = "datos/datos_usuarios.json"
 datos_reserva_txt = "datos/datos_reservas.txt"
 datos_show_js = "datos/datos_shows.json"
 
+def imprimir_barras_rec(columna_activos, columna_inactivos, alto, i=0):
+    if i >= alto:
+        return
+    print(columna_activos[i].ljust(12) + columna_inactivos[i])
+    imprimir_barras_rec(columna_activos, columna_inactivos, alto, i + 1)
+    imprimir_barras_rec(columna_activos, columna_inactivos, alto)
+    print("   _______     _______")
+
+
 def shows_mas_vendidos():
     lista_shows = cargar_datos_json(datos_show_js)
 
@@ -63,13 +72,7 @@ def crear_Grafico(num, num2, act, inac, paso):
     print(f'\033[36m    {"ACTIVO"}     {"INACTIVO"}\033[0m')
     print(f"      {act}          {inac}")
     print()
-    def imprimir_barras_rec(columna_activos, columna_inactivos, alto, i=0):
-        if i >= alto:
-            return
-        print(columna_activos[i].ljust(12) + columna_inactivos[i])
-        imprimir_barras_rec(columna_activos, columna_inactivos, alto, i + 1)
-    imprimir_barras_rec(columna_activos, columna_inactivos, alto)
-    print("   _______     _______")
+    imprimir_barras_rec()
 
 def pedir_principio(maximo):
     try:
