@@ -58,10 +58,7 @@ def mostrar_tabla(dato, opcion):
 
 
 def inicializar_datos_json(ruta_archivo, datos):
-    # nuevos_datos = json.dumps(datos, indent=4, ensure_ascii=False)
     try:
-        # with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
-        #     archivo.write(nuevos_datos + "\n" )
         with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
             json.dump(datos, archivo, ensure_ascii=False, indent=4)
     except IOError as e:
