@@ -17,10 +17,12 @@ def cambio_nombre_usuario():
         try:
             nombre_nuevo = str(input("\033[36mIngrese el nombre que desea de usuario:\033[0m "))
             return nombre_nuevo
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mNo se acepta el carácter que intentó colocar\033[0m")
-            continue
-
+        except ValueError:
+            print("Nombre inválido.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return
 def cambio_dni_usuario():
     datos_usuarios = cargar_datos_json('datos/datos_usuarios.json')
     while True:
@@ -35,8 +37,11 @@ def cambio_dni_usuario():
                 continue
             return dni_nuevo
         except ValueError:
-            print("\033[91mNo se admite otra cosa que no sean números enteros\033[0m")
-
+            print("dni inválido.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return
 def cambio_telefono_usuario():
     while True:
         try:
@@ -45,8 +50,12 @@ def cambio_telefono_usuario():
                 return telefono_nuevo
             else:
                 print("\033[91mEl número debe estar entre 1100000000 y 1199999999\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mError: solo se admiten números\033[0m")
+        except ValueError:
+            print("telefono inválido.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return
 
 def cambio_email_usuario():
     while True:
@@ -58,6 +67,9 @@ def cambio_email_usuario():
                 return email
             else:
                 print("\033[91mEmail inválido, debe contener '@' y '.'\033[0m")
-        except (KeyboardInterrupt, ValueError):
-            print("\033[91mIngrese caracteres válidos\033[0m")
-            continue
+        except ValueError:
+            print("email inválido.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return

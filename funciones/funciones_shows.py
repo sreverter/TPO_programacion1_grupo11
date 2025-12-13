@@ -6,8 +6,21 @@ datos_shows_js = "datos/datos_shows.json"
 datos_reserva_txt = "datos/datos_reservas.txt"
 
 def vista_show():
-    datos = cargar_datos_json(datos_shows_js)
-    dic_ordenado = sorted(datos, key=lambda x: x['fecha'])
+    try:
+        datos = cargar_datos_json(datos_shows_js)
+    except OSError:
+        print("\033[91mNo se pudo acceder al archivo de shows.\033[0m")
+        return
+
+    if not datos:
+        print("\033[91mNo hay shows cargados.\033[0m")
+        return
+    try:
+        dic_ordenado = sorted(datos, key=lambda x: x['fecha'])
+    except KeyError:
+        print("\033[91mError en el formato de los datos de fecha.\033[0m")
+        return
+            
     mostrar_tabla(dic_ordenado, 2)
 
 def busqueda_Show():
@@ -22,9 +35,10 @@ def busqueda_Show():
                 continue
             else:
                 break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mOpción inválida.\033[0m")
-            continue
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
 
     if elec == 1:
         vista_show()
@@ -32,10 +46,11 @@ def busqueda_Show():
             try:
                 elec = int(input("\033[36mIngrese ID:\033[0m "))
                 break
-            except (ValueError, KeyboardInterrupt):
-                print("\033[91mDebe ingresar un número válido.\033[0m")
-                continue
-
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
+            
         for i in datos_shows:
             if i['id-show'] == elec:
                 lista_temp.append(i)
@@ -57,9 +72,10 @@ def busqueda_Show():
                 fecha_buscada = datetime(año, mes, dia).date()
                 break
             except ValueError:
-                print("\033[91mFecha incorrecta, intente de nuevo.\033[0m")
-                continue
-
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
+            
         fecha_buscada = fecha_buscada.strftime("%Y-%m-%d")
         for i in datos_shows:
             if i['fecha'] == fecha_buscada:
@@ -73,8 +89,12 @@ def busqueda_Show():
             mostrar_tabla(lista_temp, 2)
 
 def borrado_Show():
-    datos_shows = cargar_datos_json(datos_shows_js)
-    datos_reserva = cargar_datos_txt(datos_reserva_txt)
+    try:
+        datos_shows = cargar_datos_json(datos_shows_js)
+        datos_reserva = cargar_datos_txt(datos_reserva_txt)
+    except OSError:
+        print("\033[91mNo se pudo acceder a los archivos.\033[0m")
+        return
 
     if not datos_shows:
         print("\033[91mNo hay shows registrados para eliminar.\033[0m")
@@ -86,9 +106,11 @@ def borrado_Show():
         try:
             eleccion = int(input("\n\033[36mIngrese el ID del show que desea eliminar:\033[0m "))
             break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mDebe ingresar un número válido.\033[0m")
-
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
+        
     show_encontrado = False
     for show in datos_shows:
         if show["id-show"] == eleccion:
@@ -111,7 +133,10 @@ def borrado_Show():
 
     nuevas_reservas=[]
     for i in datos_reserva:
-        id_usuario=int(i[3])
+        try:
+            id_usuario = int(i[3])
+        except (ValueError, IndexError):
+            continue
         if id_usuario != eleccion:
             nuevas_reservas.append(i)
     if len(nuevas_reservas) == len(datos_reserva):
@@ -135,9 +160,10 @@ def edicion_show():
                 print("\033[91mID no encontrado.\033[0m")
             else:
                 break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mIngrese un número válido.\033[0m")
-
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
     while True:
         try:
             opcion = int(input(
@@ -152,9 +178,10 @@ def edicion_show():
                 break
             else:
                 print("\033[91mNúmero fuera del rango permitido.\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mIngrese un carácter válido.\033[0m")
-
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
     for shows in datos_shows:
         if shows["id-show"] == eleccion:
             if opcion == 0:
@@ -184,9 +211,11 @@ def agregar_shows():
                 break
             else:
                 print("\033[91mDebe ser un número positivo menor a 720.\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mDebe ingresar un número válido.\033[0m")
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
             continue
+        except (KeyboardInterrupt, EOFError):
+            return
 
     espectadores = 0
     espacios_disponibles = 999
@@ -198,9 +227,11 @@ def agregar_shows():
             dia = int(input("\033[36mIngrese día:\033[0m "))
             fecha_buscada = datetime(año, mes, dia).date()
             break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mFecha incorrecta, intente nuevamente.\033[0m")
-
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+            continue
+        except (KeyboardInterrupt, EOFError):
+            return
     lista_temp = []
     for show in datos_shows:
         fechas=show['fecha']
@@ -211,8 +242,6 @@ def agregar_shows():
     for show in lista_temp:
         duracion_show = show.get("duracion-show", 0)
         suma_duraciones += duracion_show
-    
-    suma_duraciones = sum(show.get("duracion-show", 0) for show in lista_temp)
     precio = cambio_precio_evento()
 
     if (suma_duraciones + duracion) < 720:

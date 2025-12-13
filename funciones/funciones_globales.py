@@ -3,6 +3,9 @@ import os
 
 
 def mostrar_tabla(dato, opcion):
+    if not dato:
+        print("No hay datos para mostrar.")
+        return
 
     #matriz
     if opcion == 1:
@@ -27,10 +30,15 @@ def mostrar_tabla(dato, opcion):
     #diccionario
     elif opcion == 2:
         # Detectar tipo por claves
-        if "dni" in dato[0]:
-            tipo = "usuario"
-        elif "id-show" in dato[0]:
-            tipo = "show"
+        try:
+            if "id-show" in dato[0]:
+                tipo = "show"
+            else:
+                tipo = "usuario"
+        except IndexError:
+            print("Datos inválidos.")
+            return
+
 
         if tipo == "usuario":
             print(f"\033[32m{'-'*120}\033[0m")
@@ -73,6 +81,8 @@ def cargar_datos_json(ruta_archivo):
             return datos_cargados
     except (IOError, json.JSONDecodeError) as e:
         print(f"Error al cargar el archivo: {e}")
+        return []
+
 
 def cargar_datos_txt(ruta_archivo):
     datos_cargados = []
@@ -84,8 +94,10 @@ def cargar_datos_txt(ruta_archivo):
                 datos_cargados.append([int(id_reserva), int(id_usuario), sector, int(id_show), int(precio), int(cantidad)])
                 linea = archivo.readline().strip()
         return datos_cargados
-    except IOError as e:
+    except (IOError, ValueError, IndexError) as e:
         print(f"Error al cargar el archivo: {e}")
+        return []
+
 
 def checkear_dato_repetido(datos_checkear, dato_a_checkear, clave):
     lista_sin_repetidos = []
@@ -114,6 +126,9 @@ def mostrar_archivo_texto(ruta_archivo):
             linea = archivo.readline()
             while linea != '':
                 datos = linea.strip().split(",")
+                if len(datos) != 6:
+                    linea = archivo.readline()
+                    continue
                 id_reserva = datos[0]
                 id_usuario = datos[1]
                 sector = datos[2]
@@ -141,12 +156,17 @@ def busqueda_en_txt(ruta_archivo, buscar, dato):
             reservas_encontrados = []
             while linea != '':
                 datos = linea.strip().split(",")
-                id_reserva = int(datos[0])
-                id_usuario = int(datos[1])
-                sector = datos[2]
-                id_show = int(datos[3])
-                precio = int(datos[4])
-                cantidad = int(datos[5]) 
+                try:
+                    id_reserva = int(datos[0])
+                    id_usuario = int(datos[1])
+                    sector = datos[2]
+                    id_show = int(datos[3])
+                    precio = int(datos[4])
+                    cantidad = int(datos[5])
+                except (ValueError, IndexError):
+                    linea = archivo.readline()
+                    continue
+
                 if dato == 1:
                     if id_usuario == buscar:
                         encontrado = [id_reserva, id_usuario, sector, id_show, precio, cantidad]
@@ -161,6 +181,7 @@ def busqueda_en_txt(ruta_archivo, buscar, dato):
 
     except IOError as e:
         print(f"Error al leer el archivo: {e}")
+        return []
 
 def borrado_en_txt(ruta_archivo, borrar, opcion):
     temp = 'datos/datos_reservas_temp.txt'
@@ -186,8 +207,9 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
             try:
                 arch.close()
                 aux.close()
-            except:
-                print("Error en el cierre del archivo:")
+            except OSError:
+                print("Error en el cierre del archivo.")
+
 
         if encontrado == True:
             try:
@@ -244,31 +266,30 @@ def modificacion_en_txt(ruta_archivo, id_reserva_modif, nuevo_show_id=None, nuev
 
         for linea in arch:
             datos = linea.strip().split(",")
+
             id_reserva = int(datos[0])
             id_usuario = int(datos[1])
             sector = datos[2]
             id_show = int(datos[3])
-            # precio = int(datos[4])
             cantidad = int(datos[5])
 
-            if nuevo_show_id is None:
-                if id_reserva == id_reserva_modif:
-                    encontrado = True
-                    nueva_linea = f"{id_reserva},{id_usuario},{nuevo_sector},{id_show},{nuevo_precio},{cantidad}\n"
-                    print(nueva_linea)
+            if id_reserva == id_reserva_modif:
+                encontrado = True
+
+                if nuevo_show_id is not None and nuevo_precio is not None:
+                    nueva_linea = f"{id_reserva},{id_usuario},{sector},{nuevo_show_id},{nuevo_precio},{cantidad}\n"
                     aux.write(nueva_linea)
-                    print(f"Reserva {id_reserva} modificada.")
+
+                elif nuevo_sector is not None and nuevo_precio is not None:
+                    nueva_linea = f"{id_reserva},{id_usuario},{nuevo_sector},{id_show},{nuevo_precio},{cantidad}\n"
+                    aux.write(nueva_linea)
+
                 else:
                     aux.write(linea)
             else:
-                if id_reserva == id_reserva_modif:
-                    encontrado = True
-                    nueva_linea = f"{id_reserva},{id_usuario},{sector},{nuevo_show_id},{nuevo_precio},{cantidad}\n"
-                    print(nueva_linea)
-                    aux.write(nueva_linea)
-                    print(f"Reserva {id_reserva} modificada.")
-                else:
-                    aux.write(linea)
+                aux.write(linea)
+
+
     except FileNotFoundError:
         print("El archivo no existe.")
     except OSError as error:
