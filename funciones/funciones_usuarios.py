@@ -219,16 +219,15 @@ def borrado_usuarios():
 
         except ValueError:
             print("Error de tipeo")
-            continue
         except (KeyboardInterrupt, EOFError):
             return
+        print("\033[91mRecuerde que esta acción es irrevertible\033[0m")
+        print("\033[91mPor favor vuelva a dar confirmación\033[0m")
 
         
     while True:
 
         try:
-            print("\033[91mRecuerde que esta acción es irrevertible\033[0m")
-            print("\033[91mPor favor vuelva a dar confirmación\033[0m")
             opcion = int(input("\033[36m[1] Confirmar\n[2] Cancelar\nOpción: \033[0m"))
             if opcion == 2:
                 return
@@ -237,44 +236,27 @@ def borrado_usuarios():
         except ValueError:
             print("Error de tipeo")
         except (KeyboardInterrupt, EOFError):
-            continue    
+            return
         
     usuario_encontrado["estado"] = False
     inicializar_datos_json(datos_usuarios_js, usuarios)
     print("\033[93mUsuario desactivado.\033[0m")
-    datos_reservas = cargar_datos_txt(datos_reserva_txt)
     datos_shows = cargar_datos_json(datos_shows_js)
     
-    reservas_a_conservar = []
-    id_shows_afectados = []
-    count_borrados = 0
-    for reserva in datos_reservas:
-        try:
-            
-            reserva_id = int(reserva[1])
-            
-            if reserva_id == id_eliminar:
-                reserva_id_show = int(reserva[3])
-                reserva_cantidad = int(reserva[5])
-                id_shows_afectados.append((reserva_id_show, reserva_cantidad))
-                count_borrados += 1
-            else:
-                reservas_a_conservar.append(reserva)
-        except (ValueError, IndexError):
-            continue
+    with open(datos_reserva_txt, 'r') as file:
+        linea = file.readline()
+        while linea != '':
+            reserva = linea.strip().split(',')
+            show_id = int(reserva[3])
+            cantidad = int(reserva[5])
+            if int(reserva[1]) == id_eliminar:
+                for show in datos_shows:
+                    if show["id-show"] == show_id:
+                        show["espacios-disponibles"] += cantidad
+                        show["espectadores"] -= cantidad
+                        break
 
-    if count_borrados > 0:
-        inicializar_datos_txt(datos_reserva_txt, reservas_a_conservar)
+    borrado_en_txt(datos_reserva_txt, id_eliminar, 2)
 
-        for show_id, cantidad in id_shows_afectados:
-            for show in datos_shows:
-                if show["id-show"] == show_id:
-                    show["espacios-disponibles"] += cantidad
-                    show["espectadores"] -= cantidad
-                    break
-        
-        # C. Guardamos el JSON de shows actualizado
-        inicializar_datos_json(datos_shows_js, datos_shows)
-        print(f"\033[92mSe eliminaron {count_borrados} reservas y se liberó el espacio correspondiente.\033[0m")
-    else:
-        print("\033[94mEl usuario no tenía reservas asociadas.\033[0m")
+    # C. Guardamos el JSON de shows actualizado
+    inicializar_datos_json(datos_shows_js, datos_shows)

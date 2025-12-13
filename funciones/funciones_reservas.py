@@ -398,6 +398,5 @@ def edicion_reserva():
         modificacion_en_txt('datos/datos_reservas.txt', id_a_editar, nuevo_show_id, nuevo_sector=None, nuevo_precio=nuevo_precio)
         print("\033[34mShow actualizado correctamente.\033[0m")
 
-    # inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
     print("\033[96mCambios guardados exitosamente.\033[0m")

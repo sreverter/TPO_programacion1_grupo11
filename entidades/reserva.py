@@ -2,16 +2,35 @@ from funciones.funciones_globales import *
 from ingreso import dni_en_uso
 from functools import reduce
 
+ruta_archivo = "datos/datos_reservas.txt"
+
 def id_alt_r():
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
-    if not datos_reservas:
+    ids = set()
+
+    try:
+        with open("datos/datos_reservas.txt", "rt", encoding="utf-8") as archivo:
+            # for linea in archivo:
+            linea = archivo.readline()
+            while linea:
+                datos = linea.strip().split(",")
+
+                if not datos or not datos[0].isdigit():
+                    continue
+                ids.add(int(datos[0]))
+                linea = archivo.readline()
+                
+    except FileNotFoundError:
         return 1
-    mayor_id = 0
-    for reserva in datos_reservas:
-        if reserva[0] > mayor_id:
-            mayor_id = reserva[0]
-    mayor_id += 1
-    return mayor_id
+
+    if not ids:
+        return 1
+
+    # buscar el primer número faltante
+    i = 1
+    while i in ids:
+        i += 1
+
+    return i
 
 def obt_id_Actual():
     dni_act = (dni_en_uso[0])

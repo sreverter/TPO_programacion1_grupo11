@@ -67,15 +67,6 @@ def inicializar_datos_json(ruta_archivo, datos):
     except IOError as e:
         print(f"Error al escribir el archivo: {e}")
 
-def inicializar_datos_txt(ruta_archivo, datos):
-    try:
-        linea = [f"{id_reserva},{id_usuario},{sector},{id_show},{precio},{cantidad}\n" for id_reserva, id_usuario, sector, id_show, precio, cantidad in datos]
-        with open(ruta_archivo, 'w',encoding='utf-8') as archivo:
-            archivo.writelines(linea)#esta linea
-    except IOError as e:
-        print(f"Error al escribir el archivo: {e}")
-
-
 def cargar_datos_json(ruta_archivo):
     try:
         with open(ruta_archivo, 'r', encoding="utf-8") as archivo:
