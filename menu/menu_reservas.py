@@ -58,7 +58,7 @@ def menu_reservas(admin):
             ]
 
         maximo = len(func_reservas)
-        if 0 <= usuario_i <= maximo:
+        if 1 <= usuario_i <= maximo:
             indice = usuario_i - 1
             func_reservas[indice]()
 
