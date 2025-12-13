@@ -14,10 +14,12 @@ def menu_reservas(admin):
                     "\033[35m  → [4] VOLVER AL MENU DE OPCIONES \033[0m\n"
                     "\033[1;35m Seleccione una opción: \033[0m"
                     ))
-            except (ValueError,KeyboardInterrupt):
-                print()
-                print("\033[91mcoloque caracteres validos\033[0m")
-                continue
+            except ValueError:
+                print("error de tipeo.")
+                return
+            except KeyboardInterrupt:
+                print("Edición cancelada.")
+                return
 
         #se ponen las opciones que puede usar el admin para que elija (mas opciones debido a mayor autoridad) 
         if admin==True:
@@ -32,10 +34,12 @@ def menu_reservas(admin):
                     "\033[35m  → [6] VOLVER AL MENU DE OPCIONES\033[0m\n"
                     "\033[1;35m Seleccione una opción: \033[0m"
                 ))
-            except (ValueError,KeyboardInterrupt):
-                print()
-                print("\033[91mcoloque caracteres validos\033[0m")
-                continue
+            except ValueError:
+                print("error de tipeo.")
+                return
+            except KeyboardInterrupt:
+                print("Edición cancelada.")
+                return  
 
         if admin:
             func_reservas = [
@@ -62,6 +66,5 @@ def menu_reservas(admin):
         elif (usuario_i==6 and admin==True) or (usuario_i==4 and admin==False):
             print("\033[35mesta saliendo al menu de inicio\033[0m")
             break
-        #se delimita las opciones que podes con esto para que si elije mal alguna opcion pueda volver a ver las opciones y elija bien
         else:
             print("\033[91mOpción no válida\033[0m")

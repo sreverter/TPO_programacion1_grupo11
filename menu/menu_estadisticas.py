@@ -16,11 +16,12 @@ def menu_estadisticas():
                 "\033[35m  → [5] VOLVER                               \033[0m\n"
                 "\033[1;35m Seleccione una opción: \033[0m"
             ))
-        except (ValueError,KeyboardInterrupt):
-            print()
-            print("\033[91mcoloque caracteres validos\033[0m")
-            continue
-
+        except ValueError:
+            print("error de tipeo.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return
         func_shows = [
                 lambda: shows_mas_vendidos(),
                 lambda: shows_con_mayor_recaudacion(),

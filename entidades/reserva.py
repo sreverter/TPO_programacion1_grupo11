@@ -60,5 +60,9 @@ def borrado_reserva_menu():
                 return opcion
             else:
                 print("\033[91mDebe ser un número entre 1 y 2\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mIngrese un valor válido\033[0m")
+        except ValueError:
+            print("error de tipeo.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return

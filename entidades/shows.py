@@ -6,9 +6,12 @@ def cambio_tipo_evento():
         else:
             print("\033[91mEl tipo de evento no puede estar vacío.\033[0m")
             return "Sin título"
-    except (ValueError, KeyboardInterrupt):
-        print("\033[91mLos caracteres ingresados no son válidos.\033[0m")
-
+    except ValueError:
+        print("error de tipeo.")
+        return
+    except KeyboardInterrupt:
+        print("Edición cancelada.")
+        return
 def cambio_duracion_evento(shows):
     suma = 0
     suma = int(shows['duracion-show'])
@@ -22,8 +25,12 @@ def cambio_duracion_evento(shows):
                 print("\033[91mLa duración total supera las 12 horas del día. Consulte con un gerente.\033[0m")
                 continue
             return duracion
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mIngrese caracteres válidos.\033[0m")
+        except ValueError:
+            print("error de tipeo.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return
 
 def cambio_precio_evento():
     while True:
@@ -43,10 +50,12 @@ def cambio_precio_evento():
                     continue
             else:
                 return precio
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mDebe ingresar un número válido.\033[0m")
-            continue
-
+        except ValueError:
+            print("error de tipeo.")
+            return
+        except KeyboardInterrupt:
+            print("Edición cancelada.")
+            return
 def nuevo_id_show(datos_shows):
     if datos_shows == []:
         return 1
