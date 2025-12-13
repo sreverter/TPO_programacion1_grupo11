@@ -49,7 +49,7 @@ def cambio_precio_evento():
                 elif eleccion == "n":
                     continue
             else:
-                return precio
+                print("precio no puede ir a negativos")
         except ValueError:
             print("error de tipeo.")
             return
