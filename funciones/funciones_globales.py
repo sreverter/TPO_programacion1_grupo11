@@ -99,8 +99,18 @@ def checkear_dato_repetido(datos_checkear, dato_a_checkear, clave):
 def mostrar_archivo_texto(ruta_archivo):
     try:
         with open(ruta_archivo, 'rt', encoding="utf-8") as archivo:
-            print('Reservas')
-            print(f'{"ID Reserva":<12}{"ID Usuario":<12}{"Sector":<10}{"ID Show":<10}{"Precio":<10}{"Cantidad":<10}')
+            print(f"\033[1m{"Reservas"}\033[0m")
+            print(f"\033[32m{'-'*64}\033[0m")
+            print(
+            f"\033[32m{'|'}\033[0m"
+            f'\033[38;5;183m{"ID Reserva":<12}\033[0m'  # Lavanda suave
+            f'\033[38;5;120m{"ID Usuario":<12}\033[0m'  # Verde Menta
+            f'\033[38;5;117m{"Sector":<10}\033[0m'      # Celeste Pálido
+            f'\033[38;5;215m{"ID Show":<10}\033[0m'     # Durazno/Naranja suave
+            f'\033[38;5;229m{"Precio":<10}\033[0m'      # Amarillo Crema
+            f'\033[38;5;211m{"Cantidad":<8}\033[0m'    # Rosa suave
+            f"\033[32m{'|'}\033[0m"
+            )
             linea = archivo.readline()
             while linea != '':
                 datos = linea.strip().split(",")
@@ -110,7 +120,16 @@ def mostrar_archivo_texto(ruta_archivo):
                 id_show = datos[3]
                 precio = datos[4]
                 cantidad = datos[5]
-                print(f'{id_reserva:<12}{id_usuario:<12}{sector:<10}{id_show:<10}{precio:<10}{cantidad:<10}')
+                print(
+                f"\033[32m{'|'}\033[0m"
+                f'\033[38;5;183m{id_reserva:<12}\033[0m'  
+                f'\033[38;5;120m{id_usuario:<12}\033[0m'  
+                f'\033[38;5;117m{sector:<10}\033[0m'      
+                f'\033[38;5;215m{id_show:<10}\033[0m'     
+                f'\033[38;5;229m{precio:<10}\033[0m'      
+                f'\033[38;5;211m{cantidad:<8}\033[0m'    
+                f"\033[32m{'|'}\033[0m"
+                )
                 linea = archivo.readline()
     except IOError as e:
         print(f"Error al leer el archivo: {e}")
