@@ -6,21 +6,35 @@ colordorado = "\033[38;2;207;181;59m"
 
 def vista_reserva(admin):
     vista = []
-    datos = cargar_datos_txt('datos/datos_reservas.txt')
     if admin:
-        mostrar_tabla(datos, 1)
+        try:
+            mostrar_archivo_texto('datos/datos_reservas.txt')
+        except OSError:
+            print("\033[91mNo se pudo acceder al archivo de reservas.\033[0m")
+        return
     elif admin == False:
         usuario_Act = obt_id_Actual()
-        for i in datos:
-            if int(i[1]) == usuario_Act:
-                vista.append(i)
+        vista = busqueda_en_txt('datos/datos_reservas.txt', usuario_Act, 1)
         if len(vista) > 0:
             mostrar_tabla(vista, 1)
         else:
             print("\033[91mNo hay ninguna reserva registrada.\033[0m")
 
+def alta_reserva(nueva_reserva):
+    try:
+        with open('datos/datos_reservas.txt', 'a', encoding='utf-8') as archivo:
+            linea = f"{nueva_reserva[0]},{nueva_reserva[1]},{nueva_reserva[2]},{nueva_reserva[3]},{nueva_reserva[4]},{nueva_reserva[5]}\n"
+            archivo.write(linea)
+    except OSError as e:
+        print(f"Error al guardar la reserva: {e}")
+
 def agregar_reservas(admin):
-    datos_shows = cargar_datos_json('datos/datos_shows.json')
+    try:
+        datos_shows = cargar_datos_json('datos/datos_shows.json')
+    except OSError:
+        print("\033[91mNo se pudo cargar el archivo de shows.\033[0m")
+        return
+
     id_reserva = id_alt_r()
     id_usuario = obt_id_Actual()
     mostrar_tabla(datos_shows, 2)
@@ -49,9 +63,10 @@ def agregar_reservas(admin):
                 else:
                     busqueda = False
                     break
-            except (ValueError, KeyboardInterrupt):
-                print("\033[91mEl ID que ingresó contiene caracteres inválidos.\033[0m")
-                continue
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
     for i in datos_shows:
         if i["id-show"] == show:
             i["espacios-disponibles"] -= num_reserva
@@ -76,9 +91,10 @@ def agregar_reservas(admin):
                 continue
             else:
                 break
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mOpción inválida, intente nuevamente.\033[0m")
-            continue
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
     if ubicacion_u == 1:
         precio_act = precio_platea
         sector = "platea"
@@ -89,14 +105,12 @@ def agregar_reservas(admin):
         precio_act = precio_vip
         sector = "vip"
     print(f"\033[34mReserva generada con éxito. Precio total: ${precio_act}\033[0m")
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
+
     nueva_reserva = [id_reserva, id_usuario, sector, show, precio_act, num_reserva]
-    datos_reservas.append(nueva_reserva)
-    inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
+    alta_reserva(nueva_reserva)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
 
 def busqueda_Reserva():
-    datos = cargar_datos_txt('datos/datos_reservas.txt')
     reserva_enct = []
     encontrado = False
     while True:
@@ -106,21 +120,25 @@ def busqueda_Reserva():
                 break
             else:
                 print("\033[91mDebe elegir entre 1 o 2.\033[0m")
-        except (ValueError, KeyboardInterrupt):
+        except ValueError:
             print("\033[91mEntrada inválida.\033[0m")
+            continue
+        except (KeyboardInterrupt, EOFError):
             continue
     if eleccion == 1:
         while True:
             try:
                 eleccion = int(input("\033[36mIngrese ID de reserva:\033[0m "))
                 break
-            except (ValueError, KeyboardInterrupt):
-                print("\033[91mID inválido.\033[0m")
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
                 continue
-        for i in datos:
-            if i[0] == eleccion:
-                encontrado = True
-                reserva_enct.append(i)
+            except (KeyboardInterrupt, EOFError):
+                continue
+        busqueda = busqueda_en_txt('datos/datos_reservas.txt', eleccion, 2)
+        if busqueda:
+            encontrado = True
+            reserva_enct = busqueda
         if not encontrado:
             print("\033[91mID de reserva no encontrado.\033[0m")
         else:
@@ -130,180 +148,165 @@ def busqueda_Reserva():
             try:
                 eleccion = int(input("\033[36mIngrese ID de usuario:\033[0m "))
                 break
-            except (ValueError, KeyboardInterrupt):
+            except ValueError:
                 print("\033[91mEntrada inválida.\033[0m")
                 continue
-        for i in datos:
-            if i[1] == eleccion:
-                encontrado = True
-                reserva_enct.append(i)
+            except (KeyboardInterrupt, EOFError):
+                continue
+        busqueda = busqueda_en_txt('datos/datos_reservas.txt', eleccion, 1)
+        if busqueda:
+            encontrado = True
+            reserva_enct = busqueda
         if not encontrado:
             print("\033[91mID de usuario no encontrado.\033[0m")
         else:
             mostrar_tabla(reserva_enct, 1)
-def borrado_reserva(admin):
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
-    datos_shows = cargar_datos_json('datos/datos_shows.json')
-    #reaparti por bloques porque ya me estaba mareando
-    # === BLOQUE USUARIO NORMAL ===
-    if admin == False: 
-        reservas_d_usuario = False            
-        reservas_usuario = []
-        id_usuario = obt_id_Actual()
 
-        for i in datos_reservas:
-            if i[1] == id_usuario:
-                reservas_d_usuario = True
-                reservas_usuario.append(i)
 
-        if not reservas_d_usuario:
+def borrado_reserva(admin): 
+    try:
+        datos_shows = cargar_datos_json('datos/datos_shows.json')
+    except OSError:
+        print("\033[91mNo se pudo acceder al archivo de shows.\033[0m")
+        return
+
+    
+    id_usuario_actual = obt_id_Actual()
+    reservas_a_borrar = []
+
+    # ==== BLOQUE USUARIO ====
+    if not admin: 
+        mis_reservas = busqueda_en_txt('datos/datos_reservas.txt', id_usuario_actual, 1)
+
+        if not mis_reservas:
             print("\033[91mNo hay reservas registradas a su nombre.\033[0m")
             return
 
-        mostrar_tabla(reservas_usuario, 1)
+        mostrar_tabla(mis_reservas, 1)
         opcion = borrado_reserva_menu()
-        id_show = []
 
         if opcion == 1:
             try:
-                id_borrar = int(input("\033[36mIngrese el ID de la reserva que desea eliminar:\033[0m "))
-                encontrada = False
-                for i in datos_reservas:
-                    if i[1] == id_usuario and i[0] == id_borrar:
-                        id_show.append([i[3], i[5]])
-                        datos_reservas.remove(i)
-                        encontrada = True
-                        print(f"\033[31mReserva {id_borrar} eliminada correctamente.\033[0m")
+                id_reserva = int(input("\033[36mIngrese el ID de la reserva que desea eliminar:\033[0m "))
+
+                reserva_encontrada = None
+                for res in mis_reservas:
+                    if int(res[0]) == id_reserva:
+                        reserva_encontrada = res
                         break
-                if not encontrada:
-                    print("\033[91mNo se encontró la reserva con ese ID.\033[0m")
-            except (ValueError, KeyboardInterrupt):
-                print("\033[31mID inválido\033[0m")
+                
+                if reserva_encontrada:
+                    reservas_a_borrar.append(reserva_encontrada)
+                    borrado_en_txt('datos/datos_reservas.txt', id_reserva, 1) 
+                    print(f"\033[31mReserva {id_reserva} eliminada correctamente.\033[0m")
+                else:
+                    print("\033[91mEl ID ingresado no corresponde a una de sus reservas.\033[0m")
+                    return
+
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
         
-        # === BORRAR TODAS LAS RESERVAS ===
         elif opcion == 2:
-            datos_reservas_borrar = []
-            for i in datos_reservas:
-                if i[1] == id_usuario:
-                    id_show.append([i[3], i[5]])
-                    datos_reservas_borrar.append(i)
-
-            for i in datos_reservas_borrar:
-                datos_reservas.remove(i)
-
+            reservas_a_borrar = mis_reservas 
+            borrado_en_txt('datos/datos_reservas.txt', id_usuario_actual, 2)
             print("\033[31mTodas sus reservas han sido eliminadas.\033[0m")
 
-        actualizar_datos_borrado(id_show, datos_reservas, datos_shows)
-
-    # === BLOQUE ADMIN ===
-    if admin == True: 
-        reservas_usuario = []
-        reservas_d_usuario = False
-        reservas_del_id = []
-        show_encontrado = False
+    # ==== BLOQUE ADMIN ====
+    elif admin:
         opcion = borrado_reserva_menu()
 
         if opcion == 1:
-            while True:
-                try:
-                    eleccion = int(input("\033[36mSeleccione ID de reserva a eliminar:\033[0m "))
-                    show_encontrado = False
-                    for i in datos_reservas:
-                        if i[0] == eleccion:
-                            show_encontrado = True
-                            print("\033[96mID de reserva confirmado.\033[0m")
-                            break
-                    if not show_encontrado:
-                        print("\033[91mEsa reserva no es válida.\033[0m")
-                        continue
-                    else:
-                        break
-                except (KeyboardInterrupt, ValueError):
-                    print("\033[91mCarácter inválido.\033[0m")
-                    continue
+            try:
+                id_reserva = int(input("\033[36mSeleccione ID de reserva a eliminar:\033[0m "))
 
-            id_show = []
-            datos_reservas_borrar = []
-            for i in datos_reservas:
-                if i[0] == eleccion:
-                    datos_reservas_borrar.append(i)
-                    id_show.append((i[3], i[5]))
-                    break
-            for i in datos_reservas_borrar:
-                datos_reservas.remove(i)
-            print("\033[31mLa reserva ha sido eliminada.\033[0m")
-            actualizar_datos_borrado(id_show, datos_reservas, datos_shows)
+                busqueda = busqueda_en_txt('datos/datos_reservas.txt', id_reserva, 2) 
+                
+                if busqueda:
+                    reservas_a_borrar = busqueda
+                    borrado_en_txt('datos/datos_reservas.txt', id_reserva, 1)
+                    print(f"\033[31mLa reserva {id_reserva} ha sido eliminada.\033[0m")
+                else:
+                    print("\033[91mNo se encontró ninguna reserva con ese ID.\033[0m")
+                    return
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
+
 
         elif opcion == 2:
-            while True:
-                try:
-                    eleccion = int(input("\033[36mSeleccione ID de usuario para eliminar sus reservas:\033[0m "))
-                    for i in datos_reservas:
-                        if i[1] == eleccion:
-                            show_encontrado = True
-                    print("\033[96mID de usuario confirmado.\033[0m")
-                    if not show_encontrado:
-                        print("\033[91mEse usuario no tiene reservas.\033[0m")
-                        continue
-                    else:
-                        break
-                except (KeyboardInterrupt, ValueError):
-                    print("\033[91mCarácter inválido.\033[0m")
-                    continue
+            try:
+                id_usuario_target = int(input("\033[36mSeleccione ID de usuario para eliminar sus reservas:\033[0m "))
+                
+                busqueda = busqueda_en_txt('datos/datos_reservas.txt', id_usuario_target, 1)
+                
+                if busqueda:
+                    print("\n\033[34mReservas encontradas del usuario:\033[0m")
+                    mostrar_tabla(busqueda, 1)
+                    
+                    reservas_a_borrar = busqueda
+                    borrado_en_txt('datos/datos_reservas.txt', id_usuario_target, 2)
+                    print("\033[31mTodas las reservas del usuario han sido eliminadas.\033[0m")
+                else:
+                    print("\033[91mEse usuario no tiene reservas registradas.\033[0m")
+                    return
 
-            reservas_del_id = []
-            for i in datos_reservas:
-                if i[1] == eleccion:
-                    reservas_usuario.append(i)
-                    reservas_del_id.append(i)
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
 
-            print("\n\033[34mReservas del usuario:\033[0m")
-            mostrar_tabla(reservas_del_id, 1)
+    if reservas_a_borrar:
+        cambios_realizados = False
+        
+        shows_y_cantidades = list(map(lambda r: (int(r[3]), int(r[5])), reservas_a_borrar))
 
-            datos_reservas_borrar = []
-            id_show = []
-            for i in datos_reservas:
-                if i[1] == eleccion:
-                    datos_reservas_borrar.append(i)
-                    id_show.append([i[3], i[5]])
+        cambios_realizados = False
 
-            for i in datos_reservas_borrar:
-                datos_reservas.remove(i)
+        for id_show_reserva, cantidad_entradas in shows_y_cantidades:
+            for show in datos_shows:
+                if show["id-show"] == id_show_reserva:
+                    show["espacios-disponibles"] += cantidad_entradas
+                    show["espectadores"] -= cantidad_entradas
+                    cambios_realizados = True
+                    break
 
-            print("\033[31mTodas sus reservas han sido eliminadas.\033[0m")
-
-            for show_id, cantidad in id_show:
-                for show in datos_shows:
-                    if show["id-show"] == show_id:
-                        show["espacios-disponibles"] += cantidad
-                        show["espectadores"] -= cantidad
-
-            print("\033[34mLos datos de capacidad fueron actualizados.\033[0m")
-            inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
-            inicializar_datos_json('datos/datos_shows.json', datos_shows)
+        if cambios_realizados:
+            inicializar_datos_json('datos/datos_shows.json', datos_shows) 
+            print("\033[34mDisponibilidad de asientos actualizada en el sistema.\033[0m")
 
 def edicion_reserva():
-    datos_reservas = cargar_datos_txt('datos/datos_reservas.txt')
     datos_shows = cargar_datos_json("datos/datos_shows.json")
-    mostrar_tabla(datos_reservas, 1)
+    try:
+        mostrar_archivo_texto('datos/datos_reservas.txt')
+    except OSError:
+        print("\033[91mNo se pudo acceder al archivo de reservas.\033[0m")
+        return
+
     show_encontrado = False
     while not show_encontrado:
         try:
             id_a_editar = int(input("\033[36mSeleccione el ID de reserva a editar:\033[0m "))
-            for r in datos_reservas:
-                if r[0] == id_a_editar:
-                    reserva_encontrada = r
-                    show_encontrado = True
-                    break
+            reserva_encontrada = busqueda_en_txt('datos/datos_reservas.txt', id_a_editar, 2)
+            if reserva_encontrada:
+                show_encontrado = True
             if not show_encontrado:
                 print("\033[91mNo se encontró la reserva con ese ID.\033[0m")
                 continue
-        except (ValueError, KeyboardInterrupt):
+        except ValueError:
             print("\033[91mEntrada inválida.\033[0m")
-            continue
+        except (KeyboardInterrupt, EOFError):
+            return
 
-    cantidad = int(reserva_encontrada[5])
-    print(f"\033[34mEditando reserva ID: {reserva_encontrada[0]}\033[0m")
+    try:
+        cantidad = int(reserva_encontrada[0][5])
+    except (IndexError, ValueError):
+        print("\033[91mDatos de reserva corruptos.\033[0m")
+        return
+
+    print(f"\033[34mEditando reserva ID: {reserva_encontrada[0][0]}\033[0m")
 
     while True:
         try:
@@ -316,8 +319,10 @@ def edicion_reserva():
             if eleccion in (1, 2):
                 break
             print("\033[91mOpción inválida.\033[0m")
-        except (ValueError, KeyboardInterrupt):
-            print("\033[91mCarácter no válido.\033[0m")
+        except ValueError:
+            print("\033[91mEntrada inválida.\033[0m")
+        except (KeyboardInterrupt, EOFError):
+            return
 
     if eleccion == 1:
         while True:
@@ -332,8 +337,10 @@ def edicion_reserva():
                 if ubicacion in (1, 2, 3):
                     break
                 print("\033[91mDebe ingresar un número entre 1 y 3.\033[0m")
-            except (ValueError, KeyboardInterrupt):
-                print("\033[91mNúmero inválido.\033[0m")
+            except ValueError:
+                print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
 
         if ubicacion == 1:
             nueva_ubicacion = "platea"
@@ -342,11 +349,14 @@ def edicion_reserva():
         elif ubicacion == 3:
             nueva_ubicacion = "vip"
 
-        id_show = int(reserva_encontrada[3])
+        id_show = int(reserva_encontrada[0][3])
         show_actual = buscar_show(id_show)
+        if not show_actual:
+            print("\033[91mEl show asociado ya no existe.\033[0m")
+            return
+
         nuevo_precio = calcular_precio(show_actual, nueva_ubicacion, cantidad)
-        reserva_encontrada[2] = nueva_ubicacion
-        reserva_encontrada[4] = nuevo_precio
+        modificacion_en_txt('datos/datos_reservas.txt', id_a_editar, nuevo_show_id=None, nuevo_sector=nueva_ubicacion, nuevo_precio=nuevo_precio)
         print("\033[34mUbicación y precio actualizados correctamente.\033[0m")
 
     elif eleccion == 2:
@@ -362,11 +372,13 @@ def edicion_reserva():
                     print("\033[91mNo hay capacidad disponible en ese show.\033[0m")
                     continue
                 break
-            except (ValueError, KeyboardInterrupt):
+            except ValueError:
                 print("\033[91mEntrada inválida.\033[0m")
+            except (KeyboardInterrupt, EOFError):
+                return
 
         for show in datos_shows:
-            if show["id-show"] == reserva_encontrada[3]:
+            if show["id-show"] == reserva_encontrada[0][3]:
                 show["espacios-disponibles"] += cantidad
                 show["espectadores"] -= cantidad
                 break
@@ -377,12 +389,12 @@ def edicion_reserva():
                 show["espectadores"] += cantidad
                 break
 
-        nueva_ubic = reserva_encontrada[2]
+        nueva_ubic = reserva_encontrada[0][2]
         nuevo_precio = calcular_precio(show_nuevo, nueva_ubic, cantidad)
-        reserva_encontrada[3] = nuevo_show_id
-        reserva_encontrada[4] = nuevo_precio
+        reserva_encontrada[0][3] = nuevo_show_id
+        reserva_encontrada[0][4] = nuevo_precio
+        modificacion_en_txt('datos/datos_reservas.txt', id_a_editar, nuevo_show_id, nuevo_sector=None, nuevo_precio=nuevo_precio)
         print("\033[34mShow actualizado correctamente.\033[0m")
 
-    inicializar_datos_txt('datos/datos_reservas.txt', datos_reservas)
     inicializar_datos_json('datos/datos_shows.json', datos_shows)
     print("\033[96mCambios guardados exitosamente.\033[0m")

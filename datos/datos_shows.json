@@ -1,12 +1,12 @@
 [
     {
         "id-show": 1,
-        "nombre-show": "Concierto de Rock",
+        "nombre-show": "0",
         "duracion-show": 120,
         "espectadores": 500,
         "espacios-disponibles": 150,
         "fecha": "2024-07-15",
-        "precio": 10500
+        "precio": 0
     },
     {
         "id-show": 2,
@@ -21,8 +21,8 @@
         "id-show": 3,
         "nombre-show": "Festival Indie",
         "duracion-show": 240,
-        "espectadores": 1200,
-        "espacios-disponibles": 400,
+        "espectadores": 1203,
+        "espacios-disponibles": 397,
         "fecha": "2024-09-10",
         "precio": 13400
     },
