@@ -27,10 +27,10 @@ def cambio_duracion_evento(shows):
             return duracion
         except ValueError:
             print("error de tipeo.")
-            return
+            return None
         except KeyboardInterrupt:
             print("Edición cancelada.")
-            return
+            return None
 
 def cambio_precio_evento():
     while True:

@@ -187,12 +187,18 @@ def edicion_show():
             if opcion == 0:
                 shows['nombre-show'] = cambio_tipo_evento()
             elif opcion == 1:
-                shows['duracion-show'] = cambio_duracion_evento(shows)
+                shows = cambio_duracion_evento(shows)
+                if shows == None:
+                    continue
+                shows['duracion-show']=shows 
             elif opcion == 2:
                 shows['precio'] = cambio_precio_evento()
             elif opcion == 3:
                 shows['nombre-show'] = cambio_tipo_evento()
-                shows['duracion-show'] = cambio_duracion_evento(shows)
+                shows = cambio_duracion_evento(shows)
+                if shows == None:
+                    continue
+                shows['duracion-show']=shows 
                 shows['precio'] = cambio_precio_evento()
             break
 

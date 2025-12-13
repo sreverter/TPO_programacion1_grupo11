@@ -160,10 +160,10 @@ def edicion_usuario(admin):
                             continue
                     except ValueError:
                         print("opcion inválida.")
-                        return
+                        continue
                     except KeyboardInterrupt:
                         print("Edición cancelada.")
-                        return
+                        continue
         usuarios_actualizados = []
         for user in usuarios:
             if user["dni"] == dni_en_uso[0]:
