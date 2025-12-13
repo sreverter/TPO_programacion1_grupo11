@@ -1,37 +1,30 @@
 import json
-from funciones.funciones_globales import *
-datos_usuarios_js="datos/datos_usuarios.json"
-from funciones.funciones_pruebas import (
-    editar_nombre_json, cargar_datos_json,
-)
-usuarios_iniciales = cargar_datos_json(datos_usuarios_js)
+from funciones.funciones_pruebas import editar_nombre_json
+from funciones.funciones_globales import cargar_datos_json
 
 def test_editar_nombre(tmp_path, capsys):
-    # ----- Arrange -----
-    # Creamos un JSON temporal con 2 usuarios
-    try:
-        usuarios_iniciales
-        ruta = tmp_path / "datos_usuarios.json"
-        ruta.write_text(json.dumps(usuarios_iniciales, ensure_ascii=False, indent=2), encoding="utf-8")
+    usuarios_test = [
+        {"id": 1, "nombre": "Alan Perez", "dni": 123}, # Usuario que le estamos cambiando el nombre
+        {"id": 2, "nombre": "María López", "dni": 456}, 
+        {"id": 3, "nombre": "Carlos García", "dni": 789},
+    ]
+    ID_EDICION = 1
+    NOMBRE_VIEJO = "Alan Perez"
+    NOMBRE_NUEVO = "lola martinez" 
+    
+    ruta = tmp_path / "datos_usuarios.json"
+    ruta.write_text(json.dumps(usuarios_test, ensure_ascii=False, indent=4), encoding="utf-8")
 
-        usuarios_leidos = cargar_datos_json(str(ruta))
-        u2 = next(u for u in usuarios_leidos if u.get("id") == 2)
-        print("Antes:", u2["nombre"])
-    # ----- Act -----
-        ok = editar_nombre_json(str(ruta), id_buscado=2, nombre_nuevo="Marta Gimenez")
+    ok = editar_nombre_json(str(ruta), id_buscado=ID_EDICION, nombre_nuevo=NOMBRE_NUEVO)
 
-    # ----- Assert -----
-        assert ok is True
+    assert ok is True
 
-        captured = capsys.readouterr()
-        print(captured.out)
-        assert "Antes: María López" in captured.out
-        assert "Después: Marta Gimenez" in captured.out
+    captured = capsys.readouterr()
+    print(captured.out)
+    assert f"Antes: {NOMBRE_VIEJO}" in captured.out 
+    assert f"Después: {NOMBRE_NUEVO}" in captured.out 
 
-        usuarios_recargados = cargar_datos_json(str(ruta))
-        # buscamos el usuario 2 y revisamos el nombre en el archivo ya guardado
-        u2 = next(u for u in usuarios_recargados if u.get("id", u.get("id_usuario")) == 2)
-        assert u2["nombre"] == "Marta Gimenez"
-    except (AssertionError, IndexError) as e:
-        print(f"Error en test_editar_nombre: {e}")
-        raise
+    usuarios_recargados = cargar_datos_json(str(ruta))
+    usuario_editado = next(u for u in usuarios_recargados if u.get("id") == ID_EDICION)
+
+    assert usuario_editado["nombre"] == NOMBRE_NUEVO 

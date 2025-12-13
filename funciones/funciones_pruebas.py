@@ -1,28 +1,4 @@
-#Pruebas vista usuarios
-
-def buscar_usuario_por_id(datos, id_buscado):
-    """
-    Recibe una lista de usuarios (cada usuario es una lista o tupla)
-    y devuelve el usuario cuyo ID coincide con 'id_buscado'.
-    Si no existe, devuelve None.
-    """
-    for usuario in datos:
-        if usuario['id'] == id_buscado:
-            return usuario
-    return None
-
-
-#Pruebas Editar usuarios
-
-import json
-
-def guardar_datos_json(ruta, datos):
-    with open(ruta, "w", encoding="utf-8") as f:
-        json.dump(datos, f, ensure_ascii=False, indent=2)
-
-def cargar_datos_json(ruta):
-    with open(ruta, "r", encoding="utf-8") as f:
-        return json.load(f)
+from funciones.funciones_globales import cargar_datos_json, inicializar_datos_json
 
 def editar_nombre_json(ruta, id_buscado, nombre_nuevo):
     usuarios = cargar_datos_json(ruta)
@@ -30,8 +6,38 @@ def editar_nombre_json(ruta, id_buscado, nombre_nuevo):
         if usuario.get("id") == id_buscado or usuario.get("id_usuario") == id_buscado:
             print(f"Antes: {usuario['nombre']}")
             usuario["nombre"] = nombre_nuevo
-            print(f"Después: {usuario['nombre']}")   
-            guardar_datos_json(ruta, usuarios)
+            print(f"Después: {usuario['nombre']}")
+            inicializar_datos_json(ruta, usuarios)
             return True
     return False
+
+def borrar_usuario_por_id(usuarios, reservas, id_eliminar):
+    for u in usuarios:
+        if u["id"] == id_eliminar:
+            u["estado"] = False
+
+    reservas_filtradas = []
+    for r in reservas:
+        try:
+            id_res = int(r[1])
+        except:
+            continue
+        if id_res != id_eliminar:
+            reservas_filtradas.append(r)
+
+    return usuarios, reservas_filtradas
+
+def buscar_usuario_por_id(datos, id_buscado):
+    for usuario in datos:
+        if usuario['id'] == id_buscado:
+            return usuario
+    return None
+
+def validar_edad(edad):
+    if edad < 0:
+        raise ValueError("La edad no puede ser negativa")
+    return True
+
+def dividir_numeros(a, b):
+    return a / b
 
