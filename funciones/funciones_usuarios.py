@@ -219,15 +219,16 @@ def borrado_usuarios():
 
         except ValueError:
             print("Error de tipeo")
+            continue
         except (KeyboardInterrupt, EOFError):
             return
-        print("\033[91mRecuerde que esta acción es irrevertible\033[0m")
-        print("\033[91mPor favor vuelva a dar confirmación\033[0m")
 
         
     while True:
 
         try:
+            print("\033[91mRecuerde que esta acción es irrevertible\033[0m")
+            print("\033[91mPor favor vuelva a dar confirmación\033[0m")
             opcion = int(input("\033[36m[1] Confirmar\n[2] Cancelar\nOpción: \033[0m"))
             if opcion == 2:
                 return
@@ -236,7 +237,7 @@ def borrado_usuarios():
         except ValueError:
             print("Error de tipeo")
         except (KeyboardInterrupt, EOFError):
-            return
+            continue    
         
     usuario_encontrado["estado"] = False
     inicializar_datos_json(datos_usuarios_js, usuarios)
