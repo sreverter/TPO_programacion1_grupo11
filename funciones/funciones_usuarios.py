@@ -155,6 +155,9 @@ def edicion_usuario(admin):
                         ))
                         if opcion in (0,1,2):
                             break
+                        else:
+                            print("\033[91mel número ingresado no es válido\033[0m")
+                            continue
                     except ValueError:
                         print("opcion inválida.")
                         return

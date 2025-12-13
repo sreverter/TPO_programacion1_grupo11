@@ -38,10 +38,10 @@ def cambio_dni_usuario():
             return dni_nuevo
         except ValueError:
             print("dni inválido.")
-            return
+            continue
         except KeyboardInterrupt:
             print("Edición cancelada.")
-            return
+            continue
 def cambio_telefono_usuario():
     while True:
         try:
@@ -52,10 +52,10 @@ def cambio_telefono_usuario():
                 print("\033[91mEl número debe estar entre 1100000000 y 1199999999\033[0m")
         except ValueError:
             print("telefono inválido.")
-            return
+            continue
         except KeyboardInterrupt:
             print("Edición cancelada.")
-            return
+            continue
 
 def cambio_email_usuario():
     while True:
@@ -69,7 +69,7 @@ def cambio_email_usuario():
                 print("\033[91mEmail inválido, debe contener '@' y '.'\033[0m")
         except ValueError:
             print("email inválido.")
-            return
+            continue
         except KeyboardInterrupt:
             print("Edición cancelada.")
-            return
+            continue
