@@ -220,22 +220,7 @@ def borrado_usuarios():
                     user["estado"]=False
             inicializar_datos_json(datos_usuarios_js, usuarios)
             
-            arch_reservas=cargar_datos_txt(datos_reserva_txt)#-----------------------------------
-            reservas=[]
-            for linea in arch_reservas:
-                partes=linea
-                reservas.append(partes)
-            
-            reservas_correctas=[]
-            for i in reservas:
-                id_usuario=int(i[1])
-                if id_usuario != id_eliminar:
-                    reservas_correctas.append(i)
-
-            if len(reservas_correctas) == len(reservas):
-                print("\033[91mNo se eliminaron reservas asociadas\033[0m")
-            else:
-                inicializar_datos_txt(datos_reserva_txt, reservas_correctas)
+            borrado_en_txt(datos_reserva_txt, id_eliminar, 2)
 
         elif opcion == 2:
                 print("\033[94mVolviendo al menú\033[0m")

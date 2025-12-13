@@ -111,27 +111,10 @@ def borrado_Show():
 
     datos_shows.remove(show_encontrado)
     inicializar_datos_json(datos_shows_js, datos_shows)
-
-    # datos_reserva = cargar_datos_txt(datos_reserva_txt)
-    # reservas_nuevas = []
-    # count_reservas = 0
-    
-    # for r in datos_reserva:
-    #     try:
-    #         id_show_reserva = int(r[3])
-    #         if id_show_reserva != eleccion:
-    #             reservas_nuevas.append(r)
-    #         else:
-    #             count_reservas += 1
-    #     except (ValueError, IndexError):
-    #         continue
-
-    # if count_reservas > 0:
-    #     inicializar_datos_txt(datos_reserva_txt, reservas_nuevas)
+    # Eliminar reservas asociadas al show
     borrado_en_txt(datos_reserva_txt, eleccion, 3)
     print(f"\033[34mSe eliminó el show {eleccion} y reservas asociadas.\033[0m")
-    # else:
-    # print("\033[34mShow eliminado. No tenía reservas asociadas.\033[0m")
+
 
 def edicion_show():
     datos_shows = cargar_datos_json(datos_shows_js)
