@@ -251,7 +251,7 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
             try:
                 os.remove(ruta_archivo)
                 os.rename(temp, ruta_archivo) # renombra el temporal
-                # print(f"Reservas con ID de usuario {borrar} eliminadas correctamente.")
+                print(f"Reservas con ID de usuario {borrar} eliminadas correctamente.")
             except OSError as error:
                 print("Error al reemplazar el archivo:", error)
         else:
