@@ -122,8 +122,9 @@ def busqueda_Reserva():
                 print("\033[91mDebe elegir entre 1 o 2.\033[0m")
         except ValueError:
             print("\033[91mEntrada inválida.\033[0m")
+            continue
         except (KeyboardInterrupt, EOFError):
-            return
+            continue
     if eleccion == 1:
         while True:
             try:
@@ -131,8 +132,9 @@ def busqueda_Reserva():
                 break
             except ValueError:
                 print("\033[91mEntrada inválida.\033[0m")
+                continue
             except (KeyboardInterrupt, EOFError):
-                return
+                continue
         busqueda = busqueda_en_txt('datos/datos_reservas.txt', eleccion, 2)
         if busqueda:
             encontrado = True
@@ -148,8 +150,9 @@ def busqueda_Reserva():
                 break
             except ValueError:
                 print("\033[91mEntrada inválida.\033[0m")
+                continue
             except (KeyboardInterrupt, EOFError):
-                return
+                continue
         busqueda = busqueda_en_txt('datos/datos_reservas.txt', eleccion, 1)
         if busqueda:
             encontrado = True
