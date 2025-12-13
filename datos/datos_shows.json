@@ -1,12 +1,12 @@
 [
     {
         "id-show": 1,
-        "nombre-show": "Concierto de Rock",
+        "nombre-show": "0",
         "duracion-show": 120,
         "espectadores": 500,
         "espacios-disponibles": 150,
         "fecha": "2024-07-15",
-        "precio": 10500
+        "precio": 0
     },
     {
         "id-show": 2,

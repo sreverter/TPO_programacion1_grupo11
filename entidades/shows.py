@@ -52,10 +52,10 @@ def cambio_precio_evento():
                 print("precio no puede ir a negativos")
         except ValueError:
             print("error de tipeo.")
-            return
+            continue
         except KeyboardInterrupt:
             print("Edición cancelada.")
-            return
+            continue
 def nuevo_id_show(datos_shows):
     if datos_shows == []:
         return 1
