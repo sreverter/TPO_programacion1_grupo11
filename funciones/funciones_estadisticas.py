@@ -30,10 +30,10 @@ def shows_mas_vendidos():
     print(f"\033[36mFecha:\033[0m {mayor['fecha']}")
 
 def shows_con_mayor_recaudacion():
-    listas_reservas = cargar_datos_txt(datos_reserva_txt)
-    id_precios = map(lambda fila: (fila[3], float(fila[4])), listas_reservas)
+    listas_reservas = devolver_id_show_entrada_txt(datos_reserva_txt)
+    # id_precios = map(lambda fila: (fila[3], float(fila[4])), listas_reservas)
     recaudacion = {}
-    for id_show, precio in id_precios:
+    for id_show, precio in listas_reservas:
         recaudacion[id_show] = recaudacion.get(id_show, 0) + precio
     recaudacion = dict(sorted(recaudacion.items(), key=lambda item: item[1], reverse=True))
     print("\n\033[92m=== RECAUDACIÓN POR SHOW ===\033[0m")
@@ -97,12 +97,16 @@ def pedir_final(principio, maximo):
         return pedir_final(principio, maximo)
 
 def usuarios_con_mas_reservas():
-    lista_reservas = cargar_datos_txt(datos_reserva_txt)
-    reservas = {}
-    for fila in lista_reservas:
-        usuario_id = fila[1]
-        cantidad_entradas = int(fila[5])
-        reservas[usuario_id] = reservas.get(usuario_id, 0) + cantidad_entradas
+    with open(datos_reserva_txt, 'r', encoding='utf-8') as archivo:
+        linea = archivo.readline()
+        reservas = {}
+        while linea != '':
+            datos = linea.strip().split(',')
+            usuario_id = datos[1]
+            cantidad_entradas = int(datos[5])
+            reservas[usuario_id] = reservas.get(usuario_id, 0) + cantidad_entradas
+            linea = archivo.readline()
+            print(reservas)
     
     reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
     maximo = len(reservas)

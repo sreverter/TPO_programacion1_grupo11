@@ -58,10 +58,7 @@ def mostrar_tabla(dato, opcion):
 
 
 def inicializar_datos_json(ruta_archivo, datos):
-    # nuevos_datos = json.dumps(datos, indent=4, ensure_ascii=False)
     try:
-        # with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
-        #     archivo.write(nuevos_datos + "\n" )
         with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
             json.dump(datos, archivo, ensure_ascii=False, indent=4)
     except IOError as e:
@@ -73,21 +70,6 @@ def cargar_datos_json(ruta_archivo):
             datos_cargados = json.load(archivo)
             return datos_cargados
     except (IOError, json.JSONDecodeError) as e:
-        print(f"Error al cargar el archivo: {e}")
-        return []
-
-
-def cargar_datos_txt(ruta_archivo):
-    datos_cargados = []
-    try:
-        with open(ruta_archivo, 'r',encoding="utf-8") as archivo:
-            linea = archivo.readline().strip()
-            while linea:
-                id_reserva, id_usuario, sector, id_show, precio, cantidad = linea.split(',')
-                datos_cargados.append([int(id_reserva), int(id_usuario), sector, int(id_show), int(precio), int(cantidad)])
-                linea = archivo.readline().strip()
-        return datos_cargados
-    except (IOError, ValueError, IndexError) as e:
         print(f"Error al cargar el archivo: {e}")
         return []
 
@@ -337,3 +319,25 @@ def modificacion_en_txt(ruta_archivo, id_reserva_modif, nuevo_show_id=None, nuev
     else:
         os.remove(temp)
         print(f"No se encontró la reserva {id_reserva_modif}.")
+
+
+def devolver_id_show_entrada_txt(ruta_archivo):
+    try:
+        with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
+            linea = archivo.readlinea()
+            lista_id_precio = []
+            while linea != '':
+                datos = linea.strip().split(',')
+                try:
+                    id_show = int(datos[3])
+                    precio = int(datos[4])
+                    tupla = (id_show, precio)
+                    lista_id_precio.append(tupla)
+                    linea = archivo.readline()
+                except (ValueError, IndexError):
+                    print("Error al procesar una línea del archivo.")
+            return lista_id_precio
+    except FileNotFoundError:
+        print("El archivo no existe.")
+    except OSError as error:
+        print("Error en el acceso al archivo:", error)
