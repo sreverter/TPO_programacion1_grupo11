@@ -161,7 +161,7 @@ def registrar():
     #revision de que sea dentro de los parametros asignados con el numero de area
     while True:
         try:
-            telefono_cread = int(input("\033[36mIngrese su número de teléfono sin código de área: \033[0m"))
+            telefono_cread = int(input("\033[36m Ingrese su número de teléfono sin código de área: \033[0m"))
             if telefono_cread > 1100000000 and telefono_cread < 1199999999:
                 break
             else:

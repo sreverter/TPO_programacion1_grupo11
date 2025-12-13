@@ -9,6 +9,11 @@ def menu_shows(admin):
                 "\033[35m  → [2] BUSCAR SHOWS            \033[0m\n"
                 "\033[35m  → [3] VOLVER AL MENU PRINCIPAL\033[0m\n"
                 "\033[1;35m Seleccione una opción: \033[0m" ))
+                if usuario_i in (0, 1,2,3,4,5,6):
+                    return usuario_i
+                else:
+                    print(f"\033[91m Opción inválida, intente de nuevo.\033[0m")
+
             except ValueError:
                 print("error de tipeo.")
                 return
@@ -27,12 +32,17 @@ def menu_shows(admin):
                 "\033[35m  → [5] GENERAR SHOW            \033[0m\n"
                 "\033[35m  → [6] VOLVER AL MENU PRINCIPAL\033[0m\n"
                 "\033[1;35m Seleccione una opción: \033[0m" ))
+                if usuario_i in (0, 1,2,3,4,5,6):
+                    return usuario_i
+                else:
+                    print(f"\033[91m Opción inválida, intente de nuevo.\033[0m")
+
             except ValueError:
                 print("error de tipeo.")
-                return
+                continue
             except KeyboardInterrupt:
                 print("Edición cancelada.")
-                return
+                continue
 
         if admin:
             func_shows = [
