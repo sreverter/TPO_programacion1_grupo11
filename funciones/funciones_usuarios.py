@@ -255,6 +255,7 @@ def borrado_usuarios():
                         show["espacios-disponibles"] += cantidad
                         show["espectadores"] -= cantidad
                         break
+            linea=file.readline()
 
     borrado_en_txt(datos_reserva_txt, id_eliminar, 2)
 
