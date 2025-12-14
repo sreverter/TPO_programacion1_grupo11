@@ -16,7 +16,7 @@ def vista_show():
 def busqueda_Show():
     datos_shows = cargar_datos_json(datos_shows_js)
     if not datos_shows:
-        print("No hay shows.")
+        print("\033[91mNo hay shows.\033[0m")
         return
     while True:
         try:
@@ -238,7 +238,7 @@ def agregar_shows():
     duracion = cambio_duracion_evento(shows_del_dia, 0) 
 
     if duracion is None:
-        print("Acción cancelada por el usuario.")
+        print("\033[91mAcción cancelada por el usuario.\033[0m")
         return
 
     tipo_evento = cambio_tipo_evento()

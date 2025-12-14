@@ -98,5 +98,5 @@ def menu_edicion_shows():
                 print("\033[91mEntrada inválida.\033[0m")
                 continue
             except (KeyboardInterrupt, EOFError):
-                print("saliendo de la edicion de shows")
+                print("\033[91saliendo de la edicion de shows\033[0m")
                 return None

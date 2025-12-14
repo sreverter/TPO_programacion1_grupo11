@@ -1,10 +1,17 @@
 import json
 import os
 
+def imprimir_filas(filas, i=0):
+    if i >= len(filas):
+        return
+    fila = filas[i]
+    print(f"\033[32m{fila[0]:<8}  {fila[1]:<13}\033[35m  {fila[2]:>10}  {fila[3]:>10}\033[0m  \033[34m{fila[4]:>14} {fila[5]:>14}\033[0m")
+    imprimir_filas(filas, i + 1)
+
 
 def mostrar_tabla(dato, opcion):
     if not dato:
-        print("No hay datos para mostrar.")
+        print("\033[91mNo hay datos para mostrar.\033[91m")
         return
 
     #matriz
@@ -14,16 +21,6 @@ def mostrar_tabla(dato, opcion):
         print(f"\033[32m{'-'*80}\033[0m")
         print(f"\033[32m{'IDs':<8}  {'ID Usuario':<13}\033  \033[35m{'Ubicación':>10}  {'ID Show':>12}\033[0m  \033[34m{'Precio':>14}  \033[34m{'cantidad':>14}\033[0m")
         print(f"\033[32m{'-'*80}\033[0m")
-
-        # for fila in dato:
-        #     print(f"\033[32m{fila[0]:<8}  {fila[1]:<13}\033[35m  {fila[2]:>10}  {fila[3]:>10}\033[0m  \033[34m{fila[4]:>14} {fila[5]:>14}\033[0m")
-
-        def imprimir_filas(filas, i=0):
-            if i >= len(filas):
-                return
-            fila = filas[i]
-            print(f"\033[32m{fila[0]:<8}  {fila[1]:<13}\033[35m  {fila[2]:>10}  {fila[3]:>10}\033[0m  \033[34m{fila[4]:>14} {fila[5]:>14}\033[0m")
-            imprimir_filas(filas, i + 1)
 
         imprimir_filas(dato)
     
@@ -36,7 +33,7 @@ def mostrar_tabla(dato, opcion):
             else:
                 tipo = "usuario"
         except IndexError:
-            print("Datos inválidos.")
+            print("\033[91mDatos inválidos.\033[0m")
             return
 
 
@@ -62,7 +59,7 @@ def inicializar_datos_json(ruta_archivo, datos):
         with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
             json.dump(datos, archivo, ensure_ascii=False, indent=4)
     except IOError as e:
-        print(f"Error al escribir el archivo: {e}")
+        print(f"\033[91mError al escribir el archivo: {e}\033[0m")
 
 def cargar_datos_json(ruta_archivo):
     try:
@@ -70,7 +67,7 @@ def cargar_datos_json(ruta_archivo):
             datos_cargados = json.load(archivo)
             return datos_cargados
     except (IOError, json.JSONDecodeError) as e:
-        print(f"Error al cargar el archivo: {e}")
+        print(f"\033[91mError al cargar el archivo: {e}\033[0m")
         return []
 
 
@@ -122,7 +119,7 @@ def mostrar_archivo_texto(ruta_archivo):
                 )
                 linea = archivo.readline()
     except IOError as e:
-        print(f"Error al leer el archivo: {e}")
+        print(f"\033[91mError al leer el archivo: {e}\033[0m")
 
 def busqueda_en_txt(ruta_archivo, buscar, dato):
     try:
@@ -155,7 +152,7 @@ def busqueda_en_txt(ruta_archivo, buscar, dato):
             return reservas_encontrados
 
     except IOError as e:
-        print(f"Error al leer el archivo: {e}")
+        print(f"\033[91mError al leer el archivo: {e}\033[0m")
         return []
 
 def borrado_en_txt(ruta_archivo, borrar, opcion):
@@ -175,15 +172,15 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
                     encontrado = True
 
         except FileNotFoundError:
-            print("El archivo no existe.")
+            print("\033[91mEl archivo no existe.\033[0m")
         except OSError as error:
-            print("Error en el acceso al archivo:", error)
+            print(f"\033[91mError en el acceso al archivo: {error}\033[0m")
         finally:
             try:
                 arch.close()
                 aux.close()
             except OSError:
-                print("Error en el cierre del archivo.")
+                print("\033[91mError en el cierre del archivo.\033[0m")
 
 
         if encontrado == True:
@@ -192,10 +189,10 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
                 os.rename(temp, ruta_archivo) # renombra el temporal
                 # print(f"Reserva con ID {borrar} eliminado correctamente.")
             except OSError as error:
-                print("Error al reemplazar el archivo:", error)
+                print(f"\033[91mError al reemplazar el archivo: {error}\033[0m")
         else:
             os.remove(temp)  # eliminamos el temporal si no se usó
-            print(f"No se encontró la reserva con ID {borrar}.")
+            print(f"\033[91mNo se encontró la reserva con ID {borrar}.\033[0m")
     
     elif opcion == 2:
         try:
@@ -210,26 +207,26 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
                     encontrado = True
 
         except FileNotFoundError:
-            print("El archivo no existe.")
+            print("\033[91mEl archivo no existe.\033[0m")
         except OSError as error:
-            print("Error en el acceso al archivo:", error)
+            print(f"\033[91mError en el acceso al archivo: {error}\033[0m")
         finally:
             try:
                 arch.close()
                 aux.close()
             except:
-                print("Error en el cierre del archivo:")
+                print("\033[91mError en el cierre del archivo:\033[0m")
 
         if encontrado == True:
             try:
                 os.remove(ruta_archivo)
                 os.rename(temp, ruta_archivo) # renombra el temporal
-                print(f"Reservas con ID de usuario {borrar} eliminadas correctamente.")
+                print(f"\033[91mReservas con ID de usuario {borrar} eliminadas correctamente.\033[0m")
             except OSError as error:
-                print("Error al reemplazar el archivo:", error)
+                print(f"\033[91mError al reemplazar el archivo: {error}\033[0m")
         else:
             os.remove(temp)  # eliminamos el temporal si no se usó
-            print(f"No se encontró la reserva con ID {borrar}.")
+            print(f"\033[91mNo se encontró la reserva con ID {borrar}.\033[0m")
 
     elif opcion == 3:
         try:
@@ -244,26 +241,26 @@ def borrado_en_txt(ruta_archivo, borrar, opcion):
                     encontrado = True
 
         except FileNotFoundError:
-            print("El archivo no existe.")
+            print("\033[91mEl archivo no existe.\033[0m")
         except OSError as error:
-            print("Error en el acceso al archivo:", error)
+            print(f"\033[91mError en el acceso al archivo: {error}\033[0m")
         finally:
             try:
                 arch.close()
                 aux.close()
             except:
-                print("Error en el cierre del archivo:")
+                print("\033[91mError en el cierre del archivo:\033[0m")
 
         if encontrado == True:
             try:
                 os.remove(ruta_archivo)
                 os.rename(temp, ruta_archivo) # renombra el temporal
-                print(f"Reservas con ID de usuario {borrar} eliminadas correctamente.")
+                print(f"\033[36mReservas con ID de usuario {borrar} eliminadas correctamente.")
             except OSError as error:
-                print("Error al reemplazar el archivo:", error)
+                print(f"\033[91mError al reemplazar el archivo: {error}\033[0m")
         else:
             os.remove(temp)  # eliminamos el temporal si no se usó
-            print(f"No se encontró la reserva con ID {borrar}.")
+            print(f"\033[91mNo se encontró la reserva con ID {borrar}.\033[0m")
 
 def modificacion_en_txt(ruta_archivo, id_reserva_modif, nuevo_show_id=None, nuevo_sector=None, nuevo_precio=None):
     temp = 'datos/datos_reservas_temp.txt'
@@ -300,25 +297,25 @@ def modificacion_en_txt(ruta_archivo, id_reserva_modif, nuevo_show_id=None, nuev
 
 
     except FileNotFoundError:
-        print("El archivo no existe.")
+        print("\033[91mEl archivo no existe.\033[0m")
     except OSError as error:
-        print("Error en el acceso al archivo:", error)
+        print(f"\033[91mError en el acceso al archivo: {error}\033[0m")
     finally:
         try:
             arch.close()
             aux.close()
         except:
-            print("Error en el cierre del archivo:")
+            print("\033[91mError en el cierre del archivo:\033[0m")
 
     if encontrado:
         try:
             os.remove(ruta_archivo)
             os.rename(temp, ruta_archivo)
         except OSError as error:
-            print("Error al reemplazar el archivo:", error)
+            print(f"\033[91mError al reemplazar el archivo: {error}\033[0m")
     else:
         os.remove(temp)
-        print(f"No se encontró la reserva {id_reserva_modif}.")
+        print(f"\033[91mNo se encontró la reserva {id_reserva_modif}.\033[0m")
 
 
 def devolver_id_show_entrada_txt(ruta_archivo):
@@ -338,6 +335,6 @@ def devolver_id_show_entrada_txt(ruta_archivo):
                     print("Error al procesar una línea del archivo.")
             return lista_id_precio
     except FileNotFoundError:
-        print("El archivo no existe.")
+        print("\033[91mEl archivo no existe.\033[0m")
     except OSError as error:
-        print("Error en el acceso al archivo:", error)
+        print(f"\033[91mError en el acceso al archivo: {error}\033[0m")

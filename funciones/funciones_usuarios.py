@@ -32,7 +32,7 @@ def vista_Usuarios(admin):
                             break
                         print("\033[91mOpción inválida.\033[0m")
                     except ValueError:
-                        print("Error de tipeo")
+                        print("\033[91mError de tipeo\033[0m")
                     except (KeyboardInterrupt, EOFError):
                         return
                 if filtro_usuarios == 1:
@@ -78,7 +78,7 @@ def vista_Usuarios(admin):
 def edicion_usuario(admin):
     usuarios = cargar_datos_json(datos_usuarios_js)
     if not usuarios:
-        print("No hay usuarios.")
+        print("\033[91mNo hay usuarios.\033[0m")
         return
 
     # 1. Selección del Usuario (Solo Admin busca por ID, Usuario edita su propio perfil)
@@ -154,7 +154,7 @@ def edicion_usuario(admin):
             except (KeyboardInterrupt, EOFError):
                 return
     if not usuario_a_editar:
-        print("Error al cargar perfil.")
+        print("\033[91mError al cargar perfil.\033[0m")
         return
 
     # 3. Ejecución de Cambios (Validando NONE)
@@ -200,7 +200,7 @@ def edicion_usuario(admin):
 def borrado_usuarios():
     usuarios = cargar_datos_json(datos_usuarios_js)
     if not usuarios:
-        print("No hay usuarios.")
+        print("\033[91mNo hay usuarios.\033[0m")
         return
     while True:
         try:
@@ -218,7 +218,7 @@ def borrado_usuarios():
             break
 
         except ValueError:
-            print("Error de tipeo")
+            print("\033[91mError de tipeo\033[0m")
         except (KeyboardInterrupt, EOFError):
             return
         print("\033[91mRecuerde que esta acción es irrevertible\033[0m")
@@ -234,7 +234,7 @@ def borrado_usuarios():
             if opcion == 1:
                 break
         except ValueError:
-            print("Error de tipeo")
+            print("\033[91mError de tipeo\033[0m")
         except (KeyboardInterrupt, EOFError):
             return
         

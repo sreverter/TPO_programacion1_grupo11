@@ -6,7 +6,6 @@ from menu.menu_estadisticas import menu_estadisticas
 from funciones.funciones_globales import *
 from datos import *
 
-# FLAGS
 admin = False
 ingreso = True
 menu = False

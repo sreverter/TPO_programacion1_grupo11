@@ -26,7 +26,7 @@ def alta_reserva(nueva_reserva):
             linea = f"{nueva_reserva[0]},{nueva_reserva[1]},{nueva_reserva[2]},{nueva_reserva[3]},{nueva_reserva[4]},{nueva_reserva[5]}\n"
             archivo.write(linea)
     except OSError as e:
-        print(f"Error al guardar la reserva: {e}")
+        print(f"\033[91mError al guardar la reserva: {e}\033[0m")
 
 def agregar_reservas(admin):
     try:

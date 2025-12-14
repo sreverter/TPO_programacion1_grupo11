@@ -38,16 +38,16 @@ def menu_shows(admin):
 
         if admin:
             funciones = [
-                vista_show,     # 1
-                busqueda_Show,  # 2
-                borrado_Show,   # 3
-                edicion_show,   # 4
-                agregar_shows   # 5
+                vista_show,     
+                busqueda_Show,  
+                borrado_Show,   
+                edicion_show,   
+                agregar_shows   
             ]
         else:
             funciones = [
-                vista_show,     # 1
-                busqueda_Show   # 2
+                vista_show,     
+                busqueda_Show   
             ]
 
         if 1 <= opcion <= len(funciones):
