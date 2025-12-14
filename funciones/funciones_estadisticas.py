@@ -106,8 +106,7 @@ def usuarios_con_mas_reservas():
             cantidad_entradas = int(datos[5])
             reservas[usuario_id] = reservas.get(usuario_id, 0) + cantidad_entradas
             linea = archivo.readline()
-            print(reservas)
-    
+
     reservas = dict(sorted(reservas.items(), key=lambda item: item[1], reverse=True))
     maximo = len(reservas)
 

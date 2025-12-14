@@ -324,7 +324,7 @@ def modificacion_en_txt(ruta_archivo, id_reserva_modif, nuevo_show_id=None, nuev
 def devolver_id_show_entrada_txt(ruta_archivo):
     try:
         with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
-            linea = archivo.readlinea()
+            linea = archivo.readline()
             lista_id_precio = []
             while linea != '':
                 datos = linea.strip().split(',')
