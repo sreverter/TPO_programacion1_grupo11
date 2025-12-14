@@ -154,7 +154,7 @@ def edicion_show():
             print("\033[91mError de tipeo.\033[0m")
         except (KeyboardInterrupt, EOFError):
             return
-    cambio=True
+    cambio=False
     for shows in datos_shows:
         if shows["id-show"] == eleccion:
             if opcion == 0:

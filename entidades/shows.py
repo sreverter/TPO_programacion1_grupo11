@@ -6,8 +6,9 @@ def cambio_tipo_evento():
         else:
             print("\033[91mEl tipo de evento no puede estar vacío.\033[0m")
             return "Sin título"
-    except (ValueError, KeyboardInterrupt):
-        print("\033[91mLos caracteres ingresados no son válidos.\033[0m")
+    except (KeyboardInterrupt, EOFError):
+        print("\033[91mSaliendo de la edicion de tipo de evento.\033[0m")
+        return None
 
 def cambio_duracion_evento(datos_shows, duracion_a_descontar):
     minutos_ocupados_total = 0
