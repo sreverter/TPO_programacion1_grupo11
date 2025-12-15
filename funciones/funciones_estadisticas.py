@@ -3,15 +3,6 @@ datos_usuarios_js = "datos/datos_usuarios.json"
 datos_reserva_txt = "datos/datos_reservas.txt"
 datos_show_js = "datos/datos_shows.json"
 
-def imprimir_barras_rec(columna_activos, columna_inactivos, alto, i=0):
-    if i >= alto:
-        return
-    print(columna_activos[i].ljust(12) + columna_inactivos[i])
-    imprimir_barras_rec(columna_activos, columna_inactivos, alto, i + 1)
-    imprimir_barras_rec(columna_activos, columna_inactivos, alto)
-    print("   _______     _______")
-
-
 def shows_mas_vendidos():
     lista_shows = cargar_datos_json(datos_show_js)
 
@@ -57,23 +48,37 @@ def usuarios_mas_activos():
         num_barras_in = 1
     crear_Grafico(num_barras_act, num_barras_in, activo, inactivo, paso)
 
+def imprimir_barras_rec(columna_activos, columna_inactivos, alto, i=0):
+    if i >= alto:
+        return    
+    val_activo = columna_activos[i]
+    val_inactivo = columna_inactivos[i]
+    
+    print(f"\033[38;5;51m{val_activo.ljust(12)}{val_inactivo}\033[0m")
+    
+    imprimir_barras_rec(columna_activos, columna_inactivos, alto, i + 1)
+
 def crear_Grafico(num, num2, act, inac, paso):
     columna_activos = []
     for c in range(num):
         columna_activos.append("   _______" if c == 0 else "  |       |")
+    
     columna_inactivos = []
     for c2 in range(num2):
         columna_inactivos.append("   _______" if c2 == 0 else "  |       |")
+    
     alto = num if num >= num2 else num2
+    
     while len(columna_activos) < alto:
-        columna_activos.insert(0, "")
+        columna_activos.insert(0, "") 
     while len(columna_inactivos) < alto:
         columna_inactivos.insert(0, "")
-    print(f'\033[36m    {"ACTIVO"}     {"INACTIVO"}\033[0m')
-    print(f"      {act}          {inac}")
+    print(f'\033[38;5;201m    {"ACTIVO"}     {"INACTIVO"}\033[0m')
+    print(f"\033[38;5;226m      {act}          {inac}\033[0m")
     print()
-    imprimir_barras_rec()
-
+    imprimir_barras_rec(columna_activos, columna_inactivos, alto)
+    
+    print("\033[38;5;51m   _______     _______\033[0m")
 def pedir_principio(maximo):
     try:
         principio = int(input(f"\033[36mSeleccioná desde qué usuario querés empezar a ver (1 - {maximo-1}):\033[0m "))
