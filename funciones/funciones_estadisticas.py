@@ -3,22 +3,41 @@ datos_usuarios_js = "datos/datos_usuarios.json"
 datos_reserva_txt = "datos/datos_reservas.txt"
 datos_show_js = "datos/datos_shows.json"
 
+def buscar_mayor_recursivo(lista_shows, posicion):
+    if posicion == len(lista_shows) - 1:
+        return lista_shows[posicion]
+
+    mayor_del_resto = buscar_mayor_recursivo(lista_shows, posicion + 1)
+
+    espectadores_actual = lista_shows[posicion].get("espectadores", 0)
+    espectadores_resto = mayor_del_resto.get("espectadores", 0)
+
+    if espectadores_actual > espectadores_resto:
+        return lista_shows[posicion]
+    else:
+        return mayor_del_resto
+
 def shows_mas_vendidos():
-    lista_shows = cargar_datos_json(datos_show_js)
+    try:
+        lista_shows = cargar_datos_json(datos_show_js)
+        if not lista_shows:
+            print("\033[38;5;214mNo hay shows cargados para analizar.\033[0m")
+            return
 
-    def buscar_mayor(posicion):
-        if posicion == len(lista_shows) - 1:
-            return lista_shows[posicion]
-        mayor_del_resto = buscar_mayor(posicion + 1)
-        if lista_shows[posicion]["espectadores"] > mayor_del_resto["espectadores"]:
-            return lista_shows[posicion]
-        else:
-            return mayor_del_resto
+        mayor = buscar_mayor_recursivo(lista_shows, 0)
+        
+        nombre = mayor.get('nombre-show', 'Desconocido')
+        espectadores = mayor.get('espectadores', 0)
+        fecha = mayor.get('fecha', 'Sin fecha')
 
-    mayor = buscar_mayor(0)
-    print(f"\033[36mShow con más espectadores:\033[0m {mayor['nombre-show']}")
-    print(f"\033[36mEspectadores:\033[0m {mayor['espectadores']}")
-    print(f"\033[36mFecha:\033[0m {mayor['fecha']}")
+        print(f"\033[38;5;201mShow con más espectadores:\033[0m {nombre}")
+        print(f"\033[38;5;51mEspectadores:\033[0m {espectadores}")
+        print(f"\033[38;5;51mFecha:\033[0m {fecha}")
+
+    except (FileNotFoundError, ValueError):
+        print("\033[38;5;196mError al acceder a los datos de shows.\033[0m")
+    except RecursionError:
+        print("\033[38;5;196mError: Demasiados shows para procesar recursivamente.\033[0m")
 
 def shows_con_mayor_recaudacion():
     listas_reservas = devolver_id_show_entrada_txt(datos_reserva_txt)
